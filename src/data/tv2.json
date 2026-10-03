@@ -8872,7 +8872,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusguzvz0"
         },
         {
           "resourceId": "钢板eP",
@@ -8881,7 +8882,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmusguzvz1"
         },
         {
           "resourceId": "建筑材料4w",
@@ -8890,7 +8892,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusguzvz2"
         },
         {
           "resourceId": "聚合物Mo",
@@ -8899,7 +8902,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusguzvz3"
         },
         {
           "resourceId": "光剑水晶si",
@@ -8908,7 +8912,8 @@
           "stationLabels": [
             "D"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusguzvz4"
         },
         {
           "resourceId": "聚合物Mo",
@@ -8917,7 +8922,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusguzvz5"
         },
         {
           "resourceId": "电线mF",
@@ -8926,7 +8932,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusguzvz6"
         }
       ],
       "workerStationArr": [

@@ -43,6 +43,8 @@ export interface ResourceInstance {
 
 /** 关卡的一条交付目标（《关卡目标》） */
 export interface LevelGoal {
+  /** 稳定行标识：仅用于 UI 绑定行内状态（搜索词/光标），行重排/删除时不随之改变；不参与业务计算 */
+  uid?: string;
   /** 物资实例 id */
   resourceId: string;
   qty: number;

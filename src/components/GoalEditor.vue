@@ -93,34 +93,97 @@ interface RowState {
   keyword: string;
 }
 
-const rowStates = reactive<RowState[]>([]);
+/** 生成稳定行标识：行重排/删除时不随之改变，用于绑定行内 UI 状态 */
+let uidSeq = 0;
+function genUid(): string {
+  return `g${Date.now().toString(36)}${(uidSeq++).toString(36)}`;
+}
 
-/** 确保 rowStates 长度跟上 goals，每行 keyword 默认为已锁定的名称 */
+/** 当前展开联想的行 uid（'' = 全部收起） */
+const activeSuggestRow = ref('');
+/** 物资名称联想光标（按 uid 独立） */
+const suggestCursor = reactive(new Map<string, number>());
+/** 当前展开实例下拉的行 uid（'' = 全部收起） */
+const activeInstRow = ref('');
+/** 实例下拉光标（按 uid 独立） */
+const instCursor = reactive(new Map<string, number>());
+
+/** uid 兜底 key（缺失时用占位 key，保证 Map 读写不炸） */
+function uidKey(uid: string | undefined): string {
+  return uid ?? '__none__';
+}
+
+/** 当前下标 → 该行 uid（行状态一律以 uid 为键，避免重排后错位） */
+function uidOf(i: number): string | undefined {
+  return props.goals[i]?.uid;
+}
+
+/**
+ * 行内 UI 状态（搜索词 / 已锁名称）按 uid 存储。
+ * 新行有独立 uid → 拿到独立空状态，绝不会继承别行留下的旧值。
+ */
+const rowStates = reactive(new Map<string, RowState>());
+
+function rowOf(uid: string | undefined): RowState {
+  if (!uid) return { name: '', keyword: '' };
+  let r = rowStates.get(uid);
+  if (!r) {
+    r = { name: '', keyword: '' };
+    rowStates.set(uid, r);
+  }
+  return r;
+}
+
+/** 读联想光标 */
+function sugCursor(uid: string | undefined): number {
+  return suggestCursor.get(uidKey(uid)) ?? 0;
+}
+/** 读实例光标 */
+function instCur(uid: string | undefined): number {
+  return instCursor.get(uidKey(uid)) ?? 0;
+}
+/** 写实例光标（模板 mouseenter 用，传当前下标） */
+function setInstCursor(i: number, v: number): void {
+  instCursor.set(uidKey(uidOf(i)), v);
+}
+
+/** 老数据（无 uid）补发 uid 并回写父组件（每关卡一次性） */
 watch(
-  () => props.goals.length,
-  (n) => {
-    while (rowStates.length < n) {
-      const i = rowStates.length;
-      const g = props.goals[i];
-      const inst = g?.resourceId ? store.instById.get(g.resourceId) : undefined;
-      rowStates.push({ name: inst?.name ?? '', keyword: inst?.name ?? '' });
-    }
-    while (rowStates.length > n) rowStates.pop();
+  () => props.goals.some((g) => !g.uid),
+  (missing) => {
+    if (!missing) return;
+    nextTick(() => {
+      if (props.goals.some((g) => !g.uid)) {
+        emit('update', props.goals.map((g) => (g.uid ? { ...g } : { ...g, uid: genUid() })));
+      }
+    });
   },
   { immediate: true },
 );
 
-/** 当 goals 中某行 resourceId 变化（从外部同步/恢复），自动反填 name + keyword */
+/**
+ * 依据 goals 同步各行状态（按 uid）：
+ * - 有 resourceId → 反填 name/keyword（正在输入的行不打断）
+ * - resourceId 为空 → 只保留（空）状态，不继承旧值
+ * - 清理已删除行残留的状态
+ */
 watch(
-  () => props.goals.map((g) => g.resourceId),
-  (ids) => {
-    for (let i = 0; i < ids.length; i++) {
-      const id = ids[i];
-      const inst = id ? store.instById.get(id) : undefined;
-      if (inst && rowStates[i]) {
-        if (rowStates[i].name !== inst.name) rowStates[i].name = inst.name;
-        if (rowStates[i].keyword !== inst.name) rowStates[i].keyword = inst.name;
+  () => props.goals.map((g) => `${g.uid}|${g.resourceId}`).join(','),
+  () => {
+    const alive = new Set<string>();
+    for (const g of props.goals) {
+      if (!g.uid) continue;
+      alive.add(g.uid);
+      const st = rowOf(g.uid);
+      if (activeSuggestRow.value === g.uid) continue;
+      const inst = g.resourceId ? store.instById.get(g.resourceId) : undefined;
+      if (inst && st.name !== inst.name) {
+        st.name = inst.name;
+        st.keyword = inst.name;
       }
+    }
+    for (const k of [...rowStates.keys()]) {
+      if (!alive.has(k)) rowStates.delete(k);
     }
   },
   { immediate: true },
@@ -158,18 +221,20 @@ function filteredInstances(row: RowState) {
   });
 }
 
-/** 选中名称 → 只改 rowStates，不 emit（实例等用户自己选 Enter/点击） */
+/** 选中名称 → 只改行状态，不 emit（实例等用户自己选 Enter/点击） */
 function onNameChange(i: number, name: string) {
-  rowStates[i].name = name;
-  rowStates[i].keyword = name;
+  const st = rowOf(uidOf(i));
+  st.name = name;
+  st.keyword = name;
 }
 
 /** 选中实例 → 自动锁定名称 */
 function onInstanceChange(i: number, instanceId: string) {
   const inst = store.instById.get(instanceId);
   if (inst) {
-    rowStates[i].name = inst.name;
-    rowStates[i].keyword = inst.name;
+    const st = rowOf(uidOf(i));
+    st.name = inst.name;
+    st.keyword = inst.name;
   }
   emit('update', props.goals.map((g, j) => (j === i ? { ...g, resourceId: instanceId } : g)));
 }
@@ -188,14 +253,14 @@ function preferredInstanceId(name: string, excludeRow: number): string | null {
 
 /** 计算某行实例下拉的初始光标：优先当前行已选实例，其次其它目标的同名实例，最后第一项 */
 function initialInstCursor(i: number): number {
-  const list = filteredInstances(rowStates[i] ?? { name: '', keyword: '' });
+  const list = filteredInstances(rowOf(uidOf(i)));
   if (!list.length) return 0;
   const own = props.goals[i]?.resourceId;
   if (own) {
     const idx = list.findIndex((x) => x.id === own);
     if (idx >= 0) return idx;
   }
-  const preferred = preferredInstanceId(rowStates[i]?.name ?? '', i);
+  const preferred = preferredInstanceId(rowOf(uidOf(i)).name, i);
   if (preferred) {
     const idx = list.findIndex((x) => x.id === preferred);
     if (idx >= 0) return idx;
@@ -205,64 +270,66 @@ function initialInstCursor(i: number): number {
 
 /** 切换实例下拉展开 */
 function toggleInst(i: number) {
-  if (activeInstRow.value === i) {
-    activeInstRow.value = -1;
+  const uid = uidOf(i);
+  if (activeInstRow.value === uid) {
+    activeInstRow.value = '';
   } else {
-    activeInstRow.value = i;
-    instCursor.value[i] = initialInstCursor(i);
+    activeInstRow.value = uid ?? '';
+    instCursor.set(uidKey(uid), initialInstCursor(i));
   }
 }
 
 /** 选中实例 + 关闭下拉 + emit */
 function pickInstance(i: number, instId: string) {
-  activeInstRow.value = -1;
+  activeInstRow.value = '';
   onInstanceChange(i, instId);
   nextTick(() => focusNextInput());
 }
 
 /** 实例下拉键盘：↑↓ 导航、Enter 选中、Escape 关闭 */
 function onInstKeydown(i: number, e: KeyboardEvent) {
-  const list = filteredInstances(rowStates[i] ?? { name: '', keyword: '' });
+  const uid = uidOf(i);
+  const list = filteredInstances(rowOf(uid));
   if (e.key === 'Escape') {
     e.preventDefault();
-    activeInstRow.value = -1;
+    activeInstRow.value = '';
     return;
   }
   if (!list.length) return;
 
   if (e.key === 'Enter') {
     e.preventDefault();
-    if (activeInstRow.value !== i) {
+    if (activeInstRow.value !== uid) {
       // 没展开 → 展开
-      activeInstRow.value = i;
-      instCursor.value[i] = initialInstCursor(i);
+      activeInstRow.value = uid ?? '';
+      instCursor.set(uidKey(uid), initialInstCursor(i));
     } else {
       // 已展开 → 选中当前光标
-      const idx = Math.min(instCursor.value[i] ?? 0, list.length - 1);
+      const idx = Math.min(instCur(uid), list.length - 1);
       pickInstance(i, list[idx].id);
     }
     return;
   }
 
-  if (activeInstRow.value !== i) return; // 没展开时方向键不处理
+  if (activeInstRow.value !== uid) return; // 没展开时方向键不处理
 
   if (e.key === 'ArrowDown') {
     e.preventDefault();
-    instCursor.value[i] = ((instCursor.value[i] ?? -1) + 1) % list.length;
+    instCursor.set(uidKey(uid), (instCur(uid) + 1) % list.length);
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
-    const cur = instCursor.value[i] ?? 0;
-    instCursor.value[i] = cur <= 0 ? list.length - 1 : cur - 1;
+    const cur = instCur(uid);
+    instCursor.set(uidKey(uid), cur <= 0 ? list.length - 1 : cur - 1);
   }
 }
 
 /** 失焦后收起实例下拉 */
 /** 失焦后延迟收起实例下拉（让 mousedown 能先触发 pickInstance） */
 function blurInst() {
-  const rowIdx = activeInstRow.value;
+  const rowUid = activeInstRow.value;
   setTimeout(() => {
     // 只在 activeInstRow 没被其他代码改过的情况下才清
-    if (activeInstRow.value === rowIdx) activeInstRow.value = -1;
+    if (activeInstRow.value === rowUid) activeInstRow.value = '';
   }, 150);
 }
 
@@ -458,7 +525,7 @@ function add() {
   if (!defaultStation && props.stationLabels?.length) defaultStation = props.stationLabels[0];
   const defaultStack = defaultStackOf(defaultStation);
   const next = [...props.goals, writeStationLabels(
-    { resourceId: '', qty: 1, stackId: defaultStack },
+    { uid: genUid(), resourceId: '', qty: 1, stackId: defaultStack },
     defaultStation ? [defaultStation] : [],
   )];
   reindex(next);
@@ -471,7 +538,7 @@ function addShared() {
   if (allLabels.length < 2) return; // 站点不够，不能加公共目标
   const defaultStack = defaultStackOf(allLabels[0]);
   const next = [...props.goals, writeStationLabels(
-    { resourceId: '', qty: 1, stackId: defaultStack },
+    { uid: genUid(), resourceId: '', qty: 1, stackId: defaultStack },
     allLabels,
   )];
   reindex(next);
@@ -694,9 +761,10 @@ function currentInstance(i: number) {
 
 /** 预览实例：如果该行走廊的实例下拉正展开且有光标，用光标所指的实例做实时预览，否则返回已选实例 */
 function previewInstance(i: number) {
-  if (activeInstRow.value === i) {
-    const list = filteredInstances(rowStates[i] ?? { name: '', keyword: '' });
-    const idx = instCursor.value[i];
+  const uid = uidOf(i);
+  if (activeInstRow.value === uid) {
+    const list = filteredInstances(rowOf(uid));
+    const idx = instCursor.get(uidKey(uid));
     if (idx != null && idx >= 0 && idx < list.length) return list[idx];
   }
   return currentInstance(i);
@@ -721,15 +789,6 @@ function currentCat(i: number): ResourceCategory | undefined {
   }
   return classifyInstance(inst, store.data, localByName);
 }
-
-/** 当前展开联想的行号（-1 = 全部收起） */
-const activeSuggestRow = ref(-1);
-/** 物资名称联想光标 */
-const suggestCursor = ref<Record<number, number>>({});
-/** 当前展开实例下拉的行号（-1 = 全部收起） */
-const activeInstRow = ref(-1);
-/** 实例下拉光标（每行独立） */
-const instCursor = ref<Record<number, number>>({});
 
 /** 联想候选（输入关键字过滤后的 names） */
 function suggestNames(row: RowState): { name: string; cat: ResourceCategory }[] {
@@ -760,9 +819,10 @@ function multiChannelLabel(name: string): string | null {
 
 /** 点击联想项：仅设置名称，不自动选中实例（实例由用户手动选择，避免提前触发多渠道组检测） */
 function pickSuggest(i: number, name: string) {
+  const uid = uidOf(i);
   onNameChange(i, name);
-  activeSuggestRow.value = -1;
-  suggestCursor.value[i] = 0;
+  activeSuggestRow.value = '';
+  suggestCursor.set(uidKey(uid), 0);
   // 多渠道类型：自动选中第一个实例（组已存在，直接取已确定的实例）
   if (hasMultiChannel(name)) {
     const mc = props.multiChannelGroups!.find((mc) => mc.typeName === name)!;
@@ -772,15 +832,24 @@ function pickSuggest(i: number, name: string) {
   // 只有用户明确选择了与已有目标不同的实例时，才会触发父组件 autoDetectMcGroups 创建多渠道组
 }
 
+/** 搜索框输入：更新关键字、展开联想、光标归零 */
+function onSuggestInput(i: number, e: Event) {
+  const uid = uidOf(i);
+  rowOf(uid).keyword = (e.target as HTMLInputElement).value;
+  activeSuggestRow.value = uid ?? '';
+  suggestCursor.set(uidKey(uid), 0);
+}
+
 /** 搜索框键盘事件：Enter → 选中首项并跳焦点到实例下拉（自动展开）；↑↓ → 导航 */
 function onSuggestKeydown(i: number, e: KeyboardEvent) {
-  const row = rowStates[i];
+  const uid = uidOf(i);
+  const row = rowOf(uid);
   const list = suggestNames(row);
   if (!list.length) return;
 
   if (e.key === 'Enter') {
     e.preventDefault();
-    const idx = Math.min(suggestCursor.value[i] ?? 0, list.length - 1);
+    const idx = Math.min(sugCursor(uid), list.length - 1);
     pickSuggest(i, list[idx].name);
     // 跳到实例下拉 trigger 并自动展开
     setTimeout(() => {
@@ -788,8 +857,8 @@ function onSuggestKeydown(i: number, e: KeyboardEvent) {
       if (trigger) {
         trigger.focus();
         // 打开实例下拉（让用户直接方向键选择）
-        activeInstRow.value = i;
-        instCursor.value[i] = initialInstCursor(i);
+        activeInstRow.value = uid ?? '';
+        instCursor.set(uidKey(uid), initialInstCursor(i));
       }
     }, 0);
     return;
@@ -797,21 +866,21 @@ function onSuggestKeydown(i: number, e: KeyboardEvent) {
 
   if (e.key === 'ArrowDown') {
     e.preventDefault();
-    suggestCursor.value[i] = ((suggestCursor.value[i] ?? -1) + 1) % list.length;
+    suggestCursor.set(uidKey(uid), (sugCursor(uid) + 1) % list.length);
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
-    const cur = suggestCursor.value[i] ?? 0;
-    suggestCursor.value[i] = cur <= 0 ? list.length - 1 : cur - 1;
+    const cur = sugCursor(uid);
+    suggestCursor.set(uidKey(uid), cur <= 0 ? list.length - 1 : cur - 1);
   } else if (e.key === 'Escape') {
-    activeSuggestRow.value = -1;
+    activeSuggestRow.value = '';
   }
 }
 
 /** 搜索框失焦后延迟收起联想列表（让 mousedown 能先触发） */
 function blurSuggest() {
-  const rowIdx = activeSuggestRow.value;
+  const rowUid = activeSuggestRow.value;
   setTimeout(() => {
-    if (activeSuggestRow.value === rowIdx) activeSuggestRow.value = -1;
+    if (activeSuggestRow.value === rowUid) activeSuggestRow.value = '';
   }, 150);
 }
 
@@ -906,7 +975,7 @@ defineExpose({ add, addShared });
         <div v-if="sIdx > 0" class="mt-2 h-px bg-ink-600/40" />
 
         <!-- 栈内行 -->
-        <div v-for="rowIdx in stack.rowIndices" :key="rowIdx" class="flex items-center gap-1 border-b border-ink-600/60 py-1">
+        <div v-for="rowIdx in stack.rowIndices" :key="uidOf(rowIdx) ?? rowIdx" class="flex items-center gap-1 border-b border-ink-600/60 py-1">
 
           <!-- 层级（原序，含上下调整按钮） -->
           <div class="flex w-[48px] flex-none items-center justify-center gap-1">
@@ -975,39 +1044,39 @@ defineExpose({ add, addShared });
           <!-- 物资 -->
           <div class="relative w-[68px] flex-none">
             <input type="text" class="w-full min-w-0 text-center" 
-              :value="rowStates[rowIdx]?.keyword ?? ''"
-              :placeholder="rowStates[rowIdx]?.name ? rowStates[rowIdx].name + '（已锁）' : '搜索…'"
-              @input="rowStates[rowIdx].keyword = ($event.target as HTMLInputElement).value; activeSuggestRow = rowIdx; suggestCursor[rowIdx] = 0"
-              @focus="activeSuggestRow = rowIdx"
+              :value="rowOf(uidOf(rowIdx)).keyword"
+              :placeholder="rowOf(uidOf(rowIdx)).name ? rowOf(uidOf(rowIdx)).name + '（已锁）' : '搜索…'"
+              @input="onSuggestInput(rowIdx, $event)"
+              @focus="activeSuggestRow = uidOf(rowIdx) ?? ''"
               @blur="blurSuggest()"
               @keydown="onSuggestKeydown(rowIdx, $event)"
             />
             <ul
-              v-if="activeSuggestRow === rowIdx && suggestNames(rowStates[rowIdx] ?? { name: '', keyword: '' }).length"
+              v-if="activeSuggestRow === (uidOf(rowIdx) ?? '') && suggestNames(rowOf(uidOf(rowIdx))).length"
               class="absolute left-0 right-0 top-full z-20 mt-0.5 max-h-[200px] overflow-auto rounded border border-ink-600 bg-ink-800 shadow-lg"
             >
               <li
-                v-for="(opt, liIdx) in suggestNames(rowStates[rowIdx] ?? { name: '', keyword: '' })"
+                v-for="(opt, liIdx) in suggestNames(rowOf(uidOf(rowIdx)))"
                 :key="opt.name"
-                :class="['cursor-pointer px-2 py-1 text-xs', suggestCursor[rowIdx] === liIdx ? 'bg-ink-600 text-amber-brand' : 'hover:bg-ink-600/80']"
+                :class="['cursor-pointer px-2 py-1 text-xs', sugCursor(uidOf(rowIdx)) === liIdx ? 'bg-ink-600 text-amber-brand' : 'hover:bg-ink-600/80']"
                 @mousedown.prevent="pickSuggest(rowIdx, opt.name)"
               >{{ opt.name }}</li>
             </ul>
             <div
-              v-if="activeSuggestRow === rowIdx && rowStates[rowIdx]?.keyword.trim() && !suggestNames(rowStates[rowIdx]).length"
+              v-if="activeSuggestRow === (uidOf(rowIdx) ?? '') && rowOf(uidOf(rowIdx)).keyword.trim() && !suggestNames(rowOf(uidOf(rowIdx))).length"
               class="absolute left-0 right-0 top-full z-20 mt-0.5 rounded border border-ink-600 bg-ink-800 px-2 py-1 text-xs text-fog-400"
             >无匹配</div>
           </div>
 
           <!-- 实例（自定义下拉，彻底消除原生 select 兼容风险） -->
           <div class="relative w-[68px] flex-none">
-            <template v-if="hasMultiChannel(rowStates[rowIdx]?.name ?? '')">
+            <template v-if="hasMultiChannel(rowOf(uidOf(rowIdx)).name)">
               <span class="inline-flex w-full min-w-0 items-center justify-center rounded border border-steel-brand/30 bg-steel-brand/10 px-1 text-[11px] text-steel-brand">多渠道</span>
             </template>
             <template v-else>
               <button
                 class="inst-trigger flex w-full min-w-0 items-center justify-between rounded border border-ink-500 bg-ink-800 px-1 text-left text-[11px] text-fog-200 hover:border-steel-brand"
-                :class="activeInstRow === rowIdx ? 'border-steel-brand' : ''"
+                :class="activeInstRow === (uidOf(rowIdx) ?? '') ? 'border-steel-brand' : ''"
                 :data-row="rowIdx"
                 type="button"
                 @click="toggleInst(rowIdx)"
@@ -1018,14 +1087,14 @@ defineExpose({ add, addShared });
                 <span class="ml-0.5 shrink-0 text-fog-500">▾</span>
               </button>
               <ul
-                v-if="activeInstRow === rowIdx"
+                v-if="activeInstRow === (uidOf(rowIdx) ?? '')"
                 class="absolute left-0 top-full z-20 mt-0.5 max-h-[220px] min-w-[220px] overflow-auto rounded border border-ink-600 bg-ink-800 shadow-lg"
               >
                 <li
-                  v-for="(inst, liIdx) in filteredInstances(rowStates[rowIdx] ?? { name: '', keyword: '' })"
+                  v-for="(inst, liIdx) in filteredInstances(rowOf(uidOf(rowIdx)))"
                   :key="inst.id"
-                  :class="['cursor-pointer px-2 py-1 text-xs', instCursor[rowIdx] === liIdx ? 'bg-ink-600 text-amber-brand' : 'hover:bg-ink-600/80']"
-                  @mouseenter="instCursor[rowIdx] = liIdx"
+                  :class="['cursor-pointer px-2 py-1 text-xs', instCur(uidOf(rowIdx)) === liIdx ? 'bg-ink-600 text-amber-brand' : 'hover:bg-ink-600/80']"
+                  @mouseenter="setInstCursor(rowIdx, liIdx)"
                   @mousedown.prevent="pickInstance(rowIdx, inst.id)"
                 >{{ inst.id }}</li>
               </ul>
@@ -1035,8 +1104,8 @@ defineExpose({ add, addShared });
           <!-- 配方（flex-1 自适应） -->
           <div class="flex-1 min-w-0">
             <div v-if="previewInstance(rowIdx)" class="flex items-center gap-x-1 gap-y-0.5 rounded border border-ink-600 bg-ink-800/60 px-1.5 py-1 text-[11px] leading-tight">
-              <template v-if="hasMultiChannel(rowStates[rowIdx]?.name ?? '') && multiChannelLabel(rowStates[rowIdx]?.name ?? '')">
-                <span class="rounded bg-steel-brand/20 px-1 text-steel-brand font-medium">{{ multiChannelLabel(rowStates[rowIdx]?.name ?? '') }}</span>
+              <template v-if="hasMultiChannel(rowOf(uidOf(rowIdx)).name) && multiChannelLabel(rowOf(uidOf(rowIdx)).name)">
+                <span class="rounded bg-steel-brand/20 px-1 text-steel-brand font-medium">{{ multiChannelLabel(rowOf(uidOf(rowIdx)).name) }}</span>
               </template>
               <template v-else-if="previewInstance(rowIdx)!.inputs.length">
                 <span v-if="previewInstance(rowIdx)!.needsPower" class="rounded bg-amber-brand/15 px-1 text-amber-brand">⚡️</span>
