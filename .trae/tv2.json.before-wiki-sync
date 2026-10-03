@@ -1,0 +1,3754 @@
+{
+  "instances": [
+    {
+      "id": "工人XD",
+      "name": "工人",
+      "inputs": [],
+      "external": true,
+      "obtain": "无限",
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "原木sv",
+      "name": "原木",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "原木7n",
+      "name": "原木",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "原木a8",
+      "name": "原木",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "木板5y",
+      "name": "木板",
+      "inputs": [
+        "工人",
+        "原木"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "木板b2",
+      "name": "木板",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "木板GC",
+      "name": "木板",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "木板B5",
+      "name": "木板",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "木板cS",
+      "name": "木板",
+      "inputs": [
+        "工人",
+        "飞机"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "木板9Y",
+      "name": "木板",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "小麦E9",
+      "name": "小麦",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "砂土rh",
+      "name": "砂土",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "奶牛kP",
+      "name": "奶牛",
+      "inputs": [
+        "工人",
+        "小麦"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "砖块3F",
+      "name": "砖块",
+      "inputs": [
+        "工人",
+        "砂土"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "玻璃qV",
+      "name": "玻璃",
+      "inputs": [
+        "工人",
+        "砂土"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "玻璃O0",
+      "name": "玻璃",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "玻璃yq",
+      "name": "玻璃",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "天然橡胶T2",
+      "name": "天然橡胶",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "天然橡胶ez",
+      "name": "天然橡胶",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "加工橡胶HS",
+      "name": "加工橡胶",
+      "inputs": [
+        "工人",
+        "天然橡胶"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "加工橡胶zv",
+      "name": "加工橡胶",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "加工橡胶u7",
+      "name": "加工橡胶",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "煤炭gF",
+      "name": "煤炭",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "煤炭4a",
+      "name": "煤炭",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "铁矿qI",
+      "name": "铁矿",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "钢坯OP",
+      "name": "钢坯",
+      "inputs": [
+        "工人",
+        "铁矿"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "钢坯8k",
+      "name": "钢坯",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "钢坯rx",
+      "name": "钢坯",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "钢坯E7",
+      "name": "钢坯",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "家具DC",
+      "name": "家具",
+      "inputs": [],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "家具7U",
+      "name": "家具",
+      "inputs": [
+        "工人",
+        "玻璃",
+        "木板"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "金矿1f",
+      "name": "金矿",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "金锭rP",
+      "name": "金锭",
+      "inputs": [
+        "工人",
+        "金矿"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "金锭0o",
+      "name": "金锭",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "金锭m9",
+      "name": "金锭",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "铜矿gp",
+      "name": "铜矿",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "铜矿Y6",
+      "name": "铜矿",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "铜锭nQ",
+      "name": "铜锭",
+      "inputs": [
+        "工人",
+        "铜矿"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "铜锭EC",
+      "name": "铜锭",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "铜锭Sn",
+      "name": "铜锭",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "铜锭36",
+      "name": "铜锭",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "工具Sl",
+      "name": "工具",
+      "inputs": [],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "工具Cy",
+      "name": "工具",
+      "inputs": [
+        "工人",
+        "木板",
+        "钢坯"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "首饰Xd",
+      "name": "首饰",
+      "inputs": [
+        "工人",
+        "金锭",
+        "玻璃"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "首饰D3",
+      "name": "首饰",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "电器kV",
+      "name": "电器",
+      "inputs": [
+        "工人",
+        "铜锭",
+        "加工橡胶"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电器ar",
+      "name": "电器",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "石油oQ",
+      "name": "石油",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "石油oW",
+      "name": "石油",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "石油pX",
+      "name": "石油",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电力4n",
+      "name": "电力",
+      "inputs": [
+        "工人",
+        "煤炭"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电力Lb",
+      "name": "电力",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电力lf",
+      "name": "电力",
+      "inputs": [],
+      "external": true,
+      "obtain": "无限",
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电力0q",
+      "name": "电力",
+      "inputs": [
+        "工人",
+        "铀"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电力VV",
+      "name": "电力",
+      "inputs": [
+        "工人",
+        "石油"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "燃料t3",
+      "name": "燃料",
+      "inputs": [
+        "工人",
+        "石油"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "燃料Qp",
+      "name": "燃料",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "钢板L6",
+      "name": "钢板",
+      "inputs": [
+        "工人",
+        "钢坯"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "钢板3s",
+      "name": "钢板",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "燃料jL",
+      "name": "燃料",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "钢板rb",
+      "name": "钢板",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "钢板oa",
+      "name": "钢板",
+      "inputs": [
+        "工人",
+        "飞机"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "聚合物Zm",
+      "name": "聚合物",
+      "inputs": [
+        "工人",
+        "石油"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "聚合物qh",
+      "name": "聚合物",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "聚合物yn",
+      "name": "聚合物",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "聚合物dE",
+      "name": "聚合物",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "聚合物5J",
+      "name": "聚合物",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "罐头食品od",
+      "name": "罐头食品",
+      "inputs": [
+        "工人",
+        "小麦",
+        "奶牛",
+        "钢板"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电线lH",
+      "name": "电线",
+      "inputs": [
+        "工人",
+        "铜锭",
+        "聚合物"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电线3N",
+      "name": "电线",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "电线LS",
+      "name": "电线",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "建筑材料4w",
+      "name": "建筑材料",
+      "inputs": [
+        "工人",
+        "钢板",
+        "玻璃"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "货物ld",
+      "name": "货物",
+      "inputs": [
+        "工人",
+        "聚合物",
+        "木板"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "机床lh",
+      "name": "机床",
+      "inputs": [
+        "工人",
+        "钢板",
+        "电线"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "胶水ji",
+      "name": "胶水",
+      "inputs": [
+        "工人",
+        "天然橡胶"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "胶水RD",
+      "name": "胶水",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "书籍9S",
+      "name": "书籍",
+      "inputs": [
+        "工人",
+        "纸",
+        "胶水"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "书籍9U",
+      "name": "书籍",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "书籍CX",
+      "name": "书籍",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "纸2w",
+      "name": "纸",
+      "inputs": [
+        "工人",
+        "原木"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "纸qW",
+      "name": "纸",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "纸Rj",
+      "name": "纸",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "机械师F8",
+      "name": "机械师",
+      "inputs": [
+        "工人",
+        "书籍",
+        "电器"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "机械师QQ",
+      "name": "机械师",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "机械师ez",
+      "name": "机械师",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "机械师HG",
+      "name": "机械师",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "炸药PW",
+      "name": "炸药",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "汽车Sd",
+      "name": "汽车",
+      "inputs": [
+        "工人",
+        "钢板",
+        "加工橡胶",
+        "燃料",
+        "机械师"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "飞机EG",
+      "name": "飞机",
+      "inputs": [
+        "工人",
+        "机械师",
+        "钢板",
+        "木板",
+        "燃料"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "飞机b1",
+      "name": "飞机",
+      "inputs": [],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "铀iB",
+      "name": "铀",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "微型芯片xO",
+      "name": "微型芯片",
+      "inputs": [
+        "工人",
+        "机械师",
+        "聚合物",
+        "电线",
+        "砂土"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "炸药Ht",
+      "name": "炸药",
+      "inputs": [],
+      "external": true,
+      "obtain": "购买",
+      "needsPower": false
+    },
+    {
+      "id": "微型芯片5P",
+      "name": "微型芯片",
+      "inputs": [],
+      "external": true,
+      "obtain": "刷新",
+      "needsPower": false
+    },
+    {
+      "id": "微型芯片gs",
+      "name": "微型芯片",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "债券Yn",
+      "name": "债券",
+      "inputs": [
+        "工人",
+        "纸",
+        "金锭"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "计算机hb",
+      "name": "计算机",
+      "inputs": [
+        "工人",
+        "机械师",
+        "微型芯片",
+        "聚合物",
+        "玻璃"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "钱MW",
+      "name": "钱",
+      "inputs": [
+        "工人",
+        "债券"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "火箭Vv",
+      "name": "火箭",
+      "inputs": [
+        "工人",
+        "钢板",
+        "微型芯片",
+        "燃料",
+        "计算机",
+        "聚合物",
+        "机械师"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "火箭FI",
+      "name": "火箭",
+      "inputs": [
+        "工人",
+        "木板",
+        "钢板",
+        "胶水"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": true,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "蜡烛V6",
+      "name": "蜡烛",
+      "inputs": [
+        "工人"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "信封al",
+      "name": "信封",
+      "inputs": [
+        "工人",
+        "蓝色药水",
+        "蜡烛"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "信封Su",
+      "name": "信封",
+      "inputs": [
+        "工人",
+        "红色药水",
+        "蜡烛"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "红色药水Uh",
+      "name": "红色药水",
+      "inputs": [
+        "工人",
+        "铁矿"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    },
+    {
+      "id": "蓝色药水vT",
+      "name": "蓝色药水",
+      "inputs": [
+        "工人",
+        "铜矿"
+      ],
+      "external": false,
+      "obtain": null,
+      "needsPower": false,
+      "perOut": 1,
+      "perIn": 1
+    }
+  ],
+  "levels": [
+    {
+      "id": "林业",
+      "name": "林业",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 300,
+      "bestTime": "5:00",
+      "earn": "40000",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "农场",
+      "name": "农场",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 450,
+      "bestTime": "7:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "摧毁物价值": "5000",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "采砂场",
+      "name": "采砂场",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 450,
+      "bestTime": "7:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "铺片限制": "35",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "峡谷",
+      "name": "峡谷",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 570,
+      "bestTime": "9:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "摧毁物价值": "10000"
+      },
+      "goals": []
+    },
+    {
+      "id": "大坝",
+      "name": "大坝",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 690,
+      "bestTime": "11:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "花园",
+      "name": "花园",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 690,
+      "bestTime": "11:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "海湾",
+      "name": "海湾",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 720,
+      "bestTime": "12:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "摧毁物价值": "10000",
+        "铺片限制": "62"
+      },
+      "goals": []
+    },
+    {
+      "id": "金字塔",
+      "name": "金字塔",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 720,
+      "bestTime": "12:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "齐柏林飞艇",
+      "name": "齐柏林飞艇",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 720,
+      "bestTime": "12:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "不造桥": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "隧道",
+      "name": "隧道",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🔵 蒸汽时代",
+      "seconds": 810,
+      "bestTime": "13:30",
+      "earn": "280000",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "威尼斯",
+      "name": "威尼斯",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 780,
+      "bestTime": "13:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1",
+        "铺片限制": "70"
+      },
+      "goals": []
+    },
+    {
+      "id": "埃菲尔铁塔",
+      "name": "埃菲尔铁塔",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 750,
+      "bestTime": "12:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "不造桥": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "城堡",
+      "name": "城堡",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 750,
+      "bestTime": "12:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "摧毁物价值": "15000"
+      },
+      "goals": []
+    },
+    {
+      "id": "坑道",
+      "name": "坑道",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 810,
+      "bestTime": "13:30",
+      "earn": "380000",
+      "spend": "",
+      "constraints": {
+        "不造桥": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "饰品厂",
+      "name": "饰品厂",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 780,
+      "bestTime": "13:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "不摧毁铺片": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "天文台",
+      "name": "天文台",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 780,
+      "bestTime": "13:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "造船厂",
+      "name": "造船厂",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 810,
+      "bestTime": "13:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免错站": "1",
+        "铺片限制": "110"
+      },
+      "goals": []
+    },
+    {
+      "id": "灯塔",
+      "name": "灯塔",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 810,
+      "bestTime": "13:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不造桥": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "广播电台",
+      "name": "广播电台",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 870,
+      "bestTime": "14:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "摧毁物价值": "15000"
+      },
+      "goals": []
+    },
+    {
+      "id": "宫殿",
+      "name": "宫殿",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🏭 工业时代",
+      "seconds": 870,
+      "bestTime": "14:30",
+      "earn": "600000",
+      "spend": "",
+      "constraints": {
+        "隧道限制": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "管道",
+      "name": "管道",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 780,
+      "bestTime": "13:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "摧毁物价值": "5000",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "佛罗里达",
+      "name": "佛罗里达",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 810,
+      "bestTime": "13:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "霸王龙",
+      "name": "霸王龙",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 810,
+      "bestTime": "13:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1",
+        "铺片限制": "130"
+      },
+      "goals": []
+    },
+    {
+      "id": "西伯利亚",
+      "name": "西伯利亚",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 840,
+      "bestTime": "14:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "不升车": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "巴拿马运河",
+      "name": "巴拿马运河",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 1110,
+      "bestTime": "18:30",
+      "earn": "650000",
+      "spend": "",
+      "constraints": {
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "金门",
+      "name": "金门",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 870,
+      "bestTime": "14:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "摧毁物价值": "10000",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "沃登克里弗",
+      "name": "沃登克里弗",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 900,
+      "bestTime": "15:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "湄公河",
+      "name": "湄公河",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 900,
+      "bestTime": "15:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "摧毁物价值": "40000"
+      },
+      "goals": []
+    },
+    {
+      "id": "瑞士",
+      "name": "瑞士",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 900,
+      "bestTime": "15:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "排水",
+      "name": "排水",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "⚡️ 电气时代",
+      "seconds": 1500,
+      "bestTime": "25:00",
+      "earn": "1000000",
+      "spend": "",
+      "constraints": {
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "开普敦",
+      "name": "开普敦",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 900,
+      "bestTime": "15:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不造桥": "1",
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "长途列车",
+      "name": "长途列车",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1020,
+      "bestTime": "17:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "西藏",
+      "name": "西藏",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1080,
+      "bestTime": "18:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "火山",
+      "name": "火山",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1080,
+      "bestTime": "18:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "法兰克福",
+      "name": "法兰克福",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1080,
+      "bestTime": "18:00",
+      "earn": "800000",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "Train Valley 停车场",
+      "name": "Train Valley 停车场",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1110,
+      "bestTime": "18:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "摧毁物价值": "15000",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "底特律",
+      "name": "底特律",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1500,
+      "bestTime": "25:00",
+      "earn": "2000000",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "9¾ 站台",
+      "name": "9¾ 站台",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1260,
+      "bestTime": "21:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "不摧毁铺片": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "列车墓场",
+      "name": "列车墓场",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1320,
+      "bestTime": "22:00",
+      "earn": "1500000",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "关西机场",
+      "name": "关西机场",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🧭 全球化时代",
+      "seconds": 1800,
+      "bestTime": "30:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "南极洲",
+      "name": "南极洲",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1140,
+      "bestTime": "19:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1",
+        "铺片限制": "260"
+      },
+      "goals": []
+    },
+    {
+      "id": "曼谷",
+      "name": "曼谷",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1320,
+      "bestTime": "22:00",
+      "earn": "1300000",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "厄勒海峡大桥",
+      "name": "厄勒海峡大桥",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1380,
+      "bestTime": "23:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "摧毁物价值": "320000"
+      },
+      "goals": []
+    },
+    {
+      "id": "垃圾山",
+      "name": "垃圾山",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1320,
+      "bestTime": "22:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "AMADEE-18",
+      "name": "AMADEE-18",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1260,
+      "bestTime": "21:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "新西兰",
+      "name": "新西兰",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1410,
+      "bestTime": "23:30",
+      "earn": "1500000",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "射电望远镜FAST",
+      "name": "射电望远镜FAST",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1470,
+      "bestTime": "24:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "超级高铁",
+      "name": "超级高铁",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1620,
+      "bestTime": "27:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "铺片限制": "215"
+      },
+      "goals": []
+    },
+    {
+      "id": "新加坡",
+      "name": "新加坡",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1860,
+      "bestTime": "31:00",
+      "earn": "2000000",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "向火星发射火箭",
+      "name": "向火星发射火箭",
+      "contentType": "主线",
+      "category": "游戏本体",
+      "chapter": "🚀 太空时代",
+      "seconds": 1920,
+      "bestTime": "32:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "不摧毁铺片": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "罗马大剧场",
+      "name": "罗马大剧场",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 480,
+      "bestTime": "8:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "丛林",
+      "name": "丛林",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 510,
+      "bestTime": "8:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "摧毁物价值": "15000",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "河内",
+      "name": "河内",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 600,
+      "bestTime": "10:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不掉头": "1",
+        "桥梁限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "特兰西瓦尼亚",
+      "name": "特兰西瓦尼亚",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 540,
+      "bestTime": "9:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1",
+        "铺片限制": "180"
+      },
+      "goals": []
+    },
+    {
+      "id": "乌斯怀亚",
+      "name": "乌斯怀亚",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 720,
+      "bestTime": "12:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "撒哈拉",
+      "name": "撒哈拉",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 720,
+      "bestTime": "12:00",
+      "earn": "800000",
+      "spend": "",
+      "constraints": {
+        "隧道限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "马丘比丘",
+      "name": "马丘比丘",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 840,
+      "bestTime": "14:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不掉头": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "云端列车",
+      "name": "云端列车",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 870,
+      "bestTime": "14:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "张掖丹霞",
+      "name": "张掖丹霞",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 870,
+      "bestTime": "14:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "兴登堡堤道",
+      "name": "兴登堡堤道",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "💼 旅游时代",
+      "seconds": 960,
+      "bestTime": "16:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不掉头": "1",
+        "摧毁物价值": "10000"
+      },
+      "goals": []
+    },
+    {
+      "id": "荷兰",
+      "name": "荷兰",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 960,
+      "bestTime": "16:00",
+      "earn": "1350000",
+      "spend": "",
+      "constraints": {
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "希腊",
+      "name": "希腊",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 960,
+      "bestTime": "16:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "桥梁限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "庆和站",
+      "name": "庆和站",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 990,
+      "bestTime": "16:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "摧毁物价值": "1000",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "特奥蒂瓦坎",
+      "name": "特奥蒂瓦坎",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 930,
+      "bestTime": "15:30",
+      "earn": "1400000",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "威灵岛",
+      "name": "威灵岛",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 1110,
+      "bestTime": "18:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免错站": "1",
+        "铺片限制": "290"
+      },
+      "goals": []
+    },
+    {
+      "id": "长城",
+      "name": "长城",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 930,
+      "bestTime": "15:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不掉头": "1",
+        "隧道限制": "3"
+      },
+      "goals": []
+    },
+    {
+      "id": "陨石",
+      "name": "陨石",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 1020,
+      "bestTime": "17:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "加拿大",
+      "name": "加拿大",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 1050,
+      "bestTime": "17:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "摧毁物价值": "20000",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "纽约",
+      "name": "纽约",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 1110,
+      "bestTime": "18:30",
+      "earn": "1450000",
+      "spend": "",
+      "constraints": {
+        "不停车": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "巴西",
+      "name": "巴西",
+      "contentType": "客流",
+      "category": "DLC",
+      "chapter": "🏡 城市时代",
+      "seconds": 1290,
+      "bestTime": "21:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免错站": "1",
+        "铺片限制": "320"
+      },
+      "goals": []
+    },
+    {
+      "id": "世界各地的童话",
+      "name": "世界各地的童话",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 600,
+      "bestTime": "10:00",
+      "earn": "360000",
+      "spend": "",
+      "constraints": {
+        "运送列车": "50"
+      },
+      "goals": []
+    },
+    {
+      "id": "蒸汽动力",
+      "name": "蒸汽动力",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 630,
+      "bestTime": "10:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "交流电",
+      "name": "交流电",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 720,
+      "bestTime": "12:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免碰撞": "1",
+        "铺片限制": "85"
+      },
+      "goals": []
+    },
+    {
+      "id": "前卫设计",
+      "name": "前卫设计",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 780,
+      "bestTime": "13:00",
+      "earn": "",
+      "spend": "310000",
+      "constraints": {
+        "不摧毁铺片": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "未来记忆",
+      "name": "未来记忆",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 780,
+      "bestTime": "13:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "建造桥梁": "3",
+        "建造隧道": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "宇宙中还有其他生命吗？",
+      "name": "宇宙中还有其他生命吗？",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 750,
+      "bestTime": "12:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不掉头": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "高超的演讲家",
+      "name": "高超的演讲家",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 840,
+      "bestTime": "14:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "运送列车": "85",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "古一的闹钟",
+      "name": "古一的闹钟",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 870,
+      "bestTime": "14:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "发现蠕虫",
+      "name": "发现蠕虫",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 870,
+      "bestTime": "14:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不掉头": "1",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "土豆之力",
+      "name": "土豆之力",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🔨 历经艰险",
+      "seconds": 1020,
+      "bestTime": "17:00",
+      "earn": "1350000",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2"
+      },
+      "goals": []
+    },
+    {
+      "id": "猛犸象保护区",
+      "name": "猛犸象保护区",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 780,
+      "bestTime": "13:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "桥梁限制": "4"
+      },
+      "goals": []
+    },
+    {
+      "id": "失落的宝藏",
+      "name": "失落的宝藏",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 840,
+      "bestTime": "14:00",
+      "earn": "800000",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "鱼岛",
+      "name": "鱼岛",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 870,
+      "bestTime": "14:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "避免错站": "1",
+        "铺片限制": "155"
+      },
+      "goals": []
+    },
+    {
+      "id": "外太空进口",
+      "name": "外太空进口",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 930,
+      "bestTime": "15:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不升车": "1",
+        "不掉头": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "海神之怒！",
+      "name": "海神之怒！",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 990,
+      "bestTime": "16:30",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "桥梁限制": "3",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "巨龟王国",
+      "name": "巨龟王国",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 960,
+      "bestTime": "16:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "巨魔峡谷",
+      "name": "巨魔峡谷",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 1020,
+      "bestTime": "17:00",
+      "earn": "2600000",
+      "spend": "",
+      "constraints": {
+        "不停车": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "阿特拉斯岛",
+      "name": "阿特拉斯岛",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 1080,
+      "bestTime": "18:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2",
+        "避免错站": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "少说多做",
+      "name": "少说多做",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 1080,
+      "bestTime": "18:00",
+      "earn": "2300000",
+      "spend": "",
+      "constraints": {
+        "不摧毁铺片": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "火星殖民",
+      "name": "火星殖民",
+      "contentType": "神话与铁路",
+      "category": "DLC",
+      "chapter": "🌟 终达星辰",
+      "seconds": 1200,
+      "bestTime": "20:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "买车限制": "2",
+        "摧毁物价值": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "笔友",
+      "name": "笔友",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": 540,
+      "bestTime": "9:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不停车": "1",
+        "进错站数": "2"
+      },
+      "goals": [
+        {
+          "resourceId": "蜡烛V6",
+          "qty": 4
+        },
+        {
+          "resourceId": "信封al",
+          "qty": 4
+        },
+        {
+          "resourceId": "信封Su",
+          "qty": 4
+        }
+      ]
+    },
+    {
+      "id": "火箭过家家",
+      "name": "火箭过家家",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": 900,
+      "bestTime": "15:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "买车限制": "1",
+        "建造隧道": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "小菜一碟",
+      "name": "小菜一碟",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": 660,
+      "bestTime": "11:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {
+        "不掉头": "1",
+        "避免碰撞": "1"
+      },
+      "goals": []
+    },
+    {
+      "id": "黄杨木林",
+      "name": "黄杨木林",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "冰封道路",
+      "name": "冰封道路",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "演出",
+      "name": "演出",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "农场里的UFO",
+      "name": "农场里的UFO",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "宁静巷",
+      "name": "宁静巷",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "薛定谔的桥",
+      "name": "薛定谔的桥",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "拆船业务",
+      "name": "拆船业务",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅰ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "该给奶奶写封信了",
+      "name": "该给奶奶写封信了",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "树脂与火",
+      "name": "树脂与火",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "三段式运送",
+      "name": "三段式运送",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "你要哪种南瓜",
+      "name": "你要哪种南瓜",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "云端之上",
+      "name": "云端之上",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "核能灯塔",
+      "name": "核能灯塔",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "强制迁移",
+      "name": "强制迁移",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "山中假日",
+      "name": "山中假日",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "带来光明",
+      "name": "带来光明",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "深度科技",
+      "name": "深度科技",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅱ 报告2",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "复杂预感",
+      "name": "复杂预感",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "我只是来弄点汽油",
+      "name": "我只是来弄点汽油",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "捉迷藏",
+      "name": "捉迷藏",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "圣诞节的那些事儿",
+      "name": "圣诞节的那些事儿",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "风紧扯乎",
+      "name": "风紧扯乎",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "自卸卡车",
+      "name": "自卸卡车",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "大跃进",
+      "name": "大跃进",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "板块活动",
+      "name": "板块活动",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "碳足球",
+      "name": "碳足球",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "向新天地进发",
+      "name": "向新天地进发",
+      "contentType": "制作者通告",
+      "category": "DLC",
+      "chapter": "Ⅲ 报告1",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "很久很久以前...",
+      "name": "很久很久以前...",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "企鹅公园",
+      "name": "企鹅公园",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "泽费罗斯小镇",
+      "name": "泽费罗斯小镇",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "旋转的天空",
+      "name": "旋转的天空",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "太空运输",
+      "name": "太空运输",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "寻找仙境",
+      "name": "寻找仙境",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "付清摆渡人的报酬",
+      "name": "付清摆渡人的报酬",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "变色龙",
+      "name": "变色龙",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "通道花园",
+      "name": "通道花园",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "饲喂神龙",
+      "name": "饲喂神龙",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🔥 风的低语",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "彩虹河",
+      "name": "彩虹河",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "表象之下",
+      "name": "表象之下",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "穿越时空",
+      "name": "穿越时空",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "血与黄金",
+      "name": "血与黄金",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "不断变化的礁石",
+      "name": "不断变化的礁石",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "尖叫旋转木马",
+      "name": "尖叫旋转木马",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "宙斯之怒",
+      "name": "宙斯之怒",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "铬绿水域",
+      "name": "铬绿水域",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "流线型载具",
+      "name": "流线型载具",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "外星卵远征",
+      "name": "外星卵远征",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "🎇 穿过面纱",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "数羊",
+      "name": "数羊",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "防水货物运送",
+      "name": "防水货物运送",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "新巴比伦",
+      "name": "新巴比伦",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "极光",
+      "name": "极光",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "深渊边缘",
+      "name": "深渊边缘",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "卫星的暗面",
+      "name": "卫星的暗面",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "蒸汽之城",
+      "name": "蒸汽之城",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "观察、装载和抬升",
+      "name": "观察、装载和抬升",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "火山基地",
+      "name": "火山基地",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "要财宝还是要机器人？",
+      "name": "要财宝还是要机器人？",
+      "contentType": "潘迪亚项目",
+      "category": "DLC",
+      "chapter": "👻 高速前进",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "时间充裕",
+      "name": "时间充裕",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "黏合剂团圆",
+      "name": "黏合剂团圆",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "缓慢+混响",
+      "name": "缓慢+混响",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "对称轴",
+      "name": "对称轴",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "文书山峰",
+      "name": "文书山峰",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "扳手大反转",
+      "name": "扳手大反转",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "机器人、胶带和积尘车库",
+      "name": "机器人、胶带和积尘车库",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "铁路之神",
+      "name": "铁路之神",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "人人同乐",
+      "name": "人人同乐",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "模拟01",
+      "name": "模拟01",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "☀️ 宁早三小时",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "自由放养的人造物",
+      "name": "自由放养的人造物",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "硅可比现金值钱",
+      "name": "硅可比现金值钱",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "旋转磁铁",
+      "name": "旋转磁铁",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "资质检定",
+      "name": "资质检定",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "黄金车票",
+      "name": "黄金车票",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "发展位置错误的养蜂业",
+      "name": "发展位置错误的养蜂业",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "硬核植物学",
+      "name": "硬核植物学",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "宵禁大乱斗",
+      "name": "宵禁大乱斗",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "（不要）好好排队",
+      "name": "（不要）好好排队",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    },
+    {
+      "id": "资源转移",
+      "name": "资源转移",
+      "contentType": "专利未决",
+      "category": "DLC",
+      "chapter": "⏰ 不晚一分钟",
+      "seconds": null,
+      "bestTime": "0:00",
+      "earn": "",
+      "spend": "",
+      "constraints": {},
+      "goals": []
+    }
+  ],
+  "trains": [
+    {
+      "level": 1,
+      "capacity": 2,
+      "price": 20000,
+      "upgrade": 10000,
+      "upgradable": true
+    },
+    {
+      "level": 2,
+      "capacity": 3,
+      "price": 30000,
+      "upgrade": 15000,
+      "upgradable": true
+    },
+    {
+      "level": 3,
+      "capacity": 4,
+      "price": 40000,
+      "upgrade": 20000,
+      "upgradable": true
+    },
+    {
+      "level": 4,
+      "capacity": 5,
+      "price": 50000,
+      "upgrade": 25000,
+      "upgradable": true
+    },
+    {
+      "level": 5,
+      "capacity": 6,
+      "price": 60000,
+      "upgrade": 30000,
+      "upgradable": true
+    },
+    {
+      "level": 6,
+      "capacity": 7,
+      "price": 70000,
+      "upgrade": null,
+      "upgradable": false
+    }
+  ]
+}

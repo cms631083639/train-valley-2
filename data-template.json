@@ -1,0 +1,55 @@
+{
+  "resources": [
+    { "id": "wood", "name": "原木", "kind": "raw", "icon": "🪵", "note": "" },
+    { "id": "worker", "name": "工人", "kind": "raw", "icon": "👷", "note": "外部供给，工厂开工前需先送达" },
+    { "id": "plank", "name": "木板", "kind": "processed", "icon": "🟫" }
+  ],
+  "facilities": [
+    { "id": "forest", "name": "伐木场", "role": "producer", "recipes": ["forest_wood"] },
+    { "id": "sawmill", "name": "锯木厂", "role": "both", "recipes": ["sawmill_plank"] },
+    { "id": "town", "name": "城镇", "role": "consumer", "recipes": [] }
+  ],
+  "recipes": [
+    {
+      "id": "forest_wood",
+      "facilityId": "forest",
+      "inputs": [],
+      "outputs": [{ "resourceId": "wood", "qty": 2 }],
+      "cycleSeconds": 20
+    },
+    {
+      "id": "sawmill_plank",
+      "facilityId": "sawmill",
+      "inputs": [{ "resourceId": "wood", "qty": 2 }],
+      "outputs": [{ "resourceId": "plank", "qty": 1 }],
+      "cycleSeconds": 15,
+      "requires": [{ "resourceId": "worker", "qty": 1 }]
+    }
+  ],
+  "locomotives": [
+    { "id": "loco_0e", "name": "0e 小型蒸汽机车", "era": "steam", "speed": 3, "maxWagons": 2, "cost": 120, "unlock": "第1关" }
+  ],
+  "wagons": [
+    { "id": "wagon_flat", "name": "平板车厢", "carries": ["raw", "processed"], "capacity": 4, "cost": 40 }
+  ],
+  "levels": [
+    {
+      "id": "company-01",
+      "name": "第 1 关",
+      "mode": "company",
+      "index": 1,
+      "era": "steam",
+      "startBudget": 500,
+      "goals": [{ "resourceId": "plank", "qty": 12, "deadline": 300, "targetFacilityId": "town" }],
+      "constraints": { "maxBudget": 450, "maxSeconds": 320, "noCollision": true, "extra": [] },
+      "facilities": [
+        { "instanceId": "f1", "facilityId": "forest", "multiplier": 1 },
+        { "instanceId": "f2", "facilityId": "sawmill", "multiplier": 1 },
+        { "instanceId": "f3", "facilityId": "town" }
+      ],
+      "availableLocomotives": ["loco_0e"],
+      "terrainNotes": [],
+      "walkthrough": ""
+    }
+  ]
+}

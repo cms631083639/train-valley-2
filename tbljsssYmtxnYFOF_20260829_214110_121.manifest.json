@@ -1,0 +1,80 @@
+{
+  "manifest_version": "v1",
+  "format": "ndjson",
+  "base_token": "GwhybMnDVaxyoesbxM5copADnQf",
+  "table_id": "tbljsssYmtxnYFOF",
+  "rev": 76,
+  "timezone": "Asia/Shanghai",
+  "query_context": {
+    "field_scope": "all_fields",
+    "record_scope": "all_records"
+  },
+  "requested_limit": 50,
+  "records_count": 5,
+  "page_count": 1,
+  "has_more": false,
+  "record_file": "D:\\Project\\train valley 2\\train product\\tbljsssYmtxnYFOF_20260829_214110_121.ndjson",
+  "record_file_size_bytes": 621,
+  "manifest_file": "D:\\Project\\train valley 2\\train product\\tbljsssYmtxnYFOF_20260829_214110_121.manifest.json",
+  "columns": {
+    "record_id": {
+      "physical_type": "string",
+      "stats": {
+        "max_length": 14
+      },
+      "example": "recvtCv1BNf6iU"
+    },
+    "关卡": {
+      "field_id": "fld2rVZb1A",
+      "field_type": "link",
+      "physical_type": "array<struct<id string>>",
+      "stats": {
+        "empty_count": 2,
+        "max_length": 1,
+        "avg_length": 0.6
+      },
+      "example": [
+        {
+          "id": "rec284JiDR4Xwg"
+        }
+      ]
+    },
+    "数量": {
+      "field_id": "fldeut4QI7",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 2,
+        "min": 4,
+        "max": 4,
+        "avg": 4
+      },
+      "example": 4
+    },
+    "目标id": {
+      "field_id": "fldNhzFWXf",
+      "field_type": "formula",
+      "physical_type": "string|null",
+      "stats": {
+        "null_count": 0,
+        "max_length": 7
+      },
+      "example": "~"
+    },
+    "目标物资": {
+      "field_id": "fldgb0Rro2",
+      "field_type": "link",
+      "physical_type": "array<struct<id string>>",
+      "stats": {
+        "empty_count": 2,
+        "max_length": 1,
+        "avg_length": 0.6
+      },
+      "example": [
+        {
+          "id": "recvtC1wTJjJV6"
+        }
+      ]
+    }
+  }
+}

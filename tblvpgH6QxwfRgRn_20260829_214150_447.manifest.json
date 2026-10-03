@@ -1,0 +1,353 @@
+{
+  "manifest_version": "v1",
+  "format": "ndjson",
+  "base_token": "GwhybMnDVaxyoesbxM5copADnQf",
+  "table_id": "tblvpgH6QxwfRgRn",
+  "rev": 629,
+  "timezone": "Asia/Shanghai",
+  "query_context": {
+    "field_scope": "all_fields",
+    "record_scope": "all_records"
+  },
+  "requested_limit": 170,
+  "records_count": 170,
+  "page_count": 1,
+  "has_more": false,
+  "record_file": "D:\\Project\\train valley 2\\train product\\tblvpgH6QxwfRgRn_20260829_214150_447.ndjson",
+  "record_file_size_bytes": 109194,
+  "manifest_file": "D:\\Project\\train valley 2\\train product\\tblvpgH6QxwfRgRn_20260829_214150_447.manifest.json",
+  "columns": {
+    "record_id": {
+      "physical_type": "string",
+      "stats": {
+        "max_length": 14
+      },
+      "example": "rec284JiDR4Xwg"
+    },
+    "不停车": {
+      "field_id": "fldZ3lYShJ",
+      "field_type": "checkbox",
+      "physical_type": "boolean",
+      "stats": {
+        "true_count": 11
+      },
+      "example": true
+    },
+    "不升车": {
+      "field_id": "fldzkRuMGe",
+      "field_type": "checkbox",
+      "physical_type": "boolean",
+      "stats": {
+        "true_count": 13
+      },
+      "example": true
+    },
+    "不掉头": {
+      "field_id": "fldPZ6STbD",
+      "field_type": "checkbox",
+      "physical_type": "boolean",
+      "stats": {
+        "true_count": 8
+      },
+      "example": true
+    },
+    "不摧毁铺片": {
+      "field_id": "fldqUk9Pra",
+      "field_type": "checkbox",
+      "physical_type": "boolean",
+      "stats": {
+        "true_count": 19
+      },
+      "example": true
+    },
+    "不造桥": {
+      "field_id": "fldZpZKQXG",
+      "field_type": "checkbox",
+      "physical_type": "boolean",
+      "stats": {
+        "true_count": 5
+      },
+      "example": true
+    },
+    "不造隧道": {
+      "field_id": "fld4Wh5vU0",
+      "field_type": "checkbox",
+      "physical_type": "boolean",
+      "stats": {
+        "true_count": 0
+      },
+      "example": false
+    },
+    "买车限制": {
+      "field_id": "fldB4fyuhH",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 153,
+        "min": 1,
+        "max": 2,
+        "avg": 1.9411764705882353
+      },
+      "example": 1
+    },
+    "内容分类": {
+      "field_id": "fldhE7dhOL",
+      "field_type": "select",
+      "physical_type": "array<string>",
+      "stats": {
+        "empty_count": 0,
+        "max_length": 1,
+        "avg_length": 1
+      },
+      "example": [
+        "DLC"
+      ]
+    },
+    "内容类型": {
+      "field_id": "fldYW1Eg0W",
+      "field_type": "select",
+      "physical_type": "array<string>",
+      "stats": {
+        "empty_count": 0,
+        "max_length": 1,
+        "avg_length": 1
+      },
+      "example": [
+        "客流"
+      ]
+    },
+    "初始配置": {
+      "field_id": "fldV69I3a0",
+      "field_type": "lookup",
+      "physical_type": "string|null",
+      "stats": {
+        "null_count": 0,
+        "max_length": 12
+      },
+      "example": "1级6辆，3万，2工人站"
+    },
+    "名称": {
+      "field_id": "fldIJRm4tT",
+      "field_type": "text",
+      "physical_type": "string|null",
+      "stats": {
+        "null_count": 0,
+        "max_length": 16
+      },
+      "example": "笔友"
+    },
+    "建造桥梁": {
+      "field_id": "fldcXqwSfr",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 169,
+        "min": 3,
+        "max": 3,
+        "avg": 3
+      },
+      "example": 3
+    },
+    "建造隧道": {
+      "field_id": "fldykbclop",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 168,
+        "min": 1,
+        "max": 2,
+        "avg": 1.5
+      },
+      "example": 1
+    },
+    "挣钱": {
+      "field_id": "fldZJRRJl1",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 149,
+        "min": 40000,
+        "max": 2600000,
+        "avg": 1164761.9047619049
+      },
+      "example": 40000
+    },
+    "摧毁限制": {
+      "field_id": "fldTIIr6Q3",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 155,
+        "min": 1,
+        "max": 320000,
+        "avg": 32733.4
+      },
+      "example": 1
+    },
+    "最佳时间": {
+      "field_id": "fldJ4rISOO",
+      "field_type": "formula",
+      "physical_type": "string|null",
+      "stats": {
+        "null_count": 0,
+        "max_length": 5
+      },
+      "example": "9:00"
+    },
+    "桥梁限制": {
+      "field_id": "fldDvoWTyd",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 166,
+        "min": 2,
+        "max": 4,
+        "avg": 2.75
+      },
+      "example": 2
+    },
+    "碰撞数量": {
+      "field_id": "fldf23ywJ9",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 170
+      },
+      "hint": "All values are empty; type inference may be ambiguous. Avoid analyzing this column unless required."
+    },
+    "秒数": {
+      "field_id": "fldyoHxQh7",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 77,
+        "min": 300,
+        "max": 1920,
+        "avg": 941.6129032258065
+      },
+      "example": 540
+    },
+    "站点A数量": {
+      "field_id": "fldyvivVaJ",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 170
+      },
+      "hint": "All values are empty; type inference may be ambiguous. Avoid analyzing this column unless required."
+    },
+    "站点A物资": {
+      "field_id": "fldYEIMsRB",
+      "field_type": "link",
+      "physical_type": "array<struct<id string>>",
+      "stats": {
+        "empty_count": 170,
+        "max_length": 0,
+        "avg_length": 0
+      },
+      "hint": "All values are empty; type inference may be ambiguous. Avoid analyzing this column unless required."
+    },
+    "站点B物资": {
+      "field_id": "fld2QHQcwj",
+      "field_type": "link",
+      "physical_type": "array<struct<id string>>",
+      "stats": {
+        "empty_count": 170,
+        "max_length": 0,
+        "avg_length": 0
+      },
+      "hint": "All values are empty; type inference may be ambiguous. Avoid analyzing this column unless required."
+    },
+    "章节": {
+      "field_id": "fldEu53VeD",
+      "field_type": "select",
+      "physical_type": "array<string>",
+      "stats": {
+        "empty_count": 0,
+        "max_length": 1,
+        "avg_length": 1
+      },
+      "example": [
+        "Ⅲ 报告1"
+      ]
+    },
+    "花钱": {
+      "field_id": "fldMzofNyU",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 169,
+        "min": 310000,
+        "max": 310000,
+        "avg": 310000
+      },
+      "example": 310000
+    },
+    "运送列车": {
+      "field_id": "fldOq0iEAI",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 168,
+        "min": 50,
+        "max": 85,
+        "avg": 67.5
+      },
+      "example": 50
+    },
+    "进错站数": {
+      "field_id": "fldJ5E64Qt",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 169,
+        "min": 2,
+        "max": 2,
+        "avg": 2
+      },
+      "example": 2
+    },
+    "避免碰撞": {
+      "field_id": "fldHbXQ1Xb",
+      "field_type": "checkbox",
+      "physical_type": "boolean",
+      "stats": {
+        "true_count": 23
+      },
+      "example": true
+    },
+    "避免错站": {
+      "field_id": "fldMLypTcM",
+      "field_type": "checkbox",
+      "physical_type": "boolean",
+      "stats": {
+        "true_count": 26
+      },
+      "example": true
+    },
+    "铺片限制": {
+      "field_id": "fld0FOzJYj",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 158,
+        "min": 35,
+        "max": 320,
+        "avg": 159.33333333333334
+      },
+      "example": 85
+    },
+    "隧道限制": {
+      "field_id": "fldenP6jlA",
+      "field_type": "number",
+      "physical_type": "number|null",
+      "stats": {
+        "null_count": 167,
+        "min": 1,
+        "max": 3,
+        "avg": 2
+      },
+      "example": 2
+    }
+  }
+}

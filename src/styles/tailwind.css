@@ -1,0 +1,123 @@
+@import 'tailwindcss';
+
+/* Tailwind v4 设计令牌：把项目色板注册成工具类可用的 token */
+@theme {
+  --color-ink-900: #12161c;
+  --color-ink-800: #1b212a;
+  --color-ink-700: #232b36;
+  --color-ink-600: #2f3947;
+  --color-ink-500: #3a4656;
+
+  --color-fog-100: #e6ebf2;
+  --color-fog-400: #8b98a9;
+
+  --color-amber-brand: #e8a33d;
+  --color-steel-brand: #4f9dd9;
+  --color-station-sel: #608dd0;
+  --color-stack-sel: #ffd157;
+  --color-good: #58b368;
+  --color-warn: #d9822b;
+  --color-bad: #d9534f;
+
+  --font-sans: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-ink-900);
+    color: var(--color-fog-100);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+  #app {
+    height: 100%;
+  }
+  /* 表格与表单控件的基底样式，避免每处重复写类 */
+  th {
+    color: var(--color-fog-400);
+    font-weight: 500;
+  }
+  input,
+  select {
+    background-color: var(--color-ink-700);
+    border: 1px solid var(--color-ink-600);
+    color: var(--color-fog-100);
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.8125rem;
+  }
+  input:focus,
+  select:focus {
+    outline: 1px solid var(--color-steel-brand);
+  }
+
+  /* —— 全局滚动条 dark 主题 —— */
+  /* 所有可滚动区域统一风格 */
+  * {
+    scrollbar-width: thin;               /* Firefox */
+    scrollbar-color: var(--color-ink-500) transparent;
+  }
+  /* Webkit（Chrome / Edge / Safari） */
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--color-ink-500);
+    border-radius: 4px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-ink-600);
+  }
+  /* 水平滚动条两端圆角更顺滑 */
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+/* 组件级复用样式：卡片、标签、拆解树 */
+@layer components {
+  .panel {
+    @apply rounded-lg border border-ink-600 bg-ink-800 p-4 mb-4;
+  }
+  .panel-title {
+    @apply text-base font-semibold mb-3;
+  }
+  .tag {
+    @apply inline-flex items-center gap-1 rounded-full border border-ink-600 bg-ink-700 px-2 py-px text-xs text-fog-400;
+  }
+  .tag-raw {
+    @apply border-good/60 text-good;
+  }
+  .tag-processed {
+    @apply border-steel-brand/60 text-steel-brand;
+  }
+  .tag-final {
+    @apply border-amber-brand/60 text-amber-brand;
+  }
+  .tag-power {
+    @apply border-amber-brand/70 bg-amber-brand/10 text-amber-brand;
+  }
+  .btn {
+    @apply cursor-pointer rounded-md border border-ink-600 bg-ink-700 px-3 py-1 text-xs transition-colors hover:border-amber-brand;
+  }
+  .btn-primary {
+    @apply border-amber-brand bg-amber-brand font-semibold text-ink-900 hover:bg-amber-brand;
+  }
+  .cell-muted {
+    @apply text-xs text-fog-400;
+  }
+  .icon {
+    @apply inline-block shrink-0 align-[-0.15em];
+  }
+}
