@@ -6,13 +6,14 @@
  *   两列顺序无关，选了名称会缩小实例范围，选了实例会自动锁定名称
  */
 import { CATEGORY } from '@/constants';
-import { computed, nextTick, reactive, ref, watch } from 'vue';
+import { computed, nextTick, reactive, watch } from 'vue';
 import type { LevelGoal, ResourceInstance, MultiChannelGroup, CoProductionGroup } from '@/types';
 import { useGameStore } from '@/stores/game';
 import { classifyInstance, classifyName } from '@/engine/breakdown';
 import { dedupeInputs } from '@/utils/recipe';
 import type { ResourceCategory, WorkerStation } from '@/types';
 import AppIcon from './AppIcon.vue';
+import { useSuggestCombo } from '@/composables/useSuggestCombo';
 
 const props = defineProps<{
   goals: LevelGoal[];
@@ -90,8 +91,6 @@ const CAT_LABEL: Record<ResourceCategory, string> = {
 interface RowState {
   /** 选中的物资名称（空 = 未选） */
   name: string;
-  /** 搜索关键字（过滤名称下拉） */
-  keyword: string;
 }
 
 /** 生成稳定行标识：行重排/删除时不随之改变，用于绑定行内 UI 状态 */
@@ -100,53 +99,47 @@ function genUid(): string {
   return `g${Date.now().toString(36)}${(uidSeq++).toString(36)}`;
 }
 
-/** 当前展开联想的行 uid（'' = 全部收起） */
-const activeSuggestRow = ref('');
-/** 物资名称联想光标（按 uid 独立） */
-const suggestCursor = reactive(new Map<string, number>());
-/** 当前展开实例下拉的行 uid（'' = 全部收起） */
-const activeInstRow = ref('');
-/** 实例下拉光标（按 uid 独立） */
-const instCursor = reactive(new Map<string, number>());
-
-/** uid 兜底 key（缺失时用占位 key，保证 Map 读写不炸） */
-function uidKey(uid: string | undefined): string {
-  return uid ?? '__none__';
-}
-
 /** 当前下标 → 该行 uid（行状态一律以 uid 为键，避免重排后错位） */
 function uidOf(i: number): string | undefined {
   return props.goals[i]?.uid;
 }
 
+/** uid → 行下标（combo 回调里把 uid 还原成行下标） */
+function indexOfUid(uid: string | undefined): number {
+  if (!uid) return -1;
+  return props.goals.findIndex((g) => g.uid === uid);
+}
+
 /**
- * 行内 UI 状态（搜索词 / 已锁名称）按 uid 存储。
+ * 行内 UI 状态（已锁名称）按 uid 存储。
  * 新行有独立 uid → 拿到独立空状态，绝不会继承别行留下的旧值。
  */
 const rowStates = reactive(new Map<string, RowState>());
 
 function rowOf(uid: string | undefined): RowState {
-  if (!uid) return { name: '', keyword: '' };
+  if (!uid) return { name: '' };
   let r = rowStates.get(uid);
   if (!r) {
-    r = { name: '', keyword: '' };
+    r = { name: '' };
     rowStates.set(uid, r);
   }
   return r;
 }
 
-/** 读联想光标 */
-function sugCursor(uid: string | undefined): number {
-  return suggestCursor.get(uidKey(uid)) ?? 0;
-}
-/** 读实例光标 */
-function instCur(uid: string | undefined): number {
-  return instCursor.get(uidKey(uid)) ?? 0;
-}
-/** 写实例光标（模板 mouseenter 用，传当前下标） */
-function setInstCursor(i: number, v: number): void {
-  instCursor.set(uidKey(uidOf(i)), v);
-}
+/** 物资名联想 + 实例下拉（通用状态机，以 uid 为 key） */
+const combo = useSuggestCombo({
+  suggestions: (_key, keyword) => {
+    const kw = keyword.trim();
+    if (!kw) return [];
+    return filteredNames(kw).slice(0, 10).map((x) => x.name);
+  },
+  instances: (key) => filteredInstances(rowOf(String(key)).name),
+  pickName: (key, name) => pickSuggestName(String(key), name),
+  pickInst: (key, instId) => pickInstImpl(String(key), instId),
+  initialInstCursor: (key) => initialInstCursorOf(String(key)),
+  instTriggerClass: 'inst-trigger',
+  instEnterOpens: true,
+});
 
 /** 老数据（无 uid）补发 uid 并回写父组件（每关卡一次性） */
 watch(
@@ -176,15 +169,18 @@ watch(
       if (!g.uid) continue;
       alive.add(g.uid);
       const st = rowOf(g.uid);
-      if (activeSuggestRow.value === g.uid) continue;
+      if (combo.suggestOpen === g.uid) continue;
       const inst = g.resourceId ? store.instById.get(g.resourceId) : undefined;
       if (inst && st.name !== inst.name) {
         st.name = inst.name;
-        st.keyword = inst.name;
+        combo.setKeyword(g.uid, inst.name);
       }
     }
     for (const k of [...rowStates.keys()]) {
-      if (!alive.has(k)) rowStates.delete(k);
+      if (!alive.has(k)) {
+        rowStates.delete(k);
+        delete combo.keywords[k];
+      }
     }
   },
   { immediate: true },
@@ -200,8 +196,8 @@ const nameCategoryMap = computed(() => {
 });
 
 /** 名称下拉选项（过滤后） */
-function filteredNames(row: RowState): { name: string; cat: ResourceCategory }[] {
-  const kw = row.keyword.trim();
+function filteredNames(keyword: string): { name: string; cat: ResourceCategory }[] {
+  const kw = keyword.trim();
   const list: { name: string; cat: ResourceCategory }[] = [];
   for (const [name, cat] of nameCategoryMap.value) {
     if (kw && !name.includes(kw)) continue;
@@ -211,10 +207,10 @@ function filteredNames(row: RowState): { name: string; cat: ResourceCategory }[]
   return list;
 }
 
-/** 实例下拉选项：如果 row.name 有值，只显示该名称的实例；否则显示全部 */
-function filteredInstances(row: RowState) {
-  const list = row.name
-    ? store.data.instances.filter((i) => i.name === row.name)
+/** 实例下拉选项：如果 name 有值，只显示该名称的实例；否则显示全部 */
+function filteredInstances(name: string) {
+  const list = name
+    ? store.data.instances.filter((i) => i.name === name)
     : store.data.instances;
   return list.slice().sort((a, b) => {
     if ((a.inputs.length > 0) !== (b.inputs.length > 0)) return b.inputs.length - a.inputs.length;
@@ -222,22 +218,31 @@ function filteredInstances(row: RowState) {
   });
 }
 
-/** 选中名称 → 只改行状态，不 emit（实例等用户自己选 Enter/点击） */
-function onNameChange(i: number, name: string) {
-  const st = rowOf(uidOf(i));
-  st.name = name;
-  st.keyword = name;
-}
-
-/** 选中实例 → 自动锁定名称 */
-function onInstanceChange(i: number, instanceId: string) {
+/** 写回选中实例（自动锁定名称 + emit），不负责关闭下拉 / 跳焦点 */
+function applyInstance(uid: string, instanceId: string) {
   const inst = store.instById.get(instanceId);
   if (inst) {
-    const st = rowOf(uidOf(i));
-    st.name = inst.name;
-    st.keyword = inst.name;
+    rowOf(uid).name = inst.name;
+    combo.setKeyword(uid, inst.name);
   }
+  const i = indexOfUid(uid);
+  if (i < 0) return;
   emit('update', props.goals.map((g, j) => (j === i ? { ...g, resourceId: instanceId } : g)));
+}
+
+/** combo 选中实例回调：写回 + 焦点跳到下一个 input */
+function pickInstImpl(uid: string, instId: string) {
+  applyInstance(uid, instId);
+  nextTick(() => focusNextInput());
+}
+
+/** combo 选中名称回调：只改行状态；多渠道类型自动选中组内第一个实例 */
+function pickSuggestName(uid: string, name: string) {
+  rowOf(uid).name = name;
+  if (hasMultiChannel(name)) {
+    const mc = props.multiChannelGroups!.find((m) => m.typeName === name)!;
+    if (mc.instanceIds.length) applyInstance(uid, mc.instanceIds[0]);
+  }
 }
 
 /** 其它目标中同名物资已用过的实例 id（仅用于实例下拉默认高亮，不自动写入） */
@@ -253,85 +258,21 @@ function preferredInstanceId(name: string, excludeRow: number): string | null {
 }
 
 /** 计算某行实例下拉的初始光标：优先当前行已选实例，其次其它目标的同名实例，最后第一项 */
-function initialInstCursor(i: number): number {
-  const list = filteredInstances(rowOf(uidOf(i)));
+function initialInstCursorOf(uid: string): number {
+  const i = indexOfUid(uid);
+  const list = filteredInstances(rowOf(uid).name);
   if (!list.length) return 0;
   const own = props.goals[i]?.resourceId;
   if (own) {
     const idx = list.findIndex((x) => x.id === own);
     if (idx >= 0) return idx;
   }
-  const preferred = preferredInstanceId(rowOf(uidOf(i)).name, i);
+  const preferred = preferredInstanceId(rowOf(uid).name, i);
   if (preferred) {
     const idx = list.findIndex((x) => x.id === preferred);
     if (idx >= 0) return idx;
   }
   return 0;
-}
-
-/** 切换实例下拉展开 */
-function toggleInst(i: number) {
-  const uid = uidOf(i);
-  if (activeInstRow.value === uid) {
-    activeInstRow.value = '';
-  } else {
-    activeInstRow.value = uid ?? '';
-    instCursor.set(uidKey(uid), initialInstCursor(i));
-  }
-}
-
-/** 选中实例 + 关闭下拉 + emit */
-function pickInstance(i: number, instId: string) {
-  activeInstRow.value = '';
-  onInstanceChange(i, instId);
-  nextTick(() => focusNextInput());
-}
-
-/** 实例下拉键盘：↑↓ 导航、Enter 选中、Escape 关闭 */
-function onInstKeydown(i: number, e: KeyboardEvent) {
-  const uid = uidOf(i);
-  const list = filteredInstances(rowOf(uid));
-  if (e.key === 'Escape') {
-    e.preventDefault();
-    activeInstRow.value = '';
-    return;
-  }
-  if (!list.length) return;
-
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    if (activeInstRow.value !== uid) {
-      // 没展开 → 展开
-      activeInstRow.value = uid ?? '';
-      instCursor.set(uidKey(uid), initialInstCursor(i));
-    } else {
-      // 已展开 → 选中当前光标
-      const idx = Math.min(instCur(uid), list.length - 1);
-      pickInstance(i, list[idx].id);
-    }
-    return;
-  }
-
-  if (activeInstRow.value !== uid) return; // 没展开时方向键不处理
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    instCursor.set(uidKey(uid), (instCur(uid) + 1) % list.length);
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    const cur = instCur(uid);
-    instCursor.set(uidKey(uid), cur <= 0 ? list.length - 1 : cur - 1);
-  }
-}
-
-/** 失焦后收起实例下拉 */
-/** 失焦后延迟收起实例下拉（让 mousedown 能先触发 pickInstance） */
-function blurInst() {
-  const rowUid = activeInstRow.value;
-  setTimeout(() => {
-    // 只在 activeInstRow 没被其他代码改过的情况下才清
-    if (activeInstRow.value === rowUid) activeInstRow.value = '';
-  }, 150);
 }
 
 /** 焦点跳到下一个 input（数量输入框） */
@@ -760,13 +701,13 @@ function currentInstance(i: number) {
   return g.resourceId ? store.instById.get(g.resourceId) : undefined;
 }
 
-/** 预览实例：如果该行走廊的实例下拉正展开且有光标，用光标所指的实例做实时预览，否则返回已选实例 */
+/** 预览实例：如果该行的实例下拉正展开，用光标所指的实例做实时预览，否则返回已选实例 */
 function previewInstance(i: number) {
   const uid = uidOf(i);
-  if (activeInstRow.value === uid) {
-    const list = filteredInstances(rowOf(uid));
-    const idx = instCursor.get(uidKey(uid));
-    if (idx != null && idx >= 0 && idx < list.length) return list[idx];
+  if (uid && combo.instOpen === uid) {
+    const list = filteredInstances(rowOf(uid).name);
+    const idx = combo.instCur(uid);
+    if (idx >= 0 && idx < list.length) return list[idx];
   }
   return currentInstance(i);
 }
@@ -791,13 +732,6 @@ function currentCat(i: number): ResourceCategory | undefined {
   return classifyInstance(inst, store.data, localByName);
 }
 
-/** 联想候选（输入关键字过滤后的 names） */
-function suggestNames(row: RowState): { name: string; cat: ResourceCategory }[] {
-  const kw = row.keyword.trim();
-  if (!kw) return [];
-  return filteredNames(row).slice(0, 10);
-}
-
 /** 判断名称是否有多渠道组 */
 function hasMultiChannel(name: string): boolean {
   return (props.multiChannelGroups ?? []).some((mc) => mc.typeName === name && mc.instanceIds.length > 0);
@@ -816,73 +750,6 @@ function multiChannelLabel(name: string): string | null {
   if (allCo) return `拆卸产出 → ${name}`;
   if (someCo) return `可拆卸和生产 → ${name}`;
   return `${name}渠道 → ${name}`;
-}
-
-/** 点击联想项：仅设置名称，不自动选中实例（实例由用户手动选择，避免提前触发多渠道组检测） */
-function pickSuggest(i: number, name: string) {
-  const uid = uidOf(i);
-  onNameChange(i, name);
-  activeSuggestRow.value = '';
-  suggestCursor.set(uidKey(uid), 0);
-  // 多渠道类型：自动选中第一个实例（组已存在，直接取已确定的实例）
-  if (hasMultiChannel(name)) {
-    const mc = props.multiChannelGroups!.find((mc) => mc.typeName === name)!;
-    if (mc.instanceIds.length) onInstanceChange(i, mc.instanceIds[0]);
-  }
-  // 非多渠道：不自动选中实例，用户在实例下拉中手动选择
-  // 只有用户明确选择了与已有目标不同的实例时，才会触发父组件 autoDetectMcGroups 创建多渠道组
-}
-
-/** 搜索框输入：更新关键字、展开联想、光标归零 */
-function onSuggestInput(i: number, e: Event) {
-  const uid = uidOf(i);
-  rowOf(uid).keyword = (e.target as HTMLInputElement).value;
-  activeSuggestRow.value = uid ?? '';
-  suggestCursor.set(uidKey(uid), 0);
-}
-
-/** 搜索框键盘事件：Enter → 选中首项并跳焦点到实例下拉（自动展开）；↑↓ → 导航 */
-function onSuggestKeydown(i: number, e: KeyboardEvent) {
-  const uid = uidOf(i);
-  const row = rowOf(uid);
-  const list = suggestNames(row);
-  if (!list.length) return;
-
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const idx = Math.min(sugCursor(uid), list.length - 1);
-    pickSuggest(i, list[idx].name);
-    // 跳到实例下拉 trigger 并自动展开
-    setTimeout(() => {
-      const trigger = document.querySelector<HTMLButtonElement>(`.inst-trigger[data-row="${i}"]`);
-      if (trigger) {
-        trigger.focus();
-        // 打开实例下拉（让用户直接方向键选择）
-        activeInstRow.value = uid ?? '';
-        instCursor.set(uidKey(uid), initialInstCursor(i));
-      }
-    }, 0);
-    return;
-  }
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    suggestCursor.set(uidKey(uid), (sugCursor(uid) + 1) % list.length);
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    const cur = sugCursor(uid);
-    suggestCursor.set(uidKey(uid), cur <= 0 ? list.length - 1 : cur - 1);
-  } else if (e.key === 'Escape') {
-    activeSuggestRow.value = '';
-  }
-}
-
-/** 搜索框失焦后延迟收起联想列表（让 mousedown 能先触发） */
-function blurSuggest() {
-  const rowUid = activeSuggestRow.value;
-  setTimeout(() => {
-    if (activeSuggestRow.value === rowUid) activeSuggestRow.value = '';
-  }, 150);
 }
 
 defineExpose({ add, addShared });
@@ -1036,26 +903,26 @@ defineExpose({ add, addShared });
           <!-- 物资 -->
           <div class="relative w-[68px] flex-none">
             <input type="text" class="w-full min-w-0 text-center" 
-              :value="rowOf(uidOf(rowIdx)).keyword"
+              :value="combo.keywords[uidOf(rowIdx) ?? ''] ?? ''"
               :placeholder="rowOf(uidOf(rowIdx)).name ? rowOf(uidOf(rowIdx)).name + '（已锁）' : '搜索…'"
-              @input="onSuggestInput(rowIdx, $event)"
-              @focus="activeSuggestRow = uidOf(rowIdx) ?? ''"
-              @blur="blurSuggest()"
-              @keydown="onSuggestKeydown(rowIdx, $event)"
+              @input="combo.onSuggestInput(uidOf(rowIdx) ?? '', $event)"
+              @focus="combo.onSuggestFocus(uidOf(rowIdx) ?? '')"
+              @blur="combo.blurSuggest(uidOf(rowIdx) ?? '')"
+              @keydown="combo.onSuggestKeydown(uidOf(rowIdx) ?? '', $event)"
             />
             <ul
-              v-if="activeSuggestRow === (uidOf(rowIdx) ?? '') && suggestNames(rowOf(uidOf(rowIdx))).length"
+              v-if="combo.suggestOpen === uidOf(rowIdx) && combo.suggestions(uidOf(rowIdx) ?? '').length"
               class="absolute left-0 right-0 top-full z-20 mt-0.5 max-h-[200px] overflow-auto rounded border border-ink-600 bg-ink-800 shadow-lg"
             >
               <li
-                v-for="(opt, liIdx) in suggestNames(rowOf(uidOf(rowIdx)))"
-                :key="opt.name"
-                :class="['cursor-pointer px-2 py-1 text-xs', sugCursor(uidOf(rowIdx)) === liIdx ? 'bg-ink-600 text-amber-brand' : 'hover:bg-ink-600/80']"
-                @mousedown.prevent="pickSuggest(rowIdx, opt.name)"
-              >{{ opt.name }}</li>
+                v-for="(nm, liIdx) in combo.suggestions(uidOf(rowIdx) ?? '')"
+                :key="nm"
+                :class="['cursor-pointer px-2 py-1 text-xs', combo.sugCur(uidOf(rowIdx) ?? '') === liIdx ? 'bg-ink-600 text-amber-brand' : 'hover:bg-ink-600/80']"
+                @mousedown.prevent="combo.pickName(uidOf(rowIdx) ?? '', nm)"
+              >{{ nm }}</li>
             </ul>
             <div
-              v-if="activeSuggestRow === (uidOf(rowIdx) ?? '') && rowOf(uidOf(rowIdx)).keyword.trim() && !suggestNames(rowOf(uidOf(rowIdx))).length"
+              v-if="combo.suggestOpen === uidOf(rowIdx) && (combo.keywords[uidOf(rowIdx) ?? ''] ?? '').trim() && !combo.suggestions(uidOf(rowIdx) ?? '').length"
               class="absolute left-0 right-0 top-full z-20 mt-0.5 rounded border border-ink-600 bg-ink-800 px-2 py-1 text-xs text-fog-400"
             >无匹配</div>
           </div>
@@ -1068,26 +935,26 @@ defineExpose({ add, addShared });
             <template v-else>
               <button
                 class="inst-trigger flex w-full min-w-0 items-center justify-between rounded border border-ink-500 bg-ink-800 px-1 text-left text-[11px] text-fog-200 hover:border-steel-brand"
-                :class="activeInstRow === (uidOf(rowIdx) ?? '') ? 'border-steel-brand' : ''"
-                :data-row="rowIdx"
+                :class="combo.instOpen === uidOf(rowIdx) ? 'border-steel-brand' : ''"
+                :data-row="uidOf(rowIdx)"
                 type="button"
-                @click="toggleInst(rowIdx)"
-                @keydown="onInstKeydown(rowIdx, $event)"
-                @blur="blurInst()"
+                @click="combo.openInst(uidOf(rowIdx) ?? '')"
+                @keydown="combo.onInstKeydown(uidOf(rowIdx) ?? '', $event)"
+                @blur="combo.blurInst(uidOf(rowIdx) ?? '')"
               >
                 <span class="truncate flex-1 text-center">{{ props.goals[rowIdx].resourceId || "—" }}</span>
                 <span class="ml-0.5 shrink-0 text-fog-500">▾</span>
               </button>
               <ul
-                v-if="activeInstRow === (uidOf(rowIdx) ?? '')"
+                v-if="combo.instOpen === uidOf(rowIdx)"
                 class="absolute left-0 top-full z-20 mt-0.5 max-h-[220px] min-w-[220px] overflow-auto rounded border border-ink-600 bg-ink-800 shadow-lg"
               >
                 <li
-                  v-for="(inst, liIdx) in filteredInstances(rowOf(uidOf(rowIdx)))"
+                  v-for="(inst, liIdx) in combo.instances(uidOf(rowIdx) ?? '')"
                   :key="inst.id"
-                  :class="['cursor-pointer px-2 py-1 text-xs', instCur(uidOf(rowIdx)) === liIdx ? 'bg-ink-600 text-amber-brand' : 'hover:bg-ink-600/80']"
-                  @mouseenter="setInstCursor(rowIdx, liIdx)"
-                  @mousedown.prevent="pickInstance(rowIdx, inst.id)"
+                  :class="['cursor-pointer px-2 py-1 text-xs', combo.instCur(uidOf(rowIdx) ?? '') === liIdx ? 'bg-ink-600 text-amber-brand' : 'hover:bg-ink-600/80']"
+                  @mouseenter="combo.instCursor[uidOf(rowIdx) ?? ''] = liIdx"
+                  @mousedown.prevent="combo.pickInst(uidOf(rowIdx) ?? '', inst.id)"
                 >{{ inst.id }}</li>
               </ul>
             </template>
