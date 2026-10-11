@@ -10,6 +10,7 @@ import { computed, nextTick, reactive, ref, watch } from 'vue';
 import type { LevelGoal, ResourceInstance, MultiChannelGroup, CoProductionGroup } from '@/types';
 import { useGameStore } from '@/stores/game';
 import { classifyInstance, classifyName } from '@/engine/breakdown';
+import { dedupeInputs } from '@/utils/recipe';
 import type { ResourceCategory, WorkerStation } from '@/types';
 import AppIcon from './AppIcon.vue';
 
@@ -884,15 +885,6 @@ function blurSuggest() {
   }, 150);
 }
 
-/** 配方输入列表（去重统计同名输入的数量） */
-function recipeInputs(inst: (typeof store.data.instances)[number]) {
-  const map = new Map<string, number>();
-  for (const name of inst.inputs) {
-    map.set(name, (map.get(name) ?? 0) + 1);
-  }
-  return Array.from(map.entries());
-}
-
 defineExpose({ add, addShared });
 </script>
 
@@ -1109,9 +1101,9 @@ defineExpose({ add, addShared });
               </template>
               <template v-else-if="previewInstance(rowIdx)!.inputs.length">
                 <span v-if="previewInstance(rowIdx)!.needsPower" class="rounded bg-amber-brand/15 px-1 text-amber-brand">⚡️</span>
-                <template v-for="([nm, cnt], idx) in recipeInputs(previewInstance(rowIdx)!)" :key="nm">
+                <template v-for="([nm, cnt], idx) in dedupeInputs(previewInstance(rowIdx)!.inputs)" :key="nm">
                   <span class="rounded bg-ink-600/80 px-1 text-fog-100">{{ nm }}<template v-if="cnt > 1">×{{ cnt }}</template></span>
-                  <span v-if="idx < recipeInputs(previewInstance(rowIdx)!).length - 1" class="text-fog-500">+</span>
+                  <span v-if="idx < dedupeInputs(previewInstance(rowIdx)!.inputs).length - 1" class="text-fog-500">+</span>
                 </template>
                 <span class="text-fog-400">→</span>
                 <span class="rounded bg-steel-brand/20 px-1 text-steel-brand font-medium">{{ previewInstance(rowIdx)!.name }}<template v-if="(previewInstance(rowIdx)!.perOut ?? 1) > 1"> ×{{ previewInstance(rowIdx)!.perOut }}</template></span>

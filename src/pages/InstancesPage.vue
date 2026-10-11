@@ -3,7 +3,8 @@
 import { CATEGORY, FILTER_ALL } from '@/constants';
 import { computed, ref } from 'vue';
 import { useGameStore } from '@/stores/game';
-import type { ResourceInstance } from '@/types';
+import { classifyInstance } from '@/engine/breakdown';
+import type { ResourceInstance, ResourceCategory } from '@/types';
 import InstanceForm from '@/components/InstanceForm.vue';
 
 const store = useGameStore();
@@ -17,12 +18,10 @@ const showForm = ref(false);
 const editing = ref<ResourceInstance | null>(null);
 const flash = ref('');
 
-function classifyType(r: ResourceInstance): 'raw' | 'processed' | 'compound' {
+/** 物资分类：与拆解引擎保持一致（按配方链递归推导），避免两处分类算法分歧 */
+function classifyType(r: ResourceInstance): ResourceCategory {
   if (r.external) return CATEGORY.RAW;
-  const nonWorker = r.inputs.filter((i) => i !== '工人');
-  if (nonWorker.length === 0) return CATEGORY.RAW;       // 只有工人 → 原料
-  if (nonWorker.length === 1) return CATEGORY.PROCESSED;   // 1 种原料 → 加工品
-  return CATEGORY.COMPOUND;                                // ≥2 种 → 复合品
+  return classifyInstance(r, store.data);
 }
 
 const filtered = computed(() => {

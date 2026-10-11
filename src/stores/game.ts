@@ -1,4 +1,5 @@
 import { STATION_KIND } from '@/constants';
+import { USER_EDITABLE_FIELDS } from '@/domain/levelFields';
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { computed, ref } from 'vue';
 import seed from '@/data/tv2.json';
@@ -428,7 +429,6 @@ export const useGameStore = defineStore('game', () => {
     const mergedTrains = seedData.trains;
 
     // 关卡：以 seed 为准，用户可编辑字段用存档值覆盖
-    const userFields = ['goals', 'workerStations', 'workerStationArr', 'resourceStationArr', 'externalStationArr', 'passengerStationArr', 'initialTrains', 'maxTrainLevel', 'maxBuyTrains', 'shippedTrains', 'startMoney', 'instanceOverrides', 'powerSources', 'notes', 'hasInterception', 'hasSpecialProduction', 'hasIndependentEvent', 'hasTerrainChange', 'hasMergedProduction', 'hasMultipleInstances', 'hasResourceStation', 'hasExternalStation', 'hasPassengerStation', 'coProductionGroups', 'multiChannelGroups', 'deletedSeedInstIds'] as const;
     const savedMap = new Map(saved.levels.map((l) => [l.id, l]));
 
     const mergedLevels = seedData.levels.map((seedLv) => {
@@ -436,7 +436,7 @@ export const useGameStore = defineStore('game', () => {
       if (!savedLv) return { ...seedLv };
       // ⚠️ 仅当存档字段有定义时才覆盖：否则存档里 undefined 的可选标记会抹掉 seed 的 true
       const overrides: Record<string, unknown> = {};
-      for (const k of userFields) {
+      for (const k of USER_EDITABLE_FIELDS) {
         const v = (savedLv as any)[k];
         if (v !== undefined) overrides[k] = v;
       }
@@ -500,12 +500,11 @@ export const useGameStore = defineStore('game', () => {
             if (localRaw) {
               const localData = JSON.parse(localRaw) as GameData;
               const localMap = new Map(localData.levels.map((l) => [l.id, l]));
-              const userFields = ['goals', 'workerStations', 'workerStationArr', 'resourceStationArr', 'externalStationArr', 'passengerStationArr', 'initialTrains', 'maxTrainLevel', 'maxBuyTrains', 'shippedTrains', 'startMoney', 'instanceOverrides', 'powerSources', 'notes', 'hasInterception', 'hasSpecialProduction', 'hasIndependentEvent', 'hasTerrainChange', 'hasMergedProduction', 'hasMultipleInstances', 'hasResourceStation', 'hasExternalStation', 'hasPassengerStation', 'coProductionGroups', 'multiChannelGroups', 'deletedSeedInstIds'] as const;
               let mergedCount = 0;
               for (const lv of merged.levels) {
                 const localLv = localMap.get(lv.id);
                 if (localLv) {
-                  for (const key of userFields) {
+                  for (const key of USER_EDITABLE_FIELDS) {
                     if ((localLv as any)[key] !== undefined) {
                       (lv as any)[key] = (localLv as any)[key];
                     }

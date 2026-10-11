@@ -2,6 +2,7 @@
 /** 拆解树节点（递归组件）：展示物资实例模型下的拆解结果，电力只作条件标记 */
 import { VIA, STATION_KIND } from '@/constants';
 import type { BreakdownNode } from '@/engine/breakdown';
+import { fmtMinSec } from '@/utils/format';
 import AppIcon from './AppIcon.vue';
 import ResLabel from './ResLabel.vue';
 
@@ -12,15 +13,6 @@ const props = defineProps<{
   node: BreakdownNode;
   stationInfo?: Map<string, StationInfo>;
 }>();
-
-function fmtInterval(sec: number): string {
-  if (sec <= 0) return '';
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  if (m && s) return `${m}分${s}秒`;
-  if (m) return `${m}分`;
-  return `${s}秒`;
-}
 
 /** 从关卡站点配置计算实际的每次数量和周期数（覆盖引擎默认值） */
 function resolveQty(n: BreakdownNode): { qtyEach: number; cycles: number; fromStation: boolean; intervalSec: number; stationKind?: '刷新' | '购买' | '库存' | '客流'; price?: number } {
@@ -52,7 +44,7 @@ function viaText(n: BreakdownNode): string {
       // 关卡站点配了这个物资 → 显示为外部获取，不再说"工人生产"
       if (r.fromStation && r.stationKind) {
         if (r.stationKind === STATION_KIND.REFRESH) {
-          const intervalText = r.intervalSec ? `，间隔 ${fmtInterval(r.intervalSec)}` : '';
+          const intervalText = r.intervalSec ? `，间隔 ${fmtMinSec(r.intervalSec, '')}` : '';
           return `定时站点（NPC火车·${r.cycles} 周期 × 每周期 ${r.qtyEach} 件${intervalText}）`;
         }
         if (r.stationKind === STATION_KIND.PASSENGER) {
@@ -74,7 +66,7 @@ function viaText(n: BreakdownNode): string {
         return `客流运送（乘客带来·${r.cycles} 次 × 每次 ${r.qtyEach} 件）`;
       }
       // 刷新（关卡站点覆盖 或 引擎默认 refresh）
-      const intervalText = r.intervalSec ? `，间隔 ${fmtInterval(r.intervalSec)}` : '';
+      const intervalText = r.intervalSec ? `，间隔 ${fmtMinSec(r.intervalSec, '')}` : '';
       return `定时站点（NPC火车·${r.cycles} 周期 × 每周期 ${r.qtyEach} 件${intervalText}）`;
     }
     case VIA.INFINITE: return '无限供给';

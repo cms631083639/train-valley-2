@@ -91,3 +91,13 @@ export function fmtSeconds(s: number): string {
   const sec = Math.round(s % 60);
   return m > 0 ? `${m}分${sec}秒` : `${sec}秒`;
 }
+
+/** 秒 -> "X分Y秒"；sec<=0 时返回 empty（默认 '-'，树节点里传 ''） */
+export function fmtMinSec(sec: number, empty = '-'): string {
+  if (sec <= 0) return empty;
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  if (m && s) return `${m}分${s}秒`;
+  if (m) return `${m}分`;
+  return `${s}秒`;
+}

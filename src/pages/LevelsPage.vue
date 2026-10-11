@@ -7,7 +7,8 @@ import { breakdownGoals, classifyName } from '@/engine/breakdown';
 import type { CoProductionGroup, CoProductionOutput, ExternalStation, LevelGoal, PassengerStation, ResourceInstance, ResourceCategory, ResourceStation, StationExternalKind, WorkerStation } from '@/types';
 import { WORKER_NAME } from '@/types';
 import { useGameStore } from '@/stores/game';
-import { CATEGORY_LABEL, fmtSeconds, starConditionText } from '@/utils/format';
+import { CATEGORY_LABEL, fmtMinSec, fmtSeconds, starConditionText } from '@/utils/format';
+import { recipeText } from '@/utils/recipe';
 import AppIcon from '@/components/AppIcon.vue';
 import ResLabel from '@/components/ResLabel.vue';
 import TreeNode from '@/components/TreeNode.vue';
@@ -474,16 +475,6 @@ function resolveExternalSupply(name: string, obtain: string): StationInfo {
   };
 }
 
-/** 格式化秒为 "X分Y秒" 或 "Y秒" */
-function formatInterval(sec: number): string {
-  if (sec <= 0) return '-';
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  if (m && s) return `${m}分${s}秒`;
-  if (m) return `${m}分`;
-  return `${s}秒`;
-}
-
 /** 计算某个拆解结果的基础原料总数量 */
 function totalRawQty(r: { rawNeeds: { name: string; qty: number }[] }): number {
   return r.rawNeeds.reduce((sum, n) => sum + n.qty, 0);
@@ -845,18 +836,6 @@ function applyOverride(name: string, instanceId: string) {
 function alternativesInstances(ids: string[] | undefined) {
   if (!ids?.length) return [];
   return ids.map((id) => store.instById.get(id)).filter((i): i is NonNullable<typeof i> => !!i);
-}
-
-/** 某个实例的 recipe 简短预览字符串 */
-function recipeBrief(inst: ResourceInstance) {
-  if (inst.inputs.length) {
-    const counts: Record<string, number> = {};
-    for (const n of inst.inputs) counts[n] = (counts[n] ?? 0) + 1;
-    const parts = Object.entries(counts).map(([n, c]) => (c > 1 ? `${n}×${c}` : n));
-    return `${parts.join(' + ')} → ${inst.name}${(inst.perOut ?? 1) > 1 ? ` ×${inst.perOut}` : ''}`;
-  }
-  if (inst.external) return `${inst.obtain ?? '外部'} · ${inst.name}`;
-  return `工人 → ${inst.name}`;
 }
 
 /** 列车数据最高等级（动态读 store，不硬编码） */
@@ -3217,7 +3196,7 @@ function closeStationPopups() {
                         <span class="font-medium">{{ opt.id }}</span>
                         <span class="text-fog-500"> · {{ opt.name }}</span>
                         <span v-if="opt.needsPower" class="ml-0.5 inline-flex shrink-0 items-center rounded bg-amber-brand/15 px-1 text-amber-brand" title="生产需通电">⚡️</span>
-                        <span class="text-fog-400"> · {{ recipeBrief(opt) }}</span>
+                        <span class="text-fog-400"> · {{ recipeText(opt) }}</span>
                       </li>
                     </ul>
                   </div>
@@ -3276,7 +3255,7 @@ function closeStationPopups() {
                         <span class="font-medium">{{ opt.id }}</span>
                         <span class="text-fog-500"> · {{ opt.name }}</span>
                         <span v-if="opt.needsPower" class="ml-0.5 inline-flex shrink-0 items-center rounded bg-amber-brand/15 px-1 text-amber-brand" title="生产需通电">⚡️</span>
-                        <span class="text-fog-400"> · {{ recipeBrief(opt) }}</span>
+                        <span class="text-fog-400"> · {{ recipeText(opt) }}</span>
                       </li>
                     </ul>
                   </div>
@@ -3335,7 +3314,7 @@ function closeStationPopups() {
                       (() => {
                         const si = resolveExternalSupply(n.name, n.obtain);
                         if (si.kind === STATION_KIND.BUY) return `每次 ${si.price ?? 0} 金钱`;
-                        return formatInterval(si.intervalSec);
+                        return fmtMinSec(si.intervalSec);
                       })()
                     }}
                   </td>
