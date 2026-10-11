@@ -141,6 +141,9 @@ export interface ExternalStation {
   minQtyAuto?: boolean;
   maxQty?: number;
   maxQtyAuto?: boolean;
+
+  /** 🛒 建议提供总量（份）；限定该物资名从外部获取的总量，undefined = 自动 */
+  suggestQty?: number;
 }
 
 /**
@@ -164,6 +167,8 @@ export interface InitialStation {
   minQtyAuto?: boolean;
   maxQty?: number;
   maxQtyAuto?: boolean;
+  /** 🛒 建议提供总量（份）；仅当该物资名同时是拆卸组产出时生效；undefined = 自动 */
+  suggestQty?: number;
 }
 
 /** 关卡初始列车配置 */
@@ -314,6 +319,8 @@ export interface CoProductionGroup {
   stockLimit?: number;
   /** 手动设定拆卸总个数：玩家直接填写拆卸工厂的总产出数量，替代趟数×每趟产出计算 */
   manualOutput?: number;
+  /** 🛑 最多拆卸次数上限：引擎推导的拆卸次数超过该值时封顶，缺口改由非拆卸实例补齐 */
+  maxCycles?: number;
   /** 用户选择的产出实例列表 */
   outputs: CoProductionOutput[];
 }

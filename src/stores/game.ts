@@ -12,10 +12,20 @@ const STORE_NAME = 'data';
 const EMPTY: GameData = { instances: [], levels: [], trains: [] };
 
 // ————————— 站点结构迁移（旧字段 → 三新数组）—————————
+/** 过滤掉值为 undefined 的键，避免用空值覆盖已有字段 */
+function stripUndefined<T extends object>(obj: T): Partial<T> {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v !== undefined) out[k] = v;
+  }
+  return out as Partial<T>;
+}
+
 /**
- * 规则：只在旧字段存在但新数组为空时迁移一次；新数组一旦有值就不再覆盖。
+ * 站点结构迁移与归一化（幂等）：
  * - workerStations (number) → workerStationArr 数量生成 A/B/C…
- * - initialStations (array) → 按 kind 和实例属性拆入三数组
+ * - initialStations (array) 的 external 行 → 合并进 externalStationArr（旧字段优先），非 external 行 → workerStationArr
+ * - 迁移后删除 initialStations，保证 externalStationArr 是外部站点的唯一数据源
  * - goals.stationLabels / stationLabel → "工人N" 格式转成 A/B/C
  */
 function migrateLevelStations(levels: Level[]): void {
@@ -51,14 +61,24 @@ function migrateLevelStations(levels: Level[]): void {
       lv.workerStationArr = arr;
     }
 
-    if (!lv.externalStationArr && Array.isArray(lv.initialStations) && lv.initialStations.length) {
-      const external: ExternalStation[] = [];
-      const worker: WorkerStation[] = [...(lv.workerStationArr ?? [])];
+    // —— 外部站点归一化：旧 initialStations(刷新/购买/库存/客流) 并入 externalStationArr ——
+    // 规则：initialStations 是用户实际编辑的权威来源，字段值优先覆盖；
+    //       externalStationArr 中旧字段没有的行予以保留；合并后统一重编号 m1..mN；
+    //       迁移完成后删除 initialStations，彻底消除「同一份数据两处存储」的双源问题。
+    //       initialStations 里 kind 为空的按工人站点并入 workerStationArr。
+    const legacyExternal: ExternalStation[] = [];
+    const workerArr: WorkerStation[] = [...(lv.workerStationArr ?? [])];
 
+    if (Array.isArray(lv.initialStations)) {
       for (const s of lv.initialStations as InitialStation[]) {
-        if (s.kind === STATION_KIND.REFRESH || s.kind === STATION_KIND.BUY) {
-          external.push({
-            label: '',
+        const isExternal =
+          s.kind === STATION_KIND.REFRESH ||
+          s.kind === STATION_KIND.BUY ||
+          s.kind === STATION_KIND.STOCK ||
+          s.kind === STATION_KIND.PASSENGER;
+        if (isExternal) {
+          legacyExternal.push({
+            label: s.label,
             resourceId: s.resourceId,
             qty: s.qty, qtyAuto: s.qtyAuto,
             kind: s.kind,
@@ -66,19 +86,79 @@ function migrateLevelStations(levels: Level[]): void {
             unlockPrice: s.unlockPrice, interval: s.interval,
             price: s.price, minQty: s.minQty, minQtyAuto: s.minQtyAuto,
             maxQty: s.maxQty, maxQtyAuto: s.maxQtyAuto,
+            suggestQty: s.suggestQty,
           });
-        } else {
-          if (!worker.some((w) => w.label === s.label)) {
-            worker.push({ label: s.label, resourceId: s.resourceId, qty: s.qty, qtyAuto: s.qtyAuto });
-          }
+        } else if (!workerArr.some((w) => w.label === s.label)) {
+          workerArr.push({ label: s.label, resourceId: s.resourceId, qty: s.qty, qtyAuto: s.qtyAuto });
         }
       }
-      worker.sort((a, b) => a.label.localeCompare(b.label));
-      external.forEach((e, i) => (e.label = 'm' + (i + 1)));
-
-      if (worker.length) lv.workerStationArr = worker;
-      if (external.length) lv.externalStationArr = external;
     }
+
+    const existingExternal: ExternalStation[] = lv.externalStationArr ?? [];
+    let mergedExternal: ExternalStation[];
+    if (legacyExternal.length) {
+      // 旧字段优先，按 resourceId 与已有行对齐；对齐时 undefined 不覆盖已有值
+      const consumed = new Set<number>();
+      const reconciled = legacyExternal.map((legacy) => {
+        const idx = existingExternal.findIndex(
+          (e, i) => !consumed.has(i) && !!e.resourceId && e.resourceId === legacy.resourceId,
+        );
+        if (idx < 0) return legacy;
+        consumed.add(idx);
+        return { ...existingExternal[idx], ...stripUndefined(legacy) };
+      });
+      const onlyNew = existingExternal.filter((_, i) => !consumed.has(i));
+      mergedExternal = [...reconciled, ...onlyNew];
+    } else {
+      mergedExternal = existingExternal;
+    }
+    // 重新编号 m1..mN（生成新对象，避免污染模块级 seed 引用）；
+    // 同时剔除空壳行：没有 resourceId 的外部站是"半途新增/历史遗留"，不算数据，
+    // 否则会随 seed 反复复活（与拆卸组/多渠道组同一类问题）。
+    mergedExternal = mergedExternal
+      .filter((e) => !!e.resourceId)
+      .map((e, i) => ({ ...e, label: 'm' + (i + 1) }));
+
+    workerArr.sort((a, b) => a.label.localeCompare(b.label));
+    if (workerArr.length) lv.workerStationArr = workerArr;
+    // 关键：只要该字段原本存在（或迁移出了行），就把剔除后的结果写回（含空数组），
+    // 否则全部为空壳时会被上面的 if(length) 跳过，导致未剔除的原数组继续留在数据里。
+    if (Array.isArray(lv.externalStationArr) || mergedExternal.length) {
+      lv.externalStationArr = mergedExternal;
+    }
+
+    // —— 站点/组：空壳行统一剔除（数据存在即为真）——
+    // 所有"可增删的配置行"共用一条通用规则：行内没有核心字段（外部站/资源站/客流站无 resourceId，
+    // 拆卸组无产出实例，多渠道组无类型名且无实例）就不算数据。否则用户删掉后，刷新时又会从
+    // seed 快照里被合并回来，表现成"删掉的空行/空组又冒出来"。在此对每个关卡一次性归一化。
+    if (lv.resourceStationArr) {
+      lv.resourceStationArr = lv.resourceStationArr.filter((s) => !!s.resourceId);
+    }
+    if (lv.passengerStationArr) {
+      lv.passengerStationArr = lv.passengerStationArr.filter((s) => !!s.resourceId);
+    }
+    if (lv.coProductionGroups) {
+      lv.coProductionGroups = lv.coProductionGroups.filter(
+        (cp) => cp.outputs?.some((o) => !!o.instanceId),
+      );
+    }
+    if (lv.multiChannelGroups) {
+      lv.multiChannelGroups = lv.multiChannelGroups.filter(
+        (g) => !!g.typeName?.trim() || (g.instanceIds?.length ?? 0) > 0,
+      );
+    }
+
+    // —— 特殊站点标记与数据对齐 ——
+    // hasXxx 标记同时是"页面渲染开关"和"列表筛选依据"，必须由对应数据数组的有无推导，
+    // 否则历史数据里标记缺失时，已填内容不会显示（进关卡默认不显示、必须手点一下）。
+    if (lv.resourceStationArr?.length) lv.hasResourceStation = true;
+    if (lv.passengerStationArr?.length) lv.hasPassengerStation = true;
+    if (lv.externalStationArr?.length) lv.hasExternalStation = true;
+    if (lv.coProductionGroups?.length) lv.hasMergedProduction = true;
+    if (lv.multiChannelGroups?.length) lv.hasMultipleInstances = true;
+
+    // 旧字段彻底移除，后续以 externalStationArr 为唯一数据源
+    if ('initialStations' in lv) delete (lv as { initialStations?: InitialStation[] }).initialStations;
 
     // —— goal stationLabel 格式迁移："工人N" → A/B/C ——
     if (Array.isArray(lv.goals)) {
@@ -219,6 +299,14 @@ export const useGameStore = defineStore('game', () => {
   function setData(d: GameData) {
     data.value = ensureWorkerEY(d);
   }
+  /**
+   * 是否已成功加载到有效存档。
+   * 仅当 hydrate 从「文件系统 / 本地存档」成功加载后为 true；最终回退到编译时快照
+   * （无可用存档）时保持 false。
+   * 作用：persistNow 在未成功加载时拒绝写文件，避免「残缺运行时覆盖好存档」——
+   * 这正是历史上电力来源等字段被静默抹掉的机制（beforeunload 自动保存 + 降级运行时）。
+   */
+  const hydrated = ref(false);
   const issues = ref<string[]>([]);
   const source = ref<'内置数据' | '本地存档' | '导入文件' | '代码 JSON'>('内置数据');
   /** 上一次保存时间戳，UI 可显示 */
@@ -250,6 +338,12 @@ export const useGameStore = defineStore('game', () => {
   // 无论返回什么，localStorage 一定已同步写入
   function persistNow(): Promise<boolean> {
     console.log('[store] 📀 persistNow 被调用');
+    // 未成功加载到有效存档时，拒绝回写：否则会把降级/残缺的运行时整份覆盖到文件与
+    // localStorage，造成字段静默丢失（历史上电力来源就是这样消失的）。
+    if (!hydrated.value) {
+      console.warn('[store] ⏭️ 跳过保存：数据尚未成功加载，拒绝用残缺数据覆盖存档');
+      return Promise.resolve(false);
+    }
     // 写 localStorage 在当前数据之前，作为保险
     const wrapper = { ...data.value, __deletedSeedInstIds: [...deletedSeedInstIds.value] };
     const jsonAll = JSON.stringify(wrapper);
@@ -334,13 +428,24 @@ export const useGameStore = defineStore('game', () => {
     const mergedTrains = seedData.trains;
 
     // 关卡：以 seed 为准，用户可编辑字段用存档值覆盖
-    const userFields = ['goals', 'workerStations', 'workerStationArr', 'resourceStationArr', 'externalStationArr', 'initialStations', 'initialTrains', 'maxTrainLevel', 'maxBuyTrains', 'shippedTrains', 'startMoney', 'instanceOverrides', 'powerSources', 'notes', 'hasInterception', 'hasSpecialProduction', 'hasIndependentEvent', 'hasTerrainChange', 'hasMergedProduction', 'hasMultipleInstances', 'hasResourceStation', 'hasExternalStation', 'coProductionGroups', 'multiChannelGroups', 'deletedSeedInstIds'] as const;
+    const userFields = ['goals', 'workerStations', 'workerStationArr', 'resourceStationArr', 'externalStationArr', 'passengerStationArr', 'initialTrains', 'maxTrainLevel', 'maxBuyTrains', 'shippedTrains', 'startMoney', 'instanceOverrides', 'powerSources', 'notes', 'hasInterception', 'hasSpecialProduction', 'hasIndependentEvent', 'hasTerrainChange', 'hasMergedProduction', 'hasMultipleInstances', 'hasResourceStation', 'hasExternalStation', 'hasPassengerStation', 'coProductionGroups', 'multiChannelGroups', 'deletedSeedInstIds'] as const;
     const savedMap = new Map(saved.levels.map((l) => [l.id, l]));
 
     const mergedLevels = seedData.levels.map((seedLv) => {
       const savedLv = savedMap.get(seedLv.id);
       if (!savedLv) return { ...seedLv };
-      return { ...seedLv, ...Object.fromEntries(userFields.map((k) => [k, (savedLv as any)[k]])) };
+      // ⚠️ 仅当存档字段有定义时才覆盖：否则存档里 undefined 的可选标记会抹掉 seed 的 true
+      const overrides: Record<string, unknown> = {};
+      for (const k of userFields) {
+        const v = (savedLv as any)[k];
+        if (v !== undefined) overrides[k] = v;
+      }
+      const merged = { ...seedLv, ...overrides } as typeof seedLv;
+      // initialStations（旧字段）：存档一旦包含该关卡，即以其为准（含「已迁移删除」的情况），
+      // 避免编译期陈旧快照把旧字段复活，导致双源再次发散
+      if ('initialStations' in savedLv) (merged as any).initialStations = (savedLv as any).initialStations;
+      else delete (merged as any).initialStations;
+      return merged;
     });
 
     // 存档里有但 seed 里没有的关卡（老版本遗留）—— 保留
@@ -395,7 +500,7 @@ export const useGameStore = defineStore('game', () => {
             if (localRaw) {
               const localData = JSON.parse(localRaw) as GameData;
               const localMap = new Map(localData.levels.map((l) => [l.id, l]));
-              const userFields = ['goals', 'workerStations', 'workerStationArr', 'resourceStationArr', 'externalStationArr', 'initialStations', 'initialTrains', 'maxTrainLevel', 'maxBuyTrains', 'shippedTrains', 'startMoney', 'instanceOverrides', 'powerSources', 'notes', 'hasInterception', 'hasSpecialProduction', 'hasIndependentEvent', 'hasTerrainChange', 'hasMergedProduction', 'hasMultipleInstances', 'hasResourceStation', 'hasExternalStation', 'coProductionGroups', 'multiChannelGroups', 'deletedSeedInstIds'] as const;
+              const userFields = ['goals', 'workerStations', 'workerStationArr', 'resourceStationArr', 'externalStationArr', 'passengerStationArr', 'initialTrains', 'maxTrainLevel', 'maxBuyTrains', 'shippedTrains', 'startMoney', 'instanceOverrides', 'powerSources', 'notes', 'hasInterception', 'hasSpecialProduction', 'hasIndependentEvent', 'hasTerrainChange', 'hasMergedProduction', 'hasMultipleInstances', 'hasResourceStation', 'hasExternalStation', 'hasPassengerStation', 'coProductionGroups', 'multiChannelGroups', 'deletedSeedInstIds'] as const;
               let mergedCount = 0;
               for (const lv of merged.levels) {
                 const localLv = localMap.get(lv.id);
@@ -416,6 +521,7 @@ export const useGameStore = defineStore('game', () => {
 
           migrateLevelStations(merged.levels);
           setData(merged);
+          hydrated.value = true;
           source.value = '代码 JSON';
           lastSaved.value = Date.now();
           const filled = merged.levels.filter((l) => l.goals?.length).length;
@@ -434,6 +540,7 @@ export const useGameStore = defineStore('game', () => {
             const merged = mergeWithSeed(localData, false);
             migrateLevelStations(merged.levels);
             setData(merged);
+            hydrated.value = true;
             source.value = '本地存档';
             lastSaved.value = Date.now();
             console.log(`[store] ✅ middleware 不可用，已从 localStorage 恢复 (${localGoals} goals)`);
@@ -441,10 +548,10 @@ export const useGameStore = defineStore('game', () => {
           }
         }
       } catch { /* ignore */ }
-      // 最终 fallback：编译时快照
+      // 最终 fallback：编译时快照（属于降级状态，hydrated 保持 false，禁止回写文件）
       setData(seedData);
       source.value = '代码 JSON';
-      console.log('[store] ⚠️ 无可用存档，使用编译时快照');
+      console.log('[store] ⚠️ 无可用存档，使用编译时快照（本次不会回写文件，避免残缺数据覆盖存档）');
       return;
     }
 
@@ -491,6 +598,7 @@ export const useGameStore = defineStore('game', () => {
     try { localStorage.setItem(STORAGE_KEY, jsonStr); } catch { /* ignore */ }
     idbSave(STORAGE_KEY, merged).catch(() => {});
     setData(merged);
+    hydrated.value = true;
     source.value = '本地存档';
     lastSaved.value = Date.now();
     const filled = merged.levels.filter((l) => l.goals?.length).length;
@@ -517,6 +625,7 @@ export const useGameStore = defineStore('game', () => {
       for (const id of rawDeleted) deletedSeedInstIds.value.add(id);
     }
     setData(v);
+    hydrated.value = true; // 用户导入的是完整有效数据，允许回写
     issues.value = iss;
     source.value = '导入文件';
     // 立刻写入 localStorage + IndexedDB + 文件（防止后续保存失败导致数据丢失）

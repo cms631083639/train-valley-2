@@ -7,7 +7,32 @@ import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = path.resolve(__dirname, 'src/data/tv2.json');
+/** 覆盖保存前的滚动备份目录（最多保留 MAX_BACKUPS 份） */
+const BACKUP_DIR = path.resolve(__dirname, 'src/data/backups');
+const MAX_BACKUPS = 30;
 console.log('[vite] 📁 DATA_FILE:', DATA_FILE);
+
+/**
+ * 覆盖 tv2.json 前先做一份带时间戳的备份。
+ * 历史教训：dev server 保存时用浏览器内存数据整份回写，一旦某侧数据缺失（换 origin、
+ * 端口漂移导致 localStorage 隔离等）就会永久抹掉字段。有备份即可回溯。
+ */
+function backupDataFile(): void {
+  try {
+    if (!fs.existsSync(DATA_FILE)) return;
+    if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    fs.copyFileSync(DATA_FILE, path.join(BACKUP_DIR, `tv2.bak-${ts}.json`));
+    const files = fs.readdirSync(BACKUP_DIR).filter((f) => f.startsWith('tv2.bak-')).sort();
+    while (files.length > MAX_BACKUPS) {
+      const old = files.shift();
+      if (old) fs.unlinkSync(path.join(BACKUP_DIR, old));
+    }
+    console.log(`[api] 🗄️ 已备份 tv2.json（保留最近 ${Math.min(files.length, MAX_BACKUPS)} 份）`);
+  } catch (e: any) {
+    console.error('[api] ⚠️ 备份失败（不影响保存）:', e.message);
+  }
+}
 
 /** 返回一个 Vite plugin，在 configureServer 阶段注册保存中间件 */
 function saveDataPlugin(): any {
@@ -59,6 +84,7 @@ function saveDataPlugin(): any {
             parsed.instances = [...existingInstances, ...newInstances];
           }
 
+          backupDataFile();
           fs.writeFileSync(DATA_FILE, JSON.stringify(parsed, null, 2), 'utf-8');
           const stat = fs.statSync(DATA_FILE);
           res.statusCode = 200;
@@ -88,7 +114,7 @@ export default defineConfig({
     strictPort: true,
     // 关键：排除 tv2.json 的文件系统变化从 HMR 中，写存档不会触发整页 reload
     watch: {
-      ignored: [path.resolve(__dirname, 'src/data/tv2.json'), path.resolve(__dirname, 'src/data/instances_from_base.ndjson')],
+      ignored: [path.resolve(__dirname, 'src/data/tv2.json'), path.resolve(__dirname, 'src/data/instances_from_base.ndjson'), path.resolve(__dirname, 'src/data/backups')],
     },
   },
 });

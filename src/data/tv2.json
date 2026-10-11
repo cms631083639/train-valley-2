@@ -1733,7 +1733,8 @@
           "order": 1,
           "stationLabels": [
             "A"
-          ]
+          ],
+          "uid": "gmutu4rsw0"
         },
         {
           "resourceId": "木板5y",
@@ -1742,10 +1743,10 @@
           "order": 2,
           "stationLabels": [
             "A"
-          ]
+          ],
+          "uid": "gmutu4rsw1"
         }
       ],
-      "initialStations": [],
       "initialTrains": [
         {
           "level": 1,
@@ -1760,20 +1761,7 @@
           "label": "A"
         }
       ],
-      "externalStationArr": [
-        {
-          "label": "m1",
-          "resourceId": "",
-          "qty": 2,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 30,
-          "price": 0,
-          "minQty": 2,
-          "maxQty": 2
-        }
-      ],
+      "externalStationArr": [],
       "resourceStationArr": [
         {
           "label": "r1",
@@ -1783,7 +1771,7 @@
       "hasSpecialProduction": false,
       "hasMergedProduction": false,
       "hasMultipleInstances": false,
-      "hasResourceStation": false
+      "hasResourceStation": true
     },
     {
       "id": "农场",
@@ -1842,59 +1830,11 @@
         }
       ],
       "resourceStationArr": [],
-      "externalStationArr": [
-        {
-          "label": "m1",
-          "resourceId": "",
-          "qty": 2,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 2,
-          "maxQtyAuto": true
-        }
-      ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "",
-          "qty": 2,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 2,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
+      "externalStationArr": [],
       "hasMergedProduction": false,
       "hasMultipleInstances": false,
-      "coProductionGroups": [
-        {
-          "id": "cp1",
-          "outputs": [
-            {
-              "instanceId": "",
-              "perOut": 1
-            }
-          ]
-        }
-      ],
-      "multiChannelGroups": [
-        {
-          "typeName": "",
-          "instanceIds": []
-        }
-      ],
+      "coProductionGroups": [],
+      "multiChannelGroups": [],
       "hasResourceStation": false
     },
     {
@@ -1919,7 +1859,8 @@
           "order": 1,
           "stationLabels": [
             "A"
-          ]
+          ],
+          "uid": "gmuy3ef9o0"
         },
         {
           "resourceId": "砖块3F",
@@ -1928,7 +1869,8 @@
           "order": 1,
           "stationLabels": [
             "A"
-          ]
+          ],
+          "uid": "gmuy3ef9o1"
         }
       ],
       "initialTrains": [
@@ -1944,27 +1886,13 @@
           "label": "A"
         }
       ],
-      "resourceStationArr": [
-        {
-          "label": "r1"
-        }
-      ],
+      "resourceStationArr": [],
       "instanceOverrides": {
         "砂土": "砂土rh"
       },
       "hasMergedProduction": false,
       "hasResourceStation": false,
-      "coProductionGroups": [
-        {
-          "id": "cp1",
-          "outputs": [
-            {
-              "instanceId": "",
-              "perOut": 1
-            }
-          ]
-        }
-      ]
+      "coProductionGroups": []
     },
     {
       "id": "峡谷",
@@ -2193,7 +2121,6 @@
         }
       ],
       "workerStations": 2,
-      "initialStations": [],
       "initialTrains": [
         {
           "level": 1,
@@ -2854,28 +2781,32 @@
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qetce"
         },
         {
           "resourceId": "奶牛kP",
           "qty": 6,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qetcf"
         },
         {
           "resourceId": "钢坯OP",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qetcg"
         },
         {
           "resourceId": "工具Cy",
           "qty": 8,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qetch"
         }
       ],
       "workerStations": 2,
@@ -2921,28 +2852,32 @@
           "qty": 9,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qe45a"
         },
         {
           "resourceId": "加工橡胶HS",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qe45b"
         },
         {
           "resourceId": "电器kV",
           "qty": 4,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qe45c"
         },
         {
           "resourceId": "电器kV",
           "qty": 4,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qe45d"
         }
       ],
       "workerStations": 2,
@@ -2987,28 +2922,32 @@
           "qty": 12,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qdse6"
         },
         {
           "resourceId": "木板5y",
           "qty": 8,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qdse7"
         },
         {
           "resourceId": "首饰Xd",
           "qty": 5,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qdse8"
         },
         {
           "resourceId": "首饰Xd",
           "qty": 5,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmv34qdse9"
         }
       ],
       "workerStations": 2,
@@ -3055,28 +2994,32 @@
           "qty": 12,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy3wt160"
         },
         {
           "resourceId": "金锭rP",
           "qty": 8,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy3wt161"
         },
         {
           "resourceId": "燃料t3",
           "qty": 5,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy3wt162"
         },
         {
           "resourceId": "燃料t3",
           "qty": 10,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy3wt163"
         }
       ],
       "workerStations": 2,
@@ -3099,6 +3042,19 @@
         {
           "label": "B"
         }
+      ],
+      "multiChannelGroups": [
+        {
+          "typeName": "金锭",
+          "instanceIds": [
+            "金锭0o",
+            "金锭rP"
+          ]
+        }
+      ],
+      "hasMultipleInstances": true,
+      "powerSources": [
+        "电力4n"
       ]
     },
     {
@@ -3121,45 +3077,35 @@
           "qty": 5,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5275bz"
         },
         {
           "resourceId": "工具Cy",
           "qty": 5,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5275b10"
         },
         {
           "resourceId": "钢板L6",
           "qty": 12,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5275b11"
         },
         {
           "resourceId": "木板GC",
           "qty": 10,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5275b12"
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "木板GC",
-          "qty": 5,
-          "kind": "刷新",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 210,
-          "minQty": 4,
-          "maxQty": 5,
-          "price": 100
-        }
-      ],
       "initialTrains": [
         {
           "level": 3,
@@ -3194,6 +3140,10 @@
           "minQty": 4,
           "maxQty": 5
         }
+      ],
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力4n"
       ]
     },
     {
@@ -3216,21 +3166,24 @@
           "qty": 8,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy526x4w"
         },
         {
           "resourceId": "首饰Xd",
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy526x4x"
         },
         {
           "resourceId": "聚合物Zm",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy526x4y"
         }
       ],
       "workerStations": 2,
@@ -3255,6 +3208,9 @@
         {
           "label": "B"
         }
+      ],
+      "powerSources": [
+        "电力Lb"
       ]
     },
     {
@@ -3277,21 +3233,24 @@
           "qty": 8,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy526nct"
         },
         {
           "resourceId": "钢板L6",
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy526ncu"
         },
         {
           "resourceId": "罐头食品od",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy526ncv"
         }
       ],
       "workerStations": 2,
@@ -3314,6 +3273,9 @@
         {
           "label": "B"
         }
+      ],
+      "powerSources": [
+        "电力4n"
       ]
     },
     {
@@ -3335,28 +3297,32 @@
           "qty": 5,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5269yp"
         },
         {
           "resourceId": "铜锭nQ",
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5269yq"
         },
         {
           "resourceId": "聚合物Zm",
           "qty": 10,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5269yr"
         },
         {
           "resourceId": "电线lH",
           "qty": 5,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5269ys"
         }
       ],
       "workerStations": 2,
@@ -3382,6 +3348,9 @@
         {
           "label": "B"
         }
+      ],
+      "powerSources": [
+        "电力4n"
       ]
     },
     {
@@ -3404,28 +3373,32 @@
           "qty": 8,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5260xl"
         },
         {
           "resourceId": "玻璃O0",
           "qty": 12,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy5260xm"
         },
         {
           "resourceId": "建筑材料4w",
           "qty": 5,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy5260xn"
         },
         {
           "resourceId": "钢板L6",
           "qty": 5,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 3
+          "order": 3,
+          "uid": "gmuy5260xo"
         }
       ],
       "workerStations": 2,
@@ -3447,6 +3420,9 @@
         {
           "label": "B"
         }
+      ],
+      "powerSources": [
+        "电力4n"
       ]
     },
     {
@@ -3469,28 +3445,32 @@
           "qty": 8,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy525qth"
         },
         {
           "resourceId": "电线lH",
           "qty": 12,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy525qti"
         },
         {
           "resourceId": "聚合物Zm",
           "qty": 4,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy525qtj"
         },
         {
           "resourceId": "电器kV",
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy525qtk"
         }
       ],
       "workerStations": 2,
@@ -3514,6 +3494,9 @@
         {
           "label": "B"
         }
+      ],
+      "powerSources": [
+        "电力Lb"
       ]
     },
     {
@@ -3536,45 +3519,35 @@
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy525h4d"
         },
         {
           "resourceId": "奶牛kP",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy525h4e"
         },
         {
           "resourceId": "罐头食品od",
           "qty": 10,
           "stationLabel": "C",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy525h4f"
         },
         {
           "resourceId": "建筑材料4w",
           "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy525h4g"
         }
       ],
       "workerStations": 3,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "煤炭4a",
-          "qty": 5,
-          "kind": "刷新",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 410,
-          "minQty": 4,
-          "maxQty": 5,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 3,
@@ -3612,6 +3585,10 @@
           "minQty": 4,
           "maxQty": 5
         }
+      ],
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力4n"
       ]
     },
     {
@@ -3634,28 +3611,32 @@
           "qty": 8,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy524pf9"
         },
         {
           "resourceId": "家具7U",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy524pfa"
         },
         {
           "resourceId": "货物ld",
           "qty": 10,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy524pfb"
         },
         {
           "resourceId": "聚合物Zm",
           "qty": 10,
           "stationLabel": "C",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy524pfc"
         }
       ],
       "workerStations": 3,
@@ -3683,6 +3664,9 @@
         {
           "label": "C"
         }
+      ],
+      "powerSources": [
+        "电力Lb"
       ]
     },
     {
@@ -3704,71 +3688,51 @@
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy523aj3"
         },
         {
           "resourceId": "聚合物Zm",
           "qty": 8,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy523aj4"
         },
         {
           "resourceId": "电线lH",
           "qty": 8,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 3
+          "order": 3,
+          "uid": "gmuy523aj5"
         },
         {
           "resourceId": "机床lh",
           "qty": 5,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy523aj6"
         },
         {
           "resourceId": "钢坯8k",
           "qty": 8,
           "stationLabel": "C",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy523aj7"
         },
         {
           "resourceId": "聚合物Zm",
           "qty": 8,
           "stationLabel": "C",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy523aj8"
         }
       ],
       "workerStations": 3,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "石油oW",
-          "qty": 5,
-          "kind": "刷新",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 120,
-          "minQty": 4,
-          "maxQty": 5,
-          "price": 0
-        },
-        {
-          "label": "B",
-          "resourceId": "铜矿Y6",
-          "qty": 5,
-          "kind": "刷新",
-          "interval": 173,
-          "refreshStart": "timed",
-          "startDelay": 203,
-          "minQty": 4,
-          "maxQty": 5,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 3,
@@ -3818,6 +3782,10 @@
           "minQty": 4,
           "maxQty": 5
         }
+      ],
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力Lb"
       ]
     },
     {
@@ -3840,25 +3808,27 @@
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy51xrz0"
         },
         {
           "resourceId": "电器kV",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy51xrz1"
         },
         {
           "resourceId": "胶水ji",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy51xrz2"
         }
       ],
       "workerStations": 2,
-      "initialStations": [],
       "initialTrains": [
         {
           "level": 4,
@@ -3880,6 +3850,9 @@
         {
           "label": "B"
         }
+      ],
+      "powerSources": [
+        "电力lf"
       ]
     },
     {
@@ -3902,45 +3875,35 @@
           "qty": 10,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy516lw4"
         },
         {
           "resourceId": "建筑材料4w",
           "qty": 12,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy516lw5"
         },
         {
           "resourceId": "金锭rP",
           "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmuy516lw6"
         },
         {
           "resourceId": "首饰Xd",
           "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmuy516lw7"
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "铜矿Y6",
-          "qty": 3,
-          "kind": "刷新",
-          "interval": 140,
-          "refreshStart": "timed",
-          "startDelay": 140,
-          "minQty": 2,
-          "maxQty": 3,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 4,
@@ -3975,6 +3938,10 @@
           "minQty": 2,
           "maxQty": 3
         }
+      ],
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力4n"
       ]
     },
     {
@@ -4250,20 +4217,6 @@
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "炸药PW",
-          "qty": 6,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 5,
-          "maxQty": 6,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 4,
@@ -4299,7 +4252,8 @@
           "minQty": 5,
           "maxQty": 6
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "底特律",
@@ -4345,35 +4299,6 @@
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "电器ar",
-          "qty": 5,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 5,
-          "maxQty": 6,
-          "price": 5000
-        },
-        {
-          "label": "B",
-          "resourceId": "书籍CX",
-          "qty": 6,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 75,
-          "refreshStart": "timed",
-          "startDelay": 250,
-          "minQty": 5,
-          "minQtyAuto": true,
-          "maxQty": 6,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 4,
@@ -4423,7 +4348,8 @@
           "maxQty": 6,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "9¾ 站台",
@@ -4463,23 +4389,6 @@
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "工人XD",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 4,
@@ -4521,7 +4430,8 @@
           "maxQty": 3,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "列车墓场",
@@ -4581,23 +4491,6 @@
         }
       ],
       "workerStations": 3,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "钢坯rx",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 90,
-          "refreshStart": "timed",
-          "startDelay": 350,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 4,
@@ -4637,7 +4530,8 @@
       ],
       "instanceOverrides": {
         "砂土": "砂土rh"
-      }
+      },
+      "hasExternalStation": true
     },
     {
       "id": "关西机场",
@@ -4691,23 +4585,6 @@
         }
       ],
       "workerStations": 3,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "木板B5",
-          "qty": 6,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 5,
-          "minQtyAuto": true,
-          "maxQty": 6,
-          "maxQtyAuto": true,
-          "price": 30000
-        }
-      ],
       "initialTrains": [
         {
           "level": 4,
@@ -4749,7 +4626,8 @@
           "maxQty": 6,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "南极洲",
@@ -4803,39 +4681,6 @@
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "铜锭Sn",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 40000
-        },
-        {
-          "label": "B",
-          "resourceId": "聚合物dE",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 90,
-          "refreshStart": "unlock",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 0,
-          "unlockPrice": 50000
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -4889,7 +4734,8 @@
       ],
       "instanceOverrides": {
         "砂土": "砂土rh"
-      }
+      },
+      "hasExternalStation": true
     },
     {
       "id": "曼谷",
@@ -4935,23 +4781,6 @@
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "原木7n",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 135,
-          "refreshStart": "timed",
-          "startDelay": 135,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -4988,7 +4817,8 @@
           "maxQty": 3,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "厄勒海峡大桥",
@@ -5035,23 +4865,6 @@
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "钢板rb",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 26000
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -5089,7 +4902,8 @@
           "maxQty": 3,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "垃圾山",
@@ -5143,23 +4957,6 @@
         }
       ],
       "workerStations": 3,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "聚合物dE",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 180,
-          "refreshStart": "timed",
-          "startDelay": 480,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -5200,7 +4997,8 @@
           "maxQty": 7,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "AMADEE-18",
@@ -5247,53 +5045,6 @@
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "铜锭Sn",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": false,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 5000
-        },
-        {
-          "label": "B",
-          "resourceId": "聚合物dE",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 62,
-          "refreshStart": "timed",
-          "startDelay": 282,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 0
-        },
-        {
-          "label": "C",
-          "resourceId": "机械师HG",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 45000
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -5360,7 +5111,8 @@
           "maxQty": 7,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "新西兰",
@@ -5399,23 +5151,6 @@
         }
       ],
       "workerStations": 3,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "首饰D3",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 42000
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -5459,7 +5194,8 @@
           "maxQty": 7,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "射电望远镜FAST",
@@ -5525,23 +5261,6 @@
         }
       ],
       "workerStations": 3,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "聚合物yn",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 35000
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -5583,7 +5302,8 @@
           "maxQty": 7,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "超级高铁",
@@ -5638,23 +5358,6 @@
         }
       ],
       "workerStations": 3,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "机械师ez",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 185,
-          "refreshStart": "timed",
-          "startDelay": 585,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -5696,7 +5399,8 @@
           "maxQty": 7,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "新加坡",
@@ -5719,7 +5423,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutwuhee6"
         },
         {
           "resourceId": "书籍9S",
@@ -5728,7 +5433,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutwuhee7"
         },
         {
           "resourceId": "机械师F8",
@@ -5737,72 +5443,11 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutwuhee8"
         }
       ],
       "workerStations": 2,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "天然橡胶ez",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 2200
-        },
-        {
-          "label": "B",
-          "resourceId": "电器ar",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 60000
-        },
-        {
-          "label": "C",
-          "resourceId": "原木a8",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 22000
-        },
-        {
-          "label": "D",
-          "resourceId": "金锭m9",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 32000
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -5885,7 +5530,8 @@
           "maxQty": 3,
           "maxQtyAuto": true
         }
-      ]
+      ],
+      "hasExternalStation": true
     },
     {
       "id": "向火星发射火箭",
@@ -5909,7 +5555,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutu51d10"
         },
         {
           "resourceId": "钢板Xi",
@@ -5918,7 +5565,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutu51d11"
         },
         {
           "resourceId": "电线3N",
@@ -5927,16 +5575,18 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutu51d12"
         },
         {
-          "resourceId": "微型芯片xO",
+          "resourceId": "微型芯片gs",
           "qty": 12,
           "stackId": "A",
           "stationLabels": [
             "C"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutu51d13"
         },
         {
           "resourceId": "燃料t3",
@@ -5945,7 +5595,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 3
+          "order": 3,
+          "uid": "gmutu51d14"
         },
         {
           "resourceId": "火箭Vv",
@@ -5954,57 +5605,11 @@
           "stationLabels": [
             "B"
           ],
-          "order": 3
+          "order": 3,
+          "uid": "gmutu51d15"
         }
       ],
       "workerStations": 4,
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "机械师HG",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 70000
-        },
-        {
-          "label": "B",
-          "resourceId": "微型芯片9l",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 80000
-        },
-        {
-          "label": "C",
-          "resourceId": "聚合物dE",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 120,
-          "refreshStart": "timed",
-          "startDelay": 220,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -6081,6 +5686,18 @@
           "minQtyAuto": true,
           "maxQty": 7,
           "maxQtyAuto": true
+        }
+      ],
+      "notes": "开头制作2次微型芯片，之后全靠买，维持住电力和芯片拦截站（不能断）",
+      "hasMultipleInstances": true,
+      "hasExternalStation": true,
+      "multiChannelGroups": [
+        {
+          "typeName": "微型芯片",
+          "instanceIds": [
+            "微型芯片9l",
+            "微型芯片xO"
+          ]
         }
       ]
     },
@@ -6522,7 +6139,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutwvoyl9"
         },
         {
           "resourceId": "书籍xf",
@@ -6531,7 +6149,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutwvoyla"
         },
         {
           "resourceId": "石油Pv",
@@ -6540,7 +6159,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutwvoylb"
         }
       ],
       "workerStations": 2,
@@ -6561,45 +6181,8 @@
           "label": "B"
         }
       ],
-      "resourceStationArr": [
-        {
-          "label": "r1"
-        }
-      ],
-      "externalStationArr": [
-        {
-          "label": "m1",
-          "resourceId": "",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 3,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true
-        }
-      ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 3,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
+      "resourceStationArr": [],
+      "externalStationArr": [],
       "hasResourceStation": false,
       "hasExternalStation": false
     },
@@ -6662,23 +6245,6 @@
           "label": "B"
         }
       ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "书籍lg",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 3,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 30000
-        }
-      ],
       "externalStationArr": [
         {
           "label": "m1",
@@ -6696,26 +6262,12 @@
           "maxQtyAuto": true
         }
       ],
-      "resourceStationArr": [
-        {
-          "label": "r1"
-        }
-      ],
+      "resourceStationArr": [],
       "hasMergedProduction": false,
       "hasMultipleInstances": false,
       "hasResourceStation": false,
       "hasExternalStation": true,
-      "coProductionGroups": [
-        {
-          "id": "cp1",
-          "outputs": [
-            {
-              "instanceId": "",
-              "perOut": 1
-            }
-          ]
-        }
-      ]
+      "coProductionGroups": []
     },
     {
       "id": "交流电",
@@ -6805,7 +6357,6 @@
         }
       ],
       "startMoney": "55000",
-      "initialStations": [],
       "externalStationArr": [
         {
           "label": "m1",
@@ -6823,25 +6374,11 @@
           "maxQtyAuto": true
         }
       ],
-      "resourceStationArr": [
-        {
-          "label": "r1"
-        }
-      ],
+      "resourceStationArr": [],
       "hasMergedProduction": false,
       "hasResourceStation": false,
-      "hasExternalStation": false,
-      "coProductionGroups": [
-        {
-          "id": "cp1",
-          "outputs": [
-            {
-              "instanceId": "",
-              "perOut": 1
-            }
-          ]
-        }
-      ],
+      "hasExternalStation": true,
+      "coProductionGroups": [],
       "instanceOverrides": {
         "砂土": "砂土eJ"
       }
@@ -6875,59 +6412,12 @@
           "label": "A"
         }
       ],
-      "initialStations": [],
       "instanceOverrides": {
         "纸": "纸Rj",
         "蓝色药水": "蓝色药水jW",
         "红色药水": "红色药水yw"
       },
-      "externalStationArr": [
-        {
-          "label": "m1",
-          "resourceId": "",
-          "qty": 4,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 3,
-          "minQtyAuto": true,
-          "maxQty": 4,
-          "maxQtyAuto": true
-        },
-        {
-          "label": "m2",
-          "resourceId": "",
-          "qty": 4,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 3,
-          "minQtyAuto": true,
-          "maxQty": 4,
-          "maxQtyAuto": true
-        },
-        {
-          "label": "m3",
-          "resourceId": "",
-          "qty": 4,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 3,
-          "minQtyAuto": true,
-          "maxQty": 4,
-          "maxQtyAuto": true
-        }
-      ],
+      "externalStationArr": [],
       "initialTrains": [
         {
           "level": 2,
@@ -7149,7 +6639,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusxpcjg0"
         },
         {
           "resourceId": "建筑材料3M",
@@ -7158,7 +6649,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmusxpcjg1"
         },
         {
           "resourceId": "原木sv",
@@ -7167,7 +6659,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 3
+          "order": 3,
+          "uid": "gmusxpcjg2"
         },
         {
           "resourceId": "木板5y",
@@ -7176,7 +6669,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusxpcjg3"
         },
         {
           "resourceId": "钢坯1I",
@@ -7185,7 +6679,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusxpcjg4"
         },
         {
           "resourceId": "钢坯1I",
@@ -7194,7 +6689,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusxpcjg5"
         },
         {
           "resourceId": "建筑材料3M",
@@ -7203,7 +6699,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmusxpcjg6"
         },
         {
           "resourceId": "钢坯OP",
@@ -7212,7 +6709,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusxpcjg7"
         },
         {
           "resourceId": "木板v8",
@@ -7221,7 +6719,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmusxpcjg8"
         },
         {
           "resourceId": "原木sv",
@@ -7230,7 +6729,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 3
+          "order": 3,
+          "uid": "gmusxpcjg9"
         }
       ],
       "workerStationArr": [
@@ -7241,7 +6741,8 @@
           "label": "B"
         },
         {
-          "label": "C"
+          "label": "C",
+          "unlockCost": 30000
         }
       ],
       "initialTrains": [
@@ -7254,104 +6755,8 @@
       "startMoney": "25000",
       "hasInterception": true,
       "hasMergedProduction": true,
-      "resourceStationArr": [
-        {
-          "label": "r1"
-        }
-      ],
-      "externalStationArr": [
-        {
-          "label": "m1",
-          "resourceId": "",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true
-        },
-        {
-          "label": "m2",
-          "resourceId": "",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true
-        },
-        {
-          "label": "m3",
-          "resourceId": "",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true
-        },
-        {
-          "label": "m4",
-          "resourceId": "",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true
-        },
-        {
-          "label": "m5",
-          "resourceId": "",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true
-        },
-        {
-          "label": "m6",
-          "resourceId": "",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true
-        }
-      ],
-      "initialStations": [],
+      "resourceStationArr": [],
+      "externalStationArr": [],
       "hasTerrainChange": true,
       "hasMultipleInstances": true,
       "hasResourceStation": false,
@@ -7391,7 +6796,8 @@
           ],
           "stockLimit": 2,
           "manualTrips": 4,
-          "manualOutput": 8
+          "manualOutput": 8,
+          "maxCycles": 10
         }
       ]
     },
@@ -7451,23 +6857,6 @@
           "minQtyAuto": true,
           "maxQty": 5,
           "maxQtyAuto": true
-        }
-      ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "木板GC",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 120,
-          "refreshStart": "timed",
-          "startDelay": 270,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true,
-          "price": 0
         }
       ],
       "instanceOverrides": {
@@ -7531,21 +6920,6 @@
       "externalStationArr": [
         {
           "label": "m1",
-          "resourceId": "",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "interval": 110,
-          "price": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true
-        },
-        {
-          "label": "m2",
           "resourceId": "燃料Qp",
           "qty": 5,
           "qtyAuto": true,
@@ -7558,38 +6932,6 @@
           "minQtyAuto": true,
           "maxQty": 5,
           "maxQtyAuto": true
-        }
-      ],
-      "initialStations": [
-        {
-          "label": "B",
-          "resourceId": "燃料Qp",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": false,
-          "price": 20000
-        },
-        {
-          "label": "C",
-          "resourceId": "工人eY",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 50,
-          "refreshStart": "timed",
-          "startDelay": 140,
-          "minQty": 4,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true,
-          "price": 0
         }
       ],
       "initialTrains": [
@@ -7636,7 +6978,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutkb4270"
         },
         {
           "resourceId": "建筑材料4w",
@@ -7645,7 +6988,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutkb4271"
         },
         {
           "resourceId": "电线3N",
@@ -7654,7 +6998,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutkb4272"
         },
         {
           "resourceId": "建筑材料4w",
@@ -7663,7 +7008,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutkb4273"
         }
       ],
       "workerStationArr": [
@@ -7799,7 +7145,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj2sq0"
         },
         {
           "resourceId": "钻石cM",
@@ -7808,7 +7155,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj2sq1"
         },
         {
           "resourceId": "金伯利岩Iw",
@@ -7817,7 +7165,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj2sq2"
         }
       ],
       "workerStationArr": [
@@ -7843,23 +7192,6 @@
           "minQtyAuto": true,
           "maxQty": 5,
           "maxQtyAuto": true
-        }
-      ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "原木a8",
-          "qty": 5,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 110,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 5,
-          "minQtyAuto": true,
-          "maxQty": 5,
-          "maxQtyAuto": true,
-          "price": 25000
         }
       ],
       "initialTrains": [
@@ -7921,7 +7253,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj47x3"
         },
         {
           "resourceId": "罐头食品bg",
@@ -7930,7 +7263,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj47x4"
         },
         {
           "resourceId": "罐头食品bg",
@@ -7939,7 +7273,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj47x5"
         },
         {
           "resourceId": "石油oQ",
@@ -7948,7 +7283,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj47x6"
         },
         {
           "resourceId": "纸2w",
@@ -7957,7 +7293,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj47x7"
         },
         {
           "resourceId": "鱼tr",
@@ -7966,7 +7303,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj47x8"
         }
       ],
       "workerStationArr": [
@@ -8033,7 +7371,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj4o99"
         },
         {
           "resourceId": "货车mn",
@@ -8042,7 +7381,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj4o9a"
         },
         {
           "resourceId": "汽车Sd",
@@ -8051,7 +7391,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj4o9b"
         },
         {
           "resourceId": "公交车Ji",
@@ -8060,7 +7401,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj4o9c"
         },
         {
           "resourceId": "货车mn",
@@ -8069,7 +7411,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj4o9d"
         }
       ],
       "workerStationArr": [
@@ -8114,7 +7457,6 @@
           "maxQtyAuto": true
         }
       ],
-      "initialStations": [],
       "initialTrains": [
         {
           "level": 4,
@@ -8132,7 +7474,7 @@
       "hasInterception": true,
       "hasMergedProduction": true,
       "hasResourceStation": true,
-      "hasExternalStation": false,
+      "hasExternalStation": true,
       "coProductionGroups": [
         {
           "id": "cp1",
@@ -8177,7 +7519,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj4xye"
         },
         {
           "resourceId": "铜锭36",
@@ -8186,7 +7529,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj4xyf"
         },
         {
           "resourceId": "电器ar",
@@ -8195,7 +7539,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj4xyg"
         },
         {
           "resourceId": "建筑材料4w",
@@ -8204,7 +7549,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj4xyh"
         },
         {
           "resourceId": "电器ar",
@@ -8213,7 +7559,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj4xyi"
         },
         {
           "resourceId": "机械师qJ",
@@ -8222,7 +7569,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj4xyj"
         },
         {
           "resourceId": "建筑材料4w",
@@ -8231,7 +7579,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj4xyk"
         }
       ],
       "workerStationArr": [
@@ -8248,38 +7597,6 @@
           "resourceId": "燃料b7",
           "autoRefresh": false,
           "totalStock": 0
-        }
-      ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "机床Mj",
-          "qty": 3,
-          "qtyAuto": true,
-          "interval": 0,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 5000,
-          "kind": "购买"
-        },
-        {
-          "label": "B",
-          "resourceId": "玻璃Dm",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 0,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 5000
         }
       ],
       "initialTrains": [
@@ -8455,22 +7772,6 @@
           "label": "B"
         }
       ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "",
-          "qty": 7,
-          "qtyAuto": true,
-          "interval": 0,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 6,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 0
-        }
-      ],
       "initialTrains": [
         {
           "level": 5,
@@ -8507,7 +7808,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj5crl"
         },
         {
           "resourceId": "小麦E9",
@@ -8516,7 +7818,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj5crm"
         },
         {
           "resourceId": "罐头食品od",
@@ -8525,7 +7828,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj5crn"
         },
         {
           "resourceId": "罐头食品od",
@@ -8534,7 +7838,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj5cro"
         },
         {
           "resourceId": "钢板EN",
@@ -8543,7 +7848,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj5crp"
         }
       ],
       "workerStationArr": [
@@ -8555,7 +7861,6 @@
         }
       ],
       "resourceStationArr": [],
-      "initialStations": [],
       "initialTrains": [
         {
           "level": 5,
@@ -8610,7 +7915,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj5m9q"
         },
         {
           "resourceId": "计算机hb",
@@ -8619,7 +7925,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj5m9r"
         },
         {
           "resourceId": "机械师QQ",
@@ -8628,7 +7935,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj5m9s"
         },
         {
           "resourceId": "建筑材料EZ",
@@ -8637,7 +7945,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj5m9t"
         },
         {
           "resourceId": "电线LS",
@@ -8646,7 +7955,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmutjj5m9u"
         },
         {
           "resourceId": "计算机hb",
@@ -8655,7 +7965,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmutjj5m9v"
         }
       ],
       "workerStationArr": [
@@ -8702,7 +8013,6 @@
           "manualOutput": 1
         }
       ],
-      "initialStations": [],
       "initialTrains": [
         {
           "level": 5,
@@ -8738,7 +8048,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusjc3h50"
         },
         {
           "resourceId": "机床kO",
@@ -8747,7 +8058,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusjc3h51"
         },
         {
           "resourceId": "飞机EG",
@@ -8756,7 +8068,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusjc3h52"
         },
         {
           "resourceId": "飞机EG",
@@ -8765,7 +8078,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmusjc3h53"
         },
         {
           "resourceId": "电线LS",
@@ -8774,7 +8088,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmusjc3h54"
         },
         {
           "resourceId": "木板5y",
@@ -8783,7 +8098,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 3
+          "order": 3,
+          "uid": "gmusjc3h55"
         }
       ],
       "workerStationArr": [
@@ -8812,23 +8128,6 @@
           "minQtyAuto": true,
           "maxQty": 3,
           "maxQtyAuto": true
-        }
-      ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "钢板9O",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "刷新",
-          "interval": 95,
-          "refreshStart": "timed",
-          "startDelay": 95,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 0
         }
       ],
       "initialTrains": [
@@ -8896,7 +8195,7 @@
           "uid": "gmusguzvz2"
         },
         {
-          "resourceId": "聚合物Mo",
+          "resourceId": "聚合物Zm",
           "qty": 14,
           "stackId": "B",
           "stationLabels": [
@@ -8941,45 +8240,15 @@
           "label": "A"
         },
         {
-          "label": "B"
+          "label": "B",
+          "unlockCost": 50000
         },
         {
           "label": "C"
         },
         {
-          "label": "D"
-        }
-      ],
-      "initialStations": [
-        {
-          "label": "A",
-          "resourceId": "火箭vz",
-          "qty": 3,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 0,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 2,
-          "minQtyAuto": true,
-          "maxQty": 3,
-          "maxQtyAuto": true,
-          "price": 120000
-        },
-        {
-          "label": "B",
-          "resourceId": "玻璃Dm",
-          "qty": 7,
-          "qtyAuto": true,
-          "kind": "购买",
-          "interval": 0,
-          "refreshStart": "timed",
-          "startDelay": 0,
-          "minQty": 7,
-          "minQtyAuto": true,
-          "maxQty": 7,
-          "maxQtyAuto": true,
-          "price": 80000
+          "label": "D",
+          "unlockCost": 50000
         }
       ],
       "initialTrains": [
@@ -8994,7 +8263,7 @@
       ],
       "hasInterception": true,
       "hasMergedProduction": true,
-      "hasMultipleInstances": false,
+      "hasMultipleInstances": true,
       "hasExternalStation": true,
       "coProductionGroups": [
         {
@@ -9014,7 +8283,8 @@
             }
           ],
           "stockLimit": 14,
-          "manualOutput": 1
+          "manualOutput": 1,
+          "maxCycles": 29
         },
         {
           "id": "cp2",
@@ -9033,13 +8303,54 @@
             }
           ],
           "stockLimit": 14,
-          "manualOutput": 1
+          "manualOutput": 1,
+          "maxCycles": 15
         }
       ],
-      "hasPassengerStation": true,
-      "passengerStationArr": [
+      "hasPassengerStation": false,
+      "passengerStationArr": [],
+      "externalStationArr": [
         {
-          "label": ""
+          "label": "m1",
+          "resourceId": "火箭vz",
+          "qty": 3,
+          "qtyAuto": true,
+          "kind": "购买",
+          "refreshStart": "timed",
+          "startDelay": 0,
+          "interval": 0,
+          "price": 120000,
+          "minQty": 2,
+          "minQtyAuto": true,
+          "maxQty": 3,
+          "maxQtyAuto": true
+        },
+        {
+          "label": "m2",
+          "resourceId": "玻璃Dm",
+          "qty": 7,
+          "qtyAuto": true,
+          "kind": "购买",
+          "refreshStart": "timed",
+          "startDelay": 0,
+          "interval": 0,
+          "price": 80000,
+          "minQty": 7,
+          "minQtyAuto": true,
+          "maxQty": 7,
+          "maxQtyAuto": true
+        }
+      ],
+      "instanceOverrides": {
+        "石油": "石油pX"
+      },
+      "multiChannelGroups": [
+        {
+          "typeName": "聚合物",
+          "instanceIds": [
+            "聚合物Zm",
+            "聚合物Mo"
+          ]
         }
       ]
     },

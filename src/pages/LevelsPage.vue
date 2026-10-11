@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /** 关卡速查 / 物资拆解（本体 50 关优先，可切换查看全部） */
-import { OBTAIN, REFRESH_START, STATION_KIND, FILTER_ALL } from '@/constants';
+import { OBTAIN, REFRESH_START, STATION_KIND, FILTER_ALL, VIA } from '@/constants';
 import { computed, onMounted, ref, reactive, watch, watchEffect, nextTick } from 'vue';
 import type { BreakdownNode, RecipeChoice, BreakdownStrategy } from '@/engine/breakdown';
 import { breakdownGoals, classifyName } from '@/engine/breakdown';
-import type { CoProductionGroup, CoProductionOutput, InitialStation, LevelGoal, PassengerStation, ResourceInstance, ResourceCategory, ResourceStation, StationExternalKind, WorkerStation } from '@/types';
+import type { CoProductionGroup, CoProductionOutput, ExternalStation, LevelGoal, PassengerStation, ResourceInstance, ResourceCategory, ResourceStation, StationExternalKind, WorkerStation } from '@/types';
 import { WORKER_NAME } from '@/types';
 import { useGameStore } from '@/stores/game';
 import { CATEGORY_LABEL, fmtSeconds, starConditionText } from '@/utils/format';
@@ -152,6 +152,9 @@ watchEffect(() => {
 // 切换关卡时自动迁一次，避免旧数据丢失
 watch(level, (lv) => {
   if (!lv) return;
+  // 🎯 切换关卡时重置拆解策略：避免上一关的策略残留
+  //    （如"配方输入最少"会禁用拆卸组，导致拆卸关卡结果被放大）
+  activeStrategy.value = 'normal';
   const oldPower = lv.instanceOverrides?.['电力'];
   if (oldPower && !lv.powerSources?.length) {
     const cleaned: Record<string, string> = { ...(lv.instanceOverrides ?? {}) };
@@ -186,6 +189,20 @@ const filtered = computed(() =>
   levelList.value.filter((l) => !keyword.value || l.name.includes(keyword.value) || l.chapter.includes(keyword.value)),
 );
 
+/**
+ * 关卡稳定序号：按"原始列表顺序"编号（仅受内容类型范围影响，不受标记筛选 / 搜索影响）。
+ * 这样筛选「主线 + 外部站点」时，显示的是关卡原本的编号（如 05、12、30），
+ * 而不是对筛选后的结果从 01 重新编号。
+ */
+const levelOrderIndex = computed(() => {
+  const base = contentTypeFilter.value !== FILTER_ALL
+    ? store.data.levels.filter((l) => l.contentType === contentTypeFilter.value)
+    : store.data.levels;
+  const map = new Map<string, number>();
+  base.forEach((l, i) => map.set(l.id, i + 1));
+  return map;
+});
+
 /** 当前参与拆解的 goals（关卡原始数据，实时直接保存） */
 const goals = computed<LevelGoal[]>(() => level.value?.goals ?? []);
 
@@ -199,15 +216,20 @@ function onGoalsUpdate(g: LevelGoal[]) {
 /** 自动检测多渠道生产组：当目标中出现同名多实例时，自动创建多渠道组 */
 function autoDetectMcGroups(goals: LevelGoal[]) {
   if (!level.value) return;
-  // 统计目标中每个名称实际使用了多少个不同的实例 ID
+  const lv = level.value;
+  // 统计"目标 + 各类站点"中每个名称实际使用了多少个不同的实例 ID
   const nameToIds = new Map<string, Set<string>>();
-  for (const goal of goals) {
-    if (!goal.resourceId) continue;
-    const inst = store.instById.get(goal.resourceId);
-    if (!inst) continue;
+  const collect = (id?: string) => {
+    if (!id) return;
+    const inst = store.instById.get(id);
+    if (!inst) return;
     if (!nameToIds.has(inst.name)) nameToIds.set(inst.name, new Set());
-    nameToIds.get(inst.name)!.add(goal.resourceId);
-  }
+    nameToIds.get(inst.name)!.add(id);
+  };
+  for (const goal of goals) collect(goal.resourceId);
+  // 🎯 站点也是物资渠道来源：资源站点 / 外部站点（含刷新、购买）
+  for (const s of lv.resourceStationArr ?? []) collect(s.resourceId);
+  for (const s of lv.externalStationArr ?? []) collect(s.resourceId);
   const multiNames = new Set<string>();
   for (const [name, ids] of nameToIds) {
     if (ids.size > 1) multiNames.add(name);
@@ -265,18 +287,10 @@ const stationSuppliedNames = computed(() => {
       if (inst) set.add(inst.name);
     }
   }
-  // 2) 外部物资站点（刷新/购买）
+  // 2) 外部物资站点（刷新/购买）— 唯一数据源 externalStationArr
   if (lv?.hasExternalStation !== false && lv?.externalStationArr?.length) {
     for (const s of lv.externalStationArr) {
       const inst = store.instById.get(s.resourceId ?? '');
-      if (inst) set.add(inst.name);
-    }
-  }
-  // 3) 老 initialStations（兼容存量数据，kind=刷新/购买）
-  if (lv?.hasExternalStation !== false && lv?.initialStations?.length) {
-    for (const s of lv.initialStations) {
-      if (s.kind !== STATION_KIND.REFRESH && s.kind !== STATION_KIND.BUY && s.kind !== STATION_KIND.PASSENGER) continue;
-      const inst = store.instById.get(s.resourceId);
       if (inst) set.add(inst.name);
     }
   }
@@ -297,6 +311,67 @@ const stationSuppliedNames = computed(() => {
   return set;
 });
 
+/** 🔗 拆卸组产出实例的名称集合（供外部站「建议提供」触发判断） */
+const cpOutputNames = computed(() => {
+  const set = new Set<string>();
+  const lv = level.value;
+  if (lv?.hasMergedProduction === true && lv?.coProductionGroups?.length) {
+    for (const cp of lv.coProductionGroups) {
+      for (const o of cp.outputs) {
+        const inst = store.instById.get(o.instanceId);
+        if (inst) set.add(inst.name);
+      }
+    }
+  }
+  return set;
+});
+
+/**
+ * 🛒 「建议提供」显示条件：关卡内存在同名不同实例的物资（含拆卸组产出）。
+ * 只有同一物资名对应 ≥2 个不同实例时，才需要人工限定"外部站供多少份"，
+ * 余量交给同名的其他实例（生产站点 / 拆卸站点）补足。
+ */
+const suggestNames = computed(() => {
+  const set = new Set<string>(cpOutputNames.value);
+  const lv = level.value;
+  if (!lv) return set;
+  const byName = new Map<string, Set<string>>();
+  const add = (id?: string) => {
+    if (!id) return;
+    const inst = store.instById.get(id);
+    if (!inst) return;
+    const s = byName.get(inst.name) ?? new Set<string>();
+    s.add(id);
+    byName.set(inst.name, s);
+  };
+  for (const g of goals.value) add(g.resourceId);
+  for (const w of lv.workerStationArr ?? []) add(w.resourceId);
+  for (const s of lv.resourceStationArr ?? []) add(s.resourceId);
+  for (const s of lv.passengerStationArr ?? []) add(s.resourceId);
+  for (const s of lv.externalStationArr ?? []) add(s.resourceId);
+  for (const cp of lv.coProductionGroups ?? []) for (const o of cp.outputs) add(o.instanceId);
+  for (const [nm, id] of Object.entries(lv.instanceOverrides ?? {})) {
+    const inst = store.instById.get(id);
+    if (inst && inst.name === nm) add(id);
+  }
+  for (const [nm, ids] of byName) if (ids.size >= 2) set.add(nm);
+  return set;
+});
+
+/** 🛒 外部站建议提供量 → externalCaps（仅 resourceId 存在且 suggestQty>0） */
+const externalCaps = computed<{ name: string; instanceId: string; qty: number }[] | undefined>(() => {
+  const lv = level.value;
+  if (!lv?.externalStationArr?.length) return undefined;
+  const caps: { name: string; instanceId: string; qty: number }[] = [];
+  for (const s of lv.externalStationArr) {
+    if (!s.resourceId || !s.suggestQty || s.suggestQty <= 0) continue;
+    const inst = store.instById.get(s.resourceId ?? '');
+    if (!inst) continue;
+    caps.push({ name: inst.name, instanceId: s.resourceId, qty: s.suggestQty });
+  }
+  return caps.length ? caps : undefined;
+});
+
 const result = computed(() => {
   if (!goals.value.length) return null;
   const lv = level.value;
@@ -311,6 +386,8 @@ const result = computed(() => {
     lv?.powerSources ?? [],
     lv?.hasMergedProduction === true ? lv?.coProductionGroups : undefined,
     activeStrategy.value,
+    externalCaps.value,
+    lv?.multiChannelGroups,
   );
 });
 
@@ -327,10 +404,10 @@ interface StationInfo {
 const stationInfoByName = computed<Map<string, StationInfo>>(() => {
   const lv = level.value;
   const map = new Map<string, StationInfo>();
-  // 1) 外部物资站点（刷新/购买/客流 — 旧 initialStations 兼容）
-  if (lv?.hasExternalStation !== false && lv?.initialStations?.length) {
-    for (const s of lv.initialStations) {
-      const inst = store.instById.get(s.resourceId);
+  // 1) 外部物资站点（刷新/购买/客流/库存 — 唯一数据源 externalStationArr）
+  if (lv?.hasExternalStation !== false && lv?.externalStationArr?.length) {
+    for (const s of lv.externalStationArr) {
+      const inst = store.instById.get(s.resourceId ?? '');
       if (!inst) continue;
       if (s.kind === STATION_KIND.REFRESH) {
         map.set(inst.name, {
@@ -423,10 +500,10 @@ const effectiveExternalNeeds = computed(() => {
   }
   // 2. 外部物资站点里所有刷新/购买/客流类（关卡自带，不管目标链路有没有都合并）
   const lv = level.value;
-  if (lv?.initialStations?.length) {
-    for (const s of lv.initialStations) {
+  if (lv?.externalStationArr?.length) {
+    for (const s of lv.externalStationArr) {
       if (s.kind !== STATION_KIND.REFRESH && s.kind !== STATION_KIND.BUY && s.kind !== STATION_KIND.PASSENGER) continue;
-      const inst = store.instById.get(s.resourceId);
+      const inst = store.instById.get(s.resourceId ?? '');
       if (!inst) continue;
       if (!merged.has(inst.name)) {
         merged.set(inst.name, { name: inst.name, qty: 0, obtain: s.kind });
@@ -473,7 +550,6 @@ const localInstances = computed(() => {
   const ids = new Set<string>();
   // 按优先级从低到高写入，同名后者覆盖前者；instanceOverrides（警告面板手选）在引擎里优先级最高
   for (const s of lv.passengerStationArr ?? []) if (s.resourceId) ids.add(s.resourceId);
-  for (const s of lv.initialStations ?? []) if (s.resourceId) ids.add(s.resourceId);
   for (const s of lv.externalStationArr ?? []) if (s.resourceId) ids.add(s.resourceId);
   for (const s of lv.resourceStationArr ?? []) if (s.resourceId) ids.add(s.resourceId);
   for (const w of lv.workerStationArr ?? []) if (w.resourceId) ids.add(w.resourceId);
@@ -517,8 +593,8 @@ const strategyResults = computed(() => {
   type StrategyItem = { key: string; strategy: BreakdownStrategy; label: string };
   const strategies: StrategyItem[] = [];
 
-  // 🎯 手动填写拆卸总个数 → 方案唯一，无需多方案对比
-  const hasManualOutput = (lv.coProductionGroups ?? []).some((cp) => cp.manualOutput !== undefined && cp.manualOutput > 0);
+  // 🎯 手动填写拆卸总个数 / 🛑 最多拆卸次数上限 → 拆卸通道已定，无需多方案对比
+  const hasManualOutput = (lv.coProductionGroups ?? []).some((cp) => (cp.manualOutput !== undefined && cp.manualOutput > 0) || (cp.maxCycles !== undefined && cp.maxCycles > 0));
   if (hasManualOutput) {
     // 手动总个数已确定，直接返回唯一解
   } else if (hasCo && hasMulti) {
@@ -549,14 +625,14 @@ const strategyResults = computed(() => {
   }
 
   return strategies.map((s) => {
-    const r = breakdownGoals(baseGoals, store.data, 'fewestInputs', baseInstances, baseOverrides, baseSupplied, basePower, baseCoGroups, s.strategy);
+    const r = breakdownGoals(baseGoals, store.data, 'fewestInputs', baseInstances, baseOverrides, baseSupplied, basePower, baseCoGroups, s.strategy, externalCaps.value, level.value?.multiChannelGroups);
     return { key: s.key, strategy: s.strategy, label: s.label, result: r };
   });
 });
 
-/** 是否展示多方案对比面板 */
+/** 是否展示多方案对比面板（按需求关闭；恢复时改回 strategyResults.value.length > 0） */
 const showStrategyComparison = computed(() => {
-  return strategyResults.value.length > 0;
+  return false;
 });
 
 /** 多方案对比提示文字：根据策略列表推断当前原因 */
@@ -591,8 +667,8 @@ const remainingMultiChannel = computed<{ name: string; instances: { id: string; 
   }
   // 没有拆卸工厂，不显示剩余多渠道提醒（由策略面板处理）
   if (cpOutputIds.size === 0) return null;
-  // 检查是否有拆卸组设置了手动总个数 → 拆卸实例已确定，不再参与剩余多渠道
-  const hasManualOutput = (lv.coProductionGroups ?? []).some((cp) => cp.manualOutput !== undefined && cp.manualOutput > 0);
+  // 检查是否有拆卸组设置了手动总个数 / 最多拆卸次数上限 → 拆卸实例已确定，不再参与剩余多渠道
+  const hasManualOutput = (lv.coProductionGroups ?? []).some((cp) => (cp.manualOutput !== undefined && cp.manualOutput > 0) || (cp.maxCycles !== undefined && cp.maxCycles > 0));
   const items: { name: string; instances: { id: string; inputs: string }[] }[] = [];
   for (const mg of lv.multiChannelGroups ?? []) {
     const instances = mg.instanceIds
@@ -617,11 +693,21 @@ const remainingMultiChannel = computed<{ name: string; instances: { id: string; 
 
 // 当多方案策略列表变化时，如果当前 activeStrategy 不在列表中则重置为第一个
 watch(strategyResults, (results) => {
-  if (results.length > 0) {
-    const valid = results.some((r) => r.strategy === activeStrategy.value);
-    if (!valid) {
-      activeStrategy.value = results[0].strategy;
-    }
+  // 多方案对比 UI 已关闭时，不允许自动切换策略：
+  // 一律用 normal（最佳配平），否则清空「建议拆 N 次」会让策略跳到 minCoProduction
+  if (!showStrategyComparison.value) {
+    if (activeStrategy.value !== 'normal') activeStrategy.value = 'normal';
+    return;
+  }
+  if (results.length === 0) {
+    // 无多方案列表（拆卸手动/上限已定，或单一方案关卡）→ 强制回落 normal，
+    // 避免残留上一关的策略禁用拆卸组
+    if (activeStrategy.value !== 'normal') activeStrategy.value = 'normal';
+    return;
+  }
+  const valid = results.some((r) => r.strategy === activeStrategy.value);
+  if (!valid) {
+    activeStrategy.value = results[0].strategy;
   }
 });
 
@@ -644,6 +730,44 @@ const starConditions = computed(() => {
 const starCount = computed(() => 3 + starConditions.value.length);
 
 const roots = computed<BreakdownNode[]>(() => result.value?.roots ?? []);
+
+/** 🔀 渠道分配预览（只读）：仅统计"同时存在拆卸渠道与非拆卸渠道"的物资 */
+const channelAllocations = computed(() => {
+  const lv = level.value;
+  if (!lv) return [];
+  // 拆卸组产出的实例 id 集合 → 用于区分"拆卸渠道 / 非拆卸渠道"
+  const cpIds = new Set<string>();
+  for (const cp of lv.coProductionGroups ?? []) for (const o of cp.outputs) cpIds.add(o.instanceId);
+  if (!cpIds.size) return [];
+  // 按实例汇总实际产出量（含拆卸组产出，qty≤0 的节点不计）
+  const byInst = new Map<string, number>();
+  const add = (id: string, q: number) => { if (id && q > 0) byInst.set(id, (byInst.get(id) ?? 0) + q); };
+  const walk = (n: BreakdownNode) => {
+    if (n.via === VIA.PRODUCE && n.instanceId) add(n.instanceId, n.qty);
+    if (n.coOutputs) for (const o of n.coOutputs) add(o.instanceId, o.produced);
+    for (const c of n.children) walk(c);
+  };
+  for (const r of roots.value) walk(r);
+  // 按物资名称聚合渠道
+  const byName = new Map<string, { instanceId: string; qty: number; isCp: boolean }[]>();
+  for (const [id, q] of byInst) {
+    const inst = store.instById.get(id);
+    if (!inst) continue;
+    const arr = byName.get(inst.name) ?? [];
+    arr.push({ instanceId: id, qty: q, isCp: cpIds.has(id) });
+    byName.set(inst.name, arr);
+  }
+  const out: { name: string; total: number; segments: { instanceId: string; qty: number; isCp: boolean }[] }[] = [];
+  for (const [name, segs] of byName) {
+    const hasCp = segs.some((s) => s.isCp);
+    const hasNonCp = segs.some((s) => !s.isCp);
+    if (!hasCp || !hasNonCp) continue; // 仅显示同时有拆卸渠道与非拆卸渠道的物资
+    segs.sort((a, b) => Number(b.isCp) - Number(a.isCp) || b.qty - a.qty);
+    out.push({ name, total: segs.reduce((s, x) => s + x.qty, 0), segments: segs });
+  }
+  out.sort((a, b) => b.total - a.total);
+  return out;
+});
 
 // ————————— 内联编辑：改 store.data 后 watch 自动持久化 —————————
 
@@ -678,6 +802,17 @@ function fromPriceWan(input: string): number {
   const n = Number(input);
   if (!isFinite(n) || n <= 0) return 0;
   return Math.round(n * 10000);
+}
+
+/**
+ * 花费输入框的编辑期草稿（按站点 label 存原始文本）。
+ * 不能直接把 value 绑到 s.price：受控归一化会在用户键入 "1." 时把小数点吞掉。
+ * 编辑期间保留原始文本，失焦/回车时再提交。
+ */
+const priceDraft = ref<Record<string, string>>({});
+function commitPrice(i: number, label: string, raw: string) {
+  delete priceDraft.value[label];
+  updateStation(i, { price: fromPriceWan(raw) });
 }
 
 function patchLevel(patch: Record<string, unknown>) {
@@ -838,7 +973,7 @@ function toggleFlag(key: LevelFlagOpt['key']) {
       if (key === 'hasMergedProduction' && !level.value?.coProductionGroups?.length) addCpGroup();
       if (key === 'hasResourceStation' && !level.value?.resourceStationArr?.length) addResourceStation();
       if (key === 'hasPassengerStation' && !level.value?.passengerStationArr?.length) addPassengerStation();
-      if (key === 'hasExternalStation' && !level.value?.initialStations?.length) addStation();
+      if (key === 'hasExternalStation' && !level.value?.externalStationArr?.length) addStation();
       if (key === 'hasMultipleInstances' && !level.value?.multiChannelGroups?.length) addMcGroup();
     });
   }
@@ -1053,19 +1188,19 @@ function setPassengerLabel(idx: number, label: string) {
 }
 
 /** 模板直接调用：最低货运量 */
-function qtyMin(s?: InitialStation | null): number {
+function qtyMin(s?: ExternalStation | null): number {
   if (s && s.minQtyAuto) return cargoByLevel(minTrainLevel.value);
   if (s && isValidQty(s.minQty)) return s.minQty;
   return cargoByLevel(minTrainLevel.value);
 }
 /** 模板直接调用：最高货运量 */
-function qtyMax(s?: InitialStation | null): number {
+function qtyMax(s?: ExternalStation | null): number {
   if (s && s.maxQtyAuto) return cargoByLevel(maxTrainLevel.value);
   if (s && isValidQty(s.maxQty)) return s.maxQty;
   return cargoByLevel(maxTrainLevel.value);
 }
 /** 模板直接调用：刷新每次产出 */
-function qtyEach(s?: InitialStation | null): number {
+function qtyEach(s?: ExternalStation | null): number {
   if (s && s.qtyAuto) return cargoByLevel(maxTrainLevel.value);
   if (s && isValidQty(s.qty)) return s.qty;
   return cargoByLevel(maxTrainLevel.value);
@@ -1086,7 +1221,7 @@ const estimatedBestTime = computed<{
   const needs = result.value?.rawNeeds;
   if (!needs?.length) return null;
 
-  const stations = (lv.initialStations ?? []).filter((s) => s.kind === STATION_KIND.REFRESH && s.resourceId);
+  const stations = (lv.externalStationArr ?? []).filter((s) => s.kind === STATION_KIND.REFRESH && s.resourceId);
   if (!stations.length) return null;
 
   const details: Array<{ name: string; qty: number; per: number; trips: number; delay: number; interval: number; total: number }> = [];
@@ -1094,7 +1229,7 @@ const estimatedBestTime = computed<{
   for (const need of needs) {
     // 找同名刷新站点（通过实例 name 匹配）
     const station = stations.find((s) => {
-      const inst = store.instById.get(s.resourceId);
+      const inst = store.instById.get(s.resourceId ?? '');
       return inst?.name === need.name && inst.obtain === OBTAIN.REFRESH;
     });
     if (!station) continue;
@@ -1120,7 +1255,7 @@ const estimatedBestTime = computed<{
  *   3) ensureKindDefaults   → 切类型时联动 resourceId + 补齐新 kind 的默认值
  *   4) 模板 qtyMin/qtyMax/qtyEach → store 无有效值时 fallback 到 cargoByLevel(初始列车)
  * 之前有一个 deep watch 试图自动清洗所有站点的脏值，但它在 ensureKindDefaults 之后触发
- * 会用 normalizeStationDefaults 重新写 initialStations 数组，在某些时机把刚写入的 kind 覆盖回旧值。
+ * 会用 normalizeStationDefaults 重新写 externalStationArr 数组，在某些时机把刚写入的 kind 覆盖回旧值。
  * 已禁用该 watch，改由上述 4 个入口分别保证数据正确。
  */
 
@@ -1148,8 +1283,8 @@ function instancesOfName(name: string): ResourceInstance[] {
  * - 多种都有 → 多个按钮都显示
  * - 未选实例或都没有 → 兜底都显示
  */
-function availableKindsForStation(s: InitialStation): ('刷新' | '购买' | '客流')[] {
-	  const inst = store.instById.get(s.resourceId);
+function availableKindsForStation(s: ExternalStation): ('刷新' | '购买' | '客流')[] {
+	  const inst = store.instById.get(s.resourceId ?? '');
 	  if (!inst) return ['刷新', '购买', '客流'];
 	  const externals = instancesOfName(inst.name);
 	  const kinds = new Set<'刷新' | '购买' | '客流'>();
@@ -1163,7 +1298,7 @@ function availableKindsForStation(s: InitialStation): ('刷新' | '购买' | '�
 	}
 
 /** 判断关卡站点当前是否只有一种 type 可选（用于把按钮做成单选视觉） */
-function isSingleKindStation(s: InitialStation): boolean {
+function isSingleKindStation(s: ExternalStation): boolean {
   return availableKindsForStation(s).length === 1;
 }
 
@@ -1176,11 +1311,11 @@ function kindFromObtain(obtain?: string | null): StationExternalKind | undefined
 	}
 
 /** 切换 kind 时：联动改 resourceId + 补齐对应字段默认值（只填缺失，不覆盖玩家已填的 interval 等） */
-function ensureKindDefaults(s: InitialStation, kind: StationExternalKind): Partial<InitialStation> {
-  const patch: Partial<InitialStation> = { kind };
+function ensureKindDefaults(s: ExternalStation, kind: StationExternalKind): Partial<ExternalStation> {
+  const patch: Partial<ExternalStation> = { kind };
   const missing = (v: unknown) => v === undefined || v === null || v === 0;
   // 联动 resourceId：找当前物资下 obtain 匹配的 external 实例
-  const curInst = s.resourceId ? store.instById.get(s.resourceId) : undefined;
+  const curInst = s.resourceId ? store.instById.get(s.resourceId ?? '') : undefined;
   const name = curInst?.name;
   if (name) {
     const targetObtain = kind; // '刷新' / '购买' / '客流' 和 obtain 字段同名
@@ -1223,7 +1358,7 @@ function ensureKindDefaults(s: InitialStation, kind: StationExternalKind): Parti
 /** 选了物资名称后自动选第一个 external 实例，并自动匹配对应类型 */
 function pickStationResource(i: number, name: string) {
 	  const candidates = instancesOfName(name);
-	  const s = level.value?.initialStations?.[i];
+	  const s = level.value?.externalStationArr?.[i];
 	  if (!candidates.length) {
 	    // 无匹配实例 → 清空站点选择
 	    if (s) updateStation(i, { resourceId: '', kind: undefined });
@@ -1232,7 +1367,7 @@ function pickStationResource(i: number, name: string) {
 	  const chosen = candidates[0];
 	  if (s) {
 	    const kind = kindFromObtain(chosen.obtain);
-	    const patch: Partial<InitialStation> = { resourceId: chosen.id };
+	    const patch: Partial<ExternalStation> = { resourceId: chosen.id };
 	    if (kind) {
 	      Object.assign(patch, ensureKindDefaults(s, kind));
 	      patch.kind = kind;
@@ -1248,10 +1383,10 @@ function onStationInstChange(i: number, instId: string) {
     updateStation(i, { resourceId: '', kind: undefined });
     return;
   }
-  const s = level.value?.initialStations?.[i];
+  const s = level.value?.externalStationArr?.[i];
   if (s) {
     const kind = kindFromObtain(inst.obtain);
-    const patch: Partial<InitialStation> = { resourceId: instId };
+    const patch: Partial<ExternalStation> = { resourceId: instId };
     if (kind) {
       Object.assign(patch, ensureKindDefaults(s, kind));
       patch.kind = kind;
@@ -1260,12 +1395,21 @@ function onStationInstChange(i: number, instId: string) {
   }
 }
 
+/** 计算下一个外部站编号 mN+1（跳过历史空洞，避免重号） */
+function nextExternalLabel(list: ExternalStation[]): string {
+  let max = 0;
+  for (const s of list) {
+    const m = /^m(\d+)$/.exec(s.label ?? '');
+    if (m) max = Math.max(max, +m[1]);
+  }
+  return 'm' + (max + 1);
+}
+
 function addStation() {
   if (!level.value) return;
-  const list: InitialStation[] = level.value.initialStations ?? [];
-  const nextLabel = String.fromCharCode(65 + list.length); // A, B, C…
+  const list: ExternalStation[] = [...(level.value.externalStationArr ?? [])];
   list.push({
-    label: nextLabel,
+    label: nextExternalLabel(list),
     resourceId: '',
     qty: cargoByLevel(maxTrainLevel.value),
     qtyAuto: true,
@@ -1279,12 +1423,10 @@ function addStation() {
     maxQtyAuto: true,
     price: 0,
   });
-  // 清理新行对应的 stationKeywords（避免旧数据残留导致显示错误）
-  delete stationKeywords.value[list.length - 1];
-  patchLevel({ initialStations: list });
+  patchLevel({ externalStationArr: list, hasExternalStation: true });
 }
-function updateStation(i: number, patch: Partial<InitialStation>) {
-  const list = [...(level.value?.initialStations ?? [])];
+function updateStation(i: number, patch: Partial<ExternalStation>) {
+  const list = [...(level.value?.externalStationArr ?? [])];
   const merged = { ...list[i], ...patch };
   // 用户手动改数量时 → 清除对应的 auto 标记，锁定
   if (patch.qty !== undefined) merged.qtyAuto = false;
@@ -1298,24 +1440,14 @@ function updateStation(i: number, patch: Partial<InitialStation>) {
     }
   }
   list[i] = merged;
-  patchLevel({ initialStations: list });
+  patchLevel({ externalStationArr: list });
 }
 function removeStation(i: number) {
-  const list = (level.value?.initialStations ?? []).filter((_, idx) => idx !== i);
-  // 清理 stationKeywords：删除移除行的关键字，并重新索引后续行
-  delete stationKeywords.value[i];
-  for (let j = i; j < list.length; j++) {
-    if (stationKeywords.value[j + 1] !== undefined) {
-      stationKeywords.value[j] = stationKeywords.value[j + 1]!;
-    } else {
-      delete stationKeywords.value[j];
-    }
-  }
-  delete stationKeywords.value[list.length];
+  const list = (level.value?.externalStationArr ?? []).filter((_, idx) => idx !== i);
   if (!list.length) {
-    patchLevel({ initialStations: list, hasExternalStation: false });
+    patchLevel({ externalStationArr: [], hasExternalStation: false });
   } else {
-    patchLevel({ initialStations: list });
+    patchLevel({ externalStationArr: list });
   }
 }
 
@@ -1334,16 +1466,19 @@ function addCpGroup() {
 }
 function removeCpGroup(cpIdx: number) {
   const list = (level.value?.coProductionGroups ?? []).filter((_, idx) => idx !== cpIdx);
-  if (!list.length) {
-    patchLevel({ coProductionGroups: undefined, hasMergedProduction: false });
-  } else {
-    patchLevel({ coProductionGroups: list });
-  }
+  // 删除到空时写 []（而非 undefined）：undefined 在序列化时被丢弃，会让合并逻辑
+  // 回落到 seed 里的旧数据，导致"删掉的组刷新后又冒出来"。
+  patchLevel({ coProductionGroups: list, hasMergedProduction: list.length > 0 });
 }
 function updateCpGroup(cpIdx: number, patch: Partial<CoProductionGroup>) {
   const list = [...(level.value?.coProductionGroups ?? [])];
   list[cpIdx] = { ...list[cpIdx], ...patch };
   patchLevel({ coProductionGroups: list });
+}
+/** 解析「建议拆 N 次」：空 / 非法 / ≤0 → undefined（不限，走最佳配平）；否则取正整数 */
+function setCpMaxCycles(cpIdx: number, e: Event) {
+  const n = parseInt((e.target as HTMLInputElement).value.trim(), 10);
+  updateCpGroup(cpIdx, { maxCycles: Number.isFinite(n) && n > 0 ? n : undefined });
 }
 function addCpOutput(cpIdx: number) {
   const list = [...(level.value?.coProductionGroups ?? [])];
@@ -1451,11 +1586,8 @@ function addMcGroup() {
 function removeMcGroup(idx: number) {
   const list = (level.value?.multiChannelGroups ?? []).filter((_, i) => i !== idx);
   delete mcExpanded[idx];
-  if (!list.length) {
-    patchLevel({ multiChannelGroups: undefined, hasMultipleInstances: false });
-  } else {
-    patchLevel({ multiChannelGroups: list });
-  }
+  // 同上：删除到空写 []，保证删除意图能覆盖 seed，刷新后不再复活空组
+  patchLevel({ multiChannelGroups: list, hasMultipleInstances: list.length > 0 });
 }
 function mcTypeSuggestions(idx: number): string[] {
   const kw = (level.value?.multiChannelGroups?.[idx]?.typeName ?? '').trim();
@@ -1473,7 +1605,7 @@ function getUsedInstanceIds(typeName: string): string[] {
   };
   for (const g of level.value.goals ?? []) if (g.resourceId) check(g.resourceId);
   for (const s of level.value.resourceStationArr ?? []) if (s.resourceId) check(s.resourceId);
-  for (const s of level.value.initialStations ?? []) if (s.resourceId) check(s.resourceId);
+  for (const s of level.value.externalStationArr ?? []) if (s.resourceId) check(s.resourceId);
   for (const g of level.value.coProductionGroups ?? [])
     for (const o of g.outputs) check(o.instanceId);
   return [...used];
@@ -1517,7 +1649,7 @@ function toggleMcInstance(idx: number, instanceId: string) {
   patchLevel({ multiChannelGroups: list });
 }
 
-// ——— initialStations 自定义联想 & 下拉 ———
+// ——— 外部站点自定义联想 & 下拉 ———
 
 /** 每行的物资搜索关键字 */
 const stationKeywords = ref<Record<number, string>>({});
@@ -1796,9 +1928,9 @@ function openStationInst(i: number) {
     return;
   }
   activeStationInst.value = i;
-  const s = level.value?.initialStations?.[i];
+  const s = level.value?.externalStationArr?.[i];
   if (s?.resourceId) {
-    const name = store.instById.get(s.resourceId)?.name;
+    const name = store.instById.get(s.resourceId ?? '')?.name;
     if (name) {
       const list = instancesOfName(name);
       stationInstCursor.value[i] = list.findIndex((x) => x.id === s.resourceId);
@@ -1816,9 +1948,9 @@ function pickStationInst(i: number, instId: string) {
 /** 实例下拉键盘事件 */
 function onStationInstKeydown(i: number, e: KeyboardEvent) {
   if (activeStationInst.value !== i) return;
-  const s = level.value?.initialStations?.[i];
+  const s = level.value?.externalStationArr?.[i];
   if (!s?.resourceId) return;
-  const name = store.instById.get(s.resourceId)?.name;
+  const name = store.instById.get(s.resourceId ?? '')?.name;
   if (!name) return;
   const list = instancesOfName(name);
   if (!list.length) return;
@@ -1890,7 +2022,7 @@ function closeStationPopups() {
       </div>
       <div ref="levelListRef" @scroll="saveLevelListScroll" class="mt-3 grid flex-1 min-h-0 grid-cols-1 gap-1.5 overflow-y-auto pr-1">
         <button
-          v-for="(l, i) in filtered" :key="l.id"
+          v-for="l in filtered" :key="l.id"
           :data-level-id="l.id"
           class="group rounded-md border px-3 py-2 text-left transition-colors"
           :class="l.id === selectedId
@@ -1899,7 +2031,7 @@ function closeStationPopups() {
           @click="pickedId = l.id"
         >
           <div class="flex items-baseline gap-2">
-            <span v-if="contentTypeFilter !== FILTER_ALL" class="text-[11px] text-fog-500">{{ String(i + 1).padStart(2, '0') }}</span>
+            <span v-if="contentTypeFilter !== FILTER_ALL" class="text-[11px] text-fog-500">{{ String(levelOrderIndex.get(l.id) ?? 0).padStart(2, '0') }}</span>
             <span class="text-sm font-semibold text-fog-100 group-hover:text-amber-brand">{{ l.name }}</span>
           </div>
           <div class="mt-0.5 text-[11px] text-fog-400">
@@ -2163,7 +2295,7 @@ function closeStationPopups() {
          </div>
 
          <!-- —— 资源站点（无限/库存初始配置，可配置解锁） —— -->
-         <div v-if="level.hasResourceStation === true" class="mt-3 rounded-md border border-ink-600">
+         <div v-if="level.hasResourceStation === true || (level.resourceStationArr?.length ?? 0) > 0" class="mt-3 rounded-md border border-ink-600">
            <div class="flex items-center justify-between border-b border-ink-600 bg-ink-700/30 px-3 py-1.5">
              <div class="text-xs font-medium text-fog-300">💎 初始资源站点（自动生产材料或直接提供库存）</div>
              <button class="btn !px-2 !py-0.5 text-xs" @click="addResourceStation">+ 添加资源站点</button>
@@ -2277,7 +2409,7 @@ function closeStationPopups() {
          </div>
 
          <!-- —— 客流站点（乘客带来物资，每次1列车运载量，可解锁） —— -->
-         <div v-if="level.hasPassengerStation === true" class="mt-3 rounded-md border border-ink-600">
+         <div v-if="level.hasPassengerStation === true || (level.passengerStationArr?.length ?? 0) > 0" class="mt-3 rounded-md border border-ink-600">
            <div class="flex items-center justify-between border-b border-ink-600 bg-ink-700/30 px-3 py-1.5">
              <div class="text-xs font-medium text-fog-300">🚃 客流站点（乘客带来物资，每次 1 列车运载量）</div>
              <button class="btn !px-2 !py-0.5 text-xs" @click="addPassengerStation">+ 添加客流站</button>
@@ -2338,16 +2470,16 @@ function closeStationPopups() {
            </div>
          </div>
 
-        <div v-if="level.hasExternalStation === true" class="mt-3 rounded-md border border-ink-600">
+        <div v-if="level.hasExternalStation === true || (level.externalStationArr?.length ?? 0) > 0" class="mt-3 rounded-md border border-ink-600">
           <div class="flex items-center justify-between border-b border-ink-600 bg-ink-700/30 px-3 py-1.5">
-            <div class="text-xs font-medium text-fog-300">📦 外部物资站点（定时周期运送或者空投购买材料）</div>
+            <div class="text-xs font-medium text-fog-300">📦 外部物资站点（购买空投材料的运载量为玩家选择的列车，定时周期运送的为当前关卡火车最高等级的运载量）</div>
             <button class="btn !px-2 !py-0.5 text-xs" @click="addStation">+ 添加外部站点</button>
           </div>
-          <div v-if="!level.initialStations?.length" class="py-3 text-center text-xs text-fog-500">暂无外部站点 — 点「+ 添加外部站点」开始配置</div>
+          <div v-if="!level.externalStationArr?.length" class="py-3 text-center text-xs text-fog-500">暂无外部站点 — 点「+ 添加外部站点」开始配置</div>
           <div v-else class="px-2 py-2 space-y-2">
             <div
-              v-for="(s, i) in level.initialStations"
-              :key="i"
+              v-for="(s, i) in level.externalStationArr"
+              :key="s.label"
               class="rounded-md border-2 border-dashed border-bad/50 bg-bad/5 p-2 flex flex-wrap items-center gap-1"
             >
               <!-- 标识 -->
@@ -2361,9 +2493,9 @@ function closeStationPopups() {
                   <input
                     type="text"
                     class="w-[64px]"
-                    :value="stationKeywords[i] ?? store.instById.get(s.resourceId)?.name ?? ''"
+                    :value="stationKeywords[i] ?? store.instById.get(s.resourceId ?? '')?.name ?? ''"
                     placeholder="物资名…"
-                    @focus="activeStationSuggest = i; if (stationKeywords[i] === undefined && s.resourceId) stationKeywords[i] = store.instById.get(s.resourceId)?.name ?? ''"
+                    @focus="activeStationSuggest = i; if (stationKeywords[i] === undefined && s.resourceId) stationKeywords[i] = store.instById.get(s.resourceId ?? '')?.name ?? ''"
                     @input="stationKeywords[i] = ($event.target as HTMLInputElement).value; activeStationSuggest = i; stationSuggestCursor[i] = 0"
                     @keydown="onStationSuggestKeydown(i, $event)"
                   />
@@ -2384,7 +2516,7 @@ function closeStationPopups() {
 
               <!-- 实例自定义下拉 -->
               <div class="px-2 py-1 shrink-0">
-                <template v-if="store.instById.get(s.resourceId)">
+                <template v-if="store.instById.get(s.resourceId ?? '')">
                   <div class="relative">
                     <button
                       type="button"
@@ -2394,7 +2526,7 @@ function closeStationPopups() {
                       @click.stop="openStationInst(i)"
                       @keydown="onStationInstKeydown(i, $event)"
                     >
-                      <span class="truncate">{{ store.instById.get(s.resourceId)!.id }}</span>
+                      <span class="truncate">{{ store.instById.get(s.resourceId ?? '')!.id }}</span>
                       <span class="ml-1 text-fog-500">▾</span>
                     </button>
                     <ul
@@ -2402,7 +2534,7 @@ function closeStationPopups() {
                       class="absolute left-0 top-full z-30 mt-0.5 max-h-[200px] min-w-[160px] overflow-auto rounded border border-ink-600 bg-ink-800 shadow-lg"
                     >
                       <li
-                        v-for="(inst, li) in instancesOfName(store.instById.get(s.resourceId)!.name)"
+                        v-for="(inst, li) in instancesOfName(store.instById.get(s.resourceId ?? '')!.name)"
                         :key="inst.id"
                         class="cursor-pointer px-2 py-1 text-[11px]"
                         :class="[
@@ -2420,7 +2552,7 @@ function closeStationPopups() {
 
               <!-- 类型：按钮组 → 根据物资 name 动态过滤可用 kind -->
               <div class="px-2 py-1 shrink-0">
-                <div v-if="store.instById.get(s.resourceId)" class="grid grid-cols-2 gap-0.5 min-w-[80px]">
+                <div v-if="store.instById.get(s.resourceId ?? '')" class="grid grid-cols-2 gap-0.5 min-w-[80px]">
                   <div class="flex items-center">
                     <button
                       v-if="availableKindsForStation(s).includes('刷新')"
@@ -2450,38 +2582,10 @@ function closeStationPopups() {
               </div>
 
               <!-- 配置区：按 kind 分支（只有 刷新 / 购买 两种） -->
-              <div class="px-2 py-1 flex-1">
+              <div class="px-2 py-1">
                 <!-- 刷新类 -->
                 <template v-if="s.kind === STATION_KIND.REFRESH">
                   <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
-                    <!-- 运载量（自动读取最高载货量） -->
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-[11px] text-fog-500">运载量</span>
-
-                      <!-- 显式配置了最高升级 → 自动读取最高载货量，只读展示 -->
-                      <template v-if="true">
-                        <div class="inline-flex h-7 items-center rounded-md border border-steel-brand/30 bg-steel-brand/10 px-2 text-[12px] tabular-nums text-steel-brand">
-                          {{ cargoByLevel(maxTrainLevel) }}
-                        </div>
-                      </template>
-
-                      <!-- 没显式配置 → 可手动填 -->
-                      <template v-else>
-                        <div class="inline-flex h-7 items-center overflow-hidden rounded-md border border-ink-500 bg-ink-700/60 text-[12px] tabular-nums focus-within:ring-1 focus-within:ring-steel-brand/50">
-                          <button class="h-full w-6 text-fog-400 transition hover:bg-amber-brand/10 hover:text-amber-brand disabled:opacity-30"
-                            :disabled="qtyEach(s) <= 1"
-                            @click="updateStation(i, { qty: Math.max(1, qtyEach(s) - 1) })">−</button>
-                          <input type="text" inputmode="numeric"
-                            class="w-10 bg-transparent text-center text-fog-100 outline-none"
-                            :value="qtyEach(s)"
-                            @input="updateStation(i, { qty: Math.max(1, +($event.target as HTMLInputElement).value || 1) })"
-                            @focus="($event.target as HTMLInputElement).select()" />
-                          <button class="h-full w-6 text-fog-400 transition hover:bg-amber-brand/10 hover:text-amber-brand"
-                            @click="updateStation(i, { qty: qtyEach(s) + 1 })">+</button>
-                        </div>
-                      </template>
-                    </div>
-
                     <!-- 开始方式按钮组 -->
                     <div class="flex items-center gap-0.5">
                       <button type="button"
@@ -2553,21 +2657,14 @@ function closeStationPopups() {
                       <span class="text-[11px] text-fog-500">花费</span>
                       <div class="inline-flex h-7 items-center overflow-hidden rounded-md border border-ink-500 bg-ink-700/60 text-[12px] tabular-nums focus-within:ring-1 focus-within:ring-steel-brand/50">
                         <input type="text" inputmode="decimal" class="w-14 bg-transparent text-right text-fog-100 outline-none"
-                          :value="priceWan(s.price)"
-                          @input="updateStation(i, { price: fromPriceWan(($event.target as HTMLInputElement).value) })" />
+                          :value="priceDraft[s.label] ?? priceWan(s.price)"
+                          @focus="priceDraft[s.label] = String(priceWan(s.price))"
+                          @input="priceDraft[s.label] = ($event.target as HTMLInputElement).value"
+                          @blur="commitPrice(i, s.label, ($event.target as HTMLInputElement).value)"
+                          @keydown.enter="($event.target as HTMLInputElement).blur()" />
                       </div>
                       <span class="text-[11px] text-fog-500">万$/趟</span>
                     </div>
-
-                    <!-- 运载量（只读显示） -->
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-[11px] text-fog-500">运载量</span>
-                      <div class="inline-flex h-7 items-center rounded-md border border-steel-brand/30 bg-steel-brand/10 px-2 text-[12px] tabular-nums text-steel-brand">
-                        {{ qtyMin(s) === qtyMax(s) ? qtyMin(s) : qtyMin(s) + '~' + qtyMax(s) }}
-                      </div>
-                    </div>
-
-                    <span class="text-[10px] text-fog-600">玩家自选列车运力</span>
                   </div>
                 </template>
 
@@ -2603,8 +2700,20 @@ function closeStationPopups() {
                 </template>
               </div>
 
+              <!-- 🛒 建议提供：当该行物资名存在同名不同实例（生产/拆卸/另一外部）时显示 -->
+              <div v-if="suggestNames.has(store.instById.get(s.resourceId ?? '')?.name ?? '')" class="px-2 py-1 shrink-0">
+                <div class="flex items-center gap-1">
+                  <span class="text-[11px] text-fog-500">🛒 建议提供</span>
+                  <input type="text" inputmode="numeric" class="w-[48px] text-center text-[11px]"
+                    :value="s.suggestQty ?? ''"
+                    placeholder="自动"
+                    @input="updateStation(i, { suggestQty: parseInt(($event.target as HTMLInputElement).value, 10) || undefined })" />
+                  <span class="text-[11px] text-fog-500">份</span>
+                </div>
+              </div>
+
               <!-- 删除 -->
-              <div class="px-2 py-1 shrink-0">
+              <div class="ml-auto px-2 py-1 shrink-0">
                 <button class="text-[11px] text-bad/80 hover:text-bad whitespace-nowrap" @click="removeStation(i)">删除此站</button>
               </div>
             </div>
@@ -2612,7 +2721,7 @@ function closeStationPopups() {
         </div>
 
         <!-- 🔗 拆卸工厂站点：在外部物资站点下方 -->
-        <div v-if="level.hasMergedProduction === true" class="mt-3 rounded-md border border-ink-600">
+        <div v-if="level.hasMergedProduction === true || (level.coProductionGroups?.length ?? 0) > 0" class="mt-3 rounded-md border border-ink-600">
           <div class="flex items-center justify-between border-b border-ink-600 bg-ink-700/30 px-3 py-1.5">
             <div class="text-xs font-medium text-fog-300">🔗 拆卸工厂站点（1组配方材料同时生产1组各类材料）</div>
             <button class="btn !px-2 !py-0.5 text-xs" @click="addCpGroup">+ 添加拆卸工厂</button>
@@ -2637,15 +2746,12 @@ function closeStationPopups() {
                     <span v-else :class="CATEGORY_TEXT_CLS[item.category] || 'text-fog-200'">{{ item.name }}</span>
                   </template>
                 </span>
-                <span class="text-[10px] text-fog-500">每次消耗</span>
-                <input type="text" inputmode="numeric" class="w-[48px] text-center text-[11px]" :value="cp.perIn ?? 1" @input="updateCpGroup(cpIdx, { perIn: Math.max(1, +($event.target as HTMLInputElement).value || 1) })" />
-                <span class="text-[10px] text-fog-500">份</span>
-                <span class="text-[10px] text-fog-500">🏭 拆卸份数</span>
+                <span class="text-[10px] text-fog-500">🛑 建议拆</span>
                 <input type="text" inputmode="numeric" class="w-[48px] text-center text-[11px]"
-                  :value="cp.manualOutput ?? ''"
-                  placeholder="自动"
-                  @input="updateCpGroup(cpIdx, { manualOutput: Math.max(1, +($event.target as HTMLInputElement).value || 0) || undefined })" />
-                <span class="text-[10px] text-fog-500">份</span>
+                  :value="cp.maxCycles ?? ''"
+                  placeholder="不限"
+                  @input="setCpMaxCycles(cpIdx, $event)" />
+                <span class="text-[10px] text-fog-500">次</span>
                 <span class="flex-1" />
                 <button class="text-[11px] text-bad/80 hover:text-bad" @click="removeCpGroup(cpIdx)">删除此站</button>
               </div>
@@ -2749,7 +2855,7 @@ function closeStationPopups() {
         </div>
 
         <!-- 🧬 多渠道生产组：在拆卸工厂站点下方 -->
-        <div v-if="level.hasMultipleInstances" class="mt-3 rounded-md border border-ink-600">
+        <div v-if="level.hasMultipleInstances || (level.multiChannelGroups?.length ?? 0) > 0" class="mt-3 rounded-md border border-ink-600">
           <div class="flex items-center justify-between border-b border-ink-600 bg-ink-700/30 px-3 py-1.5">
             <div class="text-xs font-medium text-fog-300">🧬 多渠道生产组（同类型物资多实例配置）</div>
             <button class="btn !px-2 !py-0.5 text-xs" @click="addMcGroup">+ 添加渠道组</button>
@@ -2791,8 +2897,8 @@ function closeStationPopups() {
               <div v-if="mc.typeName" class="space-y-1">
                 <div v-for="inst in (mcExpanded[mcIdx] ? mcInstanceOptions(mc.typeName) : mcInstanceOptions(mc.typeName).filter(i => mc.instanceIds.includes(i.id)))" :key="inst.id"
                   class="flex items-center gap-2 py-0.5">
-                  <label class="flex items-center justify-between cursor-pointer select-none shrink-0 w-20">
-                    <span class="text-[11px] text-fog-200">{{ inst.id }}</span>
+                  <label class="flex items-center justify-between gap-1 cursor-pointer select-none shrink-0 w-28">
+                    <span class="text-[11px] text-fog-200 whitespace-nowrap">{{ inst.id }}</span>
                     <input type="checkbox" :checked="mc.instanceIds.includes(inst.id)"
                       @change="toggleMcInstance(mcIdx, inst.id)" class="accent-steel-brand" />
                   </label>
@@ -2874,6 +2980,35 @@ function closeStationPopups() {
             <span v-else class="text-[11px] text-fog-400">全部目标由工人直供，无额外原料</span>
           </template>
           <span v-else class="text-[11px] text-fog-500">请先添加目标 — 这里会自动拆解出最终基础原料</span>
+        </div>
+
+        <!-- 🔀 渠道分配预览（只读）：同时存在拆卸渠道与非拆卸渠道的物资 -->
+        <div class="mt-3" v-if="channelAllocations.length">
+          <div class="rounded-md border border-ink-600 bg-ink-700/40 p-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="text-sm font-semibold text-steel-brand">🔀 渠道分配预览</h3>
+              <span class="text-[11px] text-fog-400/70">（只读：拆卸组按「建议拆 N 次」封顶后，剩余需求流向非拆卸渠道）</span>
+              <span class="inline-flex items-center gap-1 text-[10px] text-fog-400"><span class="inline-block h-2 w-3 rounded-sm bg-amber-brand"></span>拆卸渠道</span>
+              <span class="inline-flex items-center gap-1 text-[10px] text-fog-400"><span class="inline-block h-2 w-3 rounded-sm bg-steel-brand"></span>非拆卸渠道</span>
+            </div>
+            <div class="mt-2 flex flex-col gap-2">
+              <div v-for="alloc in channelAllocations" :key="alloc.name" class="flex items-center gap-2">
+                <span class="w-[72px] shrink-0 text-[11px] text-fog-200"><ResLabel :name="alloc.name" /></span>
+                <div class="flex h-6 flex-1 overflow-hidden rounded border border-ink-600">
+                  <div
+                    v-for="seg in alloc.segments" :key="seg.instanceId"
+                    class="flex items-center justify-center gap-1 overflow-hidden whitespace-nowrap px-1.5 text-[10px] font-medium text-ink-900"
+                    :class="seg.isCp ? 'bg-amber-brand' : 'bg-steel-brand'"
+                    :style="{ flexGrow: seg.qty, flexBasis: 0, minWidth: '46px' }"
+                    :title="`${seg.isCp ? '拆卸' : '非拆卸'}渠道 ${seg.instanceId}：${seg.qty}`">
+                    <span class="truncate">{{ seg.instanceId }}</span>
+                    <span class="shrink-0 font-bold tabular-nums">{{ seg.qty }}</span>
+                  </div>
+                </div>
+                <span class="w-[56px] shrink-0 text-right text-[11px] text-fog-400">合计 {{ alloc.total }}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- 📊 多方案对比：最终需求下方，概览上方 -->
