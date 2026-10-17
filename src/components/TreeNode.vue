@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** 拆解树节点（递归组件）：展示物资实例模型下的拆解结果，电力只作条件标记 */
-import { VIA, STATION_KIND, CATEGORY } from '@/constants';
+import { VIA, STATION_KIND } from '@/constants';
 import type { BreakdownNode } from '@/engine/breakdown';
-import { fmtMinSec } from '@/utils/format';
+import { RESOURCE_CATEGORY_STYLE, fmtMinSec } from '@/utils/format';
 import AppIcon from './AppIcon.vue';
 import ResLabel from './ResLabel.vue';
 
@@ -81,12 +81,11 @@ function viaText(n: BreakdownNode): string {
   }
 }
 
-const CAT_TAG: Record<string, { text: string; cls: string }> = {
-  [CATEGORY.RAW]:       { text: '原料',   cls: 'border-good/60 text-good' },
-  [CATEGORY.PROCESSED]: { text: '加工品', cls: 'border-steel-brand/60 text-steel-brand' },
-  [CATEGORY.COMPOUND]:  { text: '复合品', cls: 'border-amber-brand/70 text-amber-brand' },
-};
-function catInfo(n: BreakdownNode) { return CAT_TAG[n.category]; }
+/** 物资分类标签：文案与配色统一取自 utils/format 的 RESOURCE_CATEGORY_STYLE */
+function catInfo(n: BreakdownNode) {
+  const s = RESOURCE_CATEGORY_STYLE[n.category];
+  return s ? { text: s.label, cls: s.tree } : undefined;
+}
 </script>
 
 <template>
@@ -130,7 +129,7 @@ function catInfo(n: BreakdownNode) { return CAT_TAG[n.category]; }
     <template v-else>
       <div class="flex flex-wrap items-baseline gap-2 py-0.5">
         <ResLabel :id="node.instanceId" :name="node.name" :qty="node.qty || undefined" />
-        <span v-if="node.via !== VIA.POWER_TAG && catInfo(node)" class="tag" :class="catInfo(node).cls">{{ catInfo(node).text }}</span>
+        <span v-if="node.via !== VIA.POWER_TAG && catInfo(node)" class="tag" :class="catInfo(node)?.cls">{{ catInfo(node)?.text }}</span>
         <span v-if="node.via === VIA.PRODUCE" class="text-xs text-fog-400">← {{ viaText(node) }}</span>
         <span v-else-if="node.via !== VIA.POWER_TAG && node.via !== VIA.UNKNOWN" class="text-xs text-fog-400">（{{ viaText(node) }}）</span>
         <span v-else-if="node.via === VIA.POWER_TAG" class="text-xs text-amber-brand/80">{{ viaText(node) }}</span>

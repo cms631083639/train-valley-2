@@ -1,8 +1,38 @@
-import type { ContentCategory, ObtainMethod } from '@/types';
+import { CATEGORY } from '@/constants';
+import type { ContentCategory, ObtainMethod, ResourceCategory } from '@/types';
 
-export const CATEGORY_LABEL: Record<ContentCategory, string> = {
+/** 内容分类（游戏本体 / DLC）显示文案 */
+export const CONTENT_CATEGORY_LABEL: Record<ContentCategory, string> = {
   游戏本体: '本体',
   DLC: 'DLC',
+};
+
+/**
+ * 物资分类（原料 / 加工品 / 复合品）展示元数据 —— 全项目唯一来源。
+ * label：文案；tag：完整标签配色（底+边+字）；chip：内联胶囊配色（底+字）；tree：拆解树标签配色（边+字）
+ */
+export const RESOURCE_CATEGORY_STYLE: Record<
+  ResourceCategory,
+  { label: string; tag: string; chip: string; tree: string }
+> = {
+  [CATEGORY.RAW]: {
+    label: '原料',
+    tag: 'bg-good/15 text-good border border-good/30',
+    chip: 'bg-good/15 text-good',
+    tree: 'border-good/60 text-good',
+  },
+  [CATEGORY.PROCESSED]: {
+    label: '加工品',
+    tag: 'bg-steel-brand/15 text-steel-brand border border-steel-brand/30',
+    chip: 'bg-steel-brand/15 text-steel-brand',
+    tree: 'border-steel-brand/60 text-steel-brand',
+  },
+  [CATEGORY.COMPOUND]: {
+    label: '复合品',
+    tag: 'bg-amber-brand/15 text-amber-brand border border-amber-brand/30',
+    chip: 'bg-amber-brand/15 text-amber-brand',
+    tree: 'border-amber-brand/70 text-amber-brand',
+  },
 };
 
 export const OBTAIN_LABEL: Record<ObtainMethod, string> = {

@@ -5,12 +5,12 @@
  *   - 配方实例下拉（按名称过滤，若未选名称则显示全部）
  *   两列顺序无关，选了名称会缩小实例范围，选了实例会自动锁定名称
  */
-import { CATEGORY } from '@/constants';
 import { computed, nextTick, reactive, watch } from 'vue';
 import type { LevelGoal, ResourceInstance, MultiChannelGroup, CoProductionGroup } from '@/types';
 import { useGameStore } from '@/stores/game';
 import { classifyInstance, classifyName } from '@/engine/breakdown';
 import { dedupeInputs } from '@/utils/recipe';
+import { RESOURCE_CATEGORY_STYLE } from '@/utils/format';
 import type { ResourceCategory, WorkerStation } from '@/types';
 import AppIcon from './AppIcon.vue';
 import { useSuggestCombo } from '@/composables/useSuggestCombo';
@@ -81,12 +81,6 @@ function setWorkerUnlockCost(label: string, cost: number) {
   arr[idx] = { ...arr[idx], unlockCost: Math.max(0, cost || 0) };
   emit('update:workerStations', arr);
 }
-
-const CAT_LABEL: Record<ResourceCategory, string> = {
-  [CATEGORY.RAW]: '原料',
-  [CATEGORY.PROCESSED]: '加工品',
-  [CATEGORY.COMPOUND]: '复合品',
-};
 
 interface RowState {
   /** 选中的物资名称（空 = 未选） */
@@ -997,11 +991,8 @@ defineExpose({ add, addShared });
           <!-- 类型（whitespace-nowrap 防换行） -->
           <div class="flex w-[48px] flex-none items-center justify-start">
             <template v-if="currentCat(rowIdx)">
-              <span class="inline-block rounded px-1.5 py-0.5 text-center text-[11px] font-medium whitespace-nowrap" :class="{
-                'bg-good/15 text-good border border-good/30': currentCat(rowIdx) === CATEGORY.RAW,
-                'bg-steel-brand/15 text-steel-brand border border-steel-brand/30': currentCat(rowIdx) === CATEGORY.PROCESSED,
-                'bg-amber-brand/15 text-amber-brand border border-amber-brand/30': currentCat(rowIdx) === CATEGORY.COMPOUND,
-              }">{{ CAT_LABEL[currentCat(rowIdx)!] }}</span>
+              <span class="inline-block rounded px-1.5 py-0.5 text-center text-[11px] font-medium whitespace-nowrap"
+                :class="RESOURCE_CATEGORY_STYLE[currentCat(rowIdx)!].tag">{{ RESOURCE_CATEGORY_STYLE[currentCat(rowIdx)!].label }}</span>
             </template>
             <span v-else class="text-[11px] text-fog-400">—</span>
           </div>

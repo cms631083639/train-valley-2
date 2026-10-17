@@ -5,6 +5,7 @@ import { computed, ref } from 'vue';
 import { useGameStore } from '@/stores/game';
 import { classifyInstance } from '@/engine/breakdown';
 import type { ResourceInstance, ResourceCategory } from '@/types';
+import { RESOURCE_CATEGORY_STYLE } from '@/utils/format';
 import InstanceForm from '@/components/InstanceForm.vue';
 
 const store = useGameStore();
@@ -134,12 +135,8 @@ function onRemove(r: ResourceInstance) {
 
           <div class="flex w-[80px] justify-center px-2">
             <span class="whitespace-nowrap rounded border px-1.5 py-0.5 text-center text-[11px] font-medium"
-              :class="{
-                'border-good/30 bg-good/15 text-good': classifyType(r) === CATEGORY.RAW,
-                'border-steel-brand/30 bg-steel-brand/15 text-steel-brand': classifyType(r) === CATEGORY.PROCESSED,
-                'border-amber-brand/30 bg-amber-brand/15 text-amber-brand': classifyType(r) === CATEGORY.COMPOUND,
-              }">
-              {{ classifyType(r) === CATEGORY.RAW ? '原料' : classifyType(r) === CATEGORY.PROCESSED ? '加工品' : '复合品' }}
+              :class="RESOURCE_CATEGORY_STYLE[classifyType(r)].tag">
+              {{ RESOURCE_CATEGORY_STYLE[classifyType(r)].label }}
             </span>
           </div>
 

@@ -7,7 +7,7 @@ import type { ExternalStation, LevelGoal, ResourceInstance, WorkerStation } from
 import { POWER_NAME, WORKER_NAME } from '@/types';
 import { useGameStore } from '@/stores/game';
 import { useLevelCalc } from '@/composables/useLevelCalc';
-import { CATEGORY_LABEL, fmtMinSec, fmtSeconds, starConditionText } from '@/utils/format';
+import { CONTENT_CATEGORY_LABEL, fmtMinSec, fmtSeconds, starConditionText } from '@/utils/format';
 import { recipeText } from '@/utils/recipe';
 import {
   buildStationInfoByName,
@@ -643,7 +643,7 @@ function getUsedInstanceIds(typeName: string): string[] {
             <span class="text-sm font-semibold text-fog-100 group-hover:text-amber-brand">{{ l.name }}</span>
           </div>
           <div class="mt-0.5 text-[11px] text-fog-400">
-            {{ CATEGORY_LABEL[l.category] }} · {{ l.chapter }}
+            {{ CONTENT_CATEGORY_LABEL[l.category] }} · {{ l.chapter }}
             <template v-if="l.seconds"> · {{ fmtSeconds(l.seconds) }}</template>
             <template v-if="l.goals.length"> · <span class="text-amber-brand">{{ l.goals.length }} 目标</span></template>
           </div>
@@ -659,7 +659,7 @@ function getUsedInstanceIds(typeName: string): string[] {
       <div class="panel">
         <div class="flex flex-wrap items-center gap-2">
           <h2 class="text-lg font-bold text-fog-100">{{ level.name }}</h2>
-          <span class="tag">{{ CATEGORY_LABEL[level.category] }} · {{ level.contentType }}</span>
+          <span class="tag">{{ CONTENT_CATEGORY_LABEL[level.category] }} · {{ level.contentType }}</span>
           <span class="tag">{{ level.chapter }}</span>
           <span v-if="level.seconds" class="tag"><AppIcon name="clock" :size="12" /> {{ fmtSeconds(level.seconds) }}（最佳 {{ level.bestTime }}）</span>
           <span v-if="level.earn" class="tag"><AppIcon name="coin" :size="12" /> 收入 {{ level.earn }}</span>
