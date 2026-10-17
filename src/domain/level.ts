@@ -6,7 +6,7 @@
  * 便于复用、单测与后续把 store 拆分。
  */
 import { OBTAIN, REFRESH_START, STATION_KIND } from '@/constants';
-import type { ExternalStation, Level, LevelGoal, ResourceInstance, WorkerStation } from '@/types';
+import type { ExternalStation, Level, LevelGoal, MultiChannelGroup, ResourceInstance, WorkerStation } from '@/types';
 
 /** 实例 id → 实例 的索引（对应 store.instById） */
 export type InstIndex = Map<string, ResourceInstance>;
@@ -346,19 +346,77 @@ export function deriveEffectiveWorkerStations(lv: Level | undefined, goals: Leve
 }
 
 /** 获取关卡中已使用的指定类型实例 ID 列表（多渠道面板也复用） */
-export function collectUsedInstanceIds(lv: Level | undefined, typeName: string, instById: InstIndex): string[] {
+export function collectUsedInstanceIds(
+  lv: Level | undefined,
+  typeName: string,
+  instById: InstIndex,
+  goals?: LevelGoal[],
+): string[] {
   if (!lv) return [];
   const used = new Set<string>();
   const check = (id: string) => {
     const inst = instById.get(id);
     if (inst?.name === typeName) used.add(id);
   };
-  for (const g of lv.goals ?? []) if (g.resourceId) check(g.resourceId);
+  for (const g of goals ?? lv.goals ?? []) if (g.resourceId) check(g.resourceId);
   for (const s of lv.resourceStationArr ?? []) if (s.resourceId) check(s.resourceId);
   for (const s of lv.externalStationArr ?? []) if (s.resourceId) check(s.resourceId);
   for (const g of lv.coProductionGroups ?? [])
     for (const o of g.outputs) check(o.instanceId);
   return [...used];
+}
+
+/** 自动检测多渠道组的结果 */
+export interface McGroupDetection {
+  /** 检测后的多渠道组列表（无新增时与原列表内容一致） */
+  groups: MultiChannelGroup[];
+  /** 本次新增组的索引（供 UI 展开态使用） */
+  addedIndexes: number[];
+}
+
+/**
+ * 自动检测多渠道生产组：目标 / 资源站点 / 外部站点中出现同名多实例时，自动补建组。
+ * - 已存在于 multiChannelGroups 的名称不重复添加；
+ * - 新建组的 instanceIds 取 collectUsedInstanceIds（含拆卸组产出），为空时回退为该名称下全部实例。
+ * 纯函数：返回新列表与新增下标，UI 展开态与写回由调用方处理。
+ */
+export function detectMultiChannelGroups(
+  lv: Level,
+  goals: LevelGoal[],
+  instById: InstIndex,
+  allInstances: ResourceInstance[],
+): McGroupDetection {
+  // 统计"目标 + 各类站点"中每个名称实际使用了多少个不同的实例 ID
+  const nameToIds = new Map<string, Set<string>>();
+  const collect = (id?: string) => {
+    if (!id) return;
+    const inst = instById.get(id);
+    if (!inst) return;
+    if (!nameToIds.has(inst.name)) nameToIds.set(inst.name, new Set());
+    nameToIds.get(inst.name)!.add(id);
+  };
+  for (const goal of goals) collect(goal.resourceId);
+  for (const s of lv.resourceStationArr ?? []) collect(s.resourceId);
+  for (const s of lv.externalStationArr ?? []) collect(s.resourceId);
+
+  const multiNames: string[] = [];
+  for (const [name, ids] of nameToIds) if (ids.size > 1) multiNames.push(name);
+
+  const groups = [...(lv.multiChannelGroups ?? [])];
+  const existing = new Set(groups.map((mc) => mc.typeName));
+  const addedIndexes: number[] = [];
+  for (const name of multiNames) {
+    if (existing.has(name)) continue;
+    const idx = groups.length;
+    const usedIds = collectUsedInstanceIds(lv, name, instById, goals);
+    groups.push({ typeName: name, instanceIds: usedIds });
+    addedIndexes.push(idx);
+    // 如果没有任何实例被使用，则全部选中（旧行为，方便人工勾选）
+    if (!usedIds.length) {
+      groups[idx].instanceIds = allInstances.filter((i) => i.name === name).map((i) => i.id);
+    }
+  }
+  return { groups, addedIndexes };
 }
 
 /** 最快通关时间预估结果 */

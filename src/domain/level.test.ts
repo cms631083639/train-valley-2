@@ -11,6 +11,7 @@ import {
   collectUsedInstanceIds,
   deriveEffectiveWorkerStations,
   deriveWorkerStationLabels,
+  detectMultiChannelGroups,
   estimateBestTime,
   isValidQty,
   stationQtyEach,
@@ -237,6 +238,12 @@ describe('collectUsedInstanceIds', () => {
     });
     expect(collectUsedInstanceIds(lv, '钢', map).sort()).toEqual(['a1', 'a2']);
   });
+  it('可显式传入 goals 覆盖 lv.goals（供自动检测复用同一批目标）', () => {
+    const lv = level({ goals: [goal('b1')] });
+    expect(collectUsedInstanceIds(lv, '钢', map, [goal('a2')])).toEqual(['a2']);
+    // 不传时仍读 lv.goals
+    expect(collectUsedInstanceIds(lv, '铜', map)).toEqual(['b1']);
+  });
 });
 
 // ————————— 站点索引 / 外部清单 —————————
@@ -348,5 +355,76 @@ describe('estimateBestTime', () => {
   it('无刷新站点覆盖或无需求时返回 null', () => {
     expect(estimateBestTime(undefined, level(), map, ctx)).toBeNull();
     expect(estimateBestTime([{ name: '铜', qty: 5 }], level(), map, ctx)).toBeNull();
+  });
+});
+
+// ————————— 多渠道组自动检测 —————————
+
+describe('detectMultiChannelGroups', () => {
+  // 同名"木板"三个实例；"原木"单实例
+  const instances = [
+    inst({ id: 'wd1', name: '木板' }),
+    inst({ id: 'wd2', name: '木板' }),
+    inst({ id: 'wd3', name: '木板' }),
+    inst({ id: 'rw', name: '原木' }),
+  ];
+  const map = idx(instances);
+
+  it('无同名多实例时返回原列表且不新增', () => {
+    const g = [goal('rw')];
+    const r = detectMultiChannelGroups(level({ goals: g }), g, map, instances);
+    expect(r.addedIndexes).toEqual([]);
+    expect(r.groups).toEqual([]);
+  });
+
+  it('目标出现同名多实例时自动建组并返回新增下标', () => {
+    const g = [goal('wd1'), goal('wd2')];
+    const r = detectMultiChannelGroups(level({ goals: g }), g, map, instances);
+    expect(r.addedIndexes).toEqual([0]);
+    expect(r.groups).toEqual([{ typeName: '木板', instanceIds: ['wd1', 'wd2'] }]);
+  });
+
+  it('资源站点提供的同名第二实例也会触发建组', () => {
+    const g = [goal('wd1')];
+    const lv = level({ goals: g, resourceStationArr: [{ label: 'r1', resourceId: 'wd2' }] });
+    const r = detectMultiChannelGroups(lv, g, map, instances);
+    expect(r.addedIndexes).toEqual([0]);
+    expect(r.groups[0]).toEqual({ typeName: '木板', instanceIds: ['wd1', 'wd2'] });
+  });
+
+  it('拆卸组产出实例计入新建组的实例清单', () => {
+    const g = [goal('wd1')];
+    const lv = level({
+      goals: g,
+      resourceStationArr: [{ label: 'r1', resourceId: 'wd2' }],
+      coProductionGroups: [{ id: 'cp1', outputs: [{ instanceId: 'wd3', perOut: 1 }] }],
+    });
+    const r = detectMultiChannelGroups(lv, g, map, instances);
+    expect(r.groups[0].instanceIds).toEqual(['wd1', 'wd2', 'wd3']);
+  });
+
+  it('已存在的同名组不重复添加', () => {
+    const g = [goal('wd1'), goal('wd2')];
+    const lv = level({ goals: g, multiChannelGroups: [{ typeName: '木板', instanceIds: ['wd1'] }] });
+    const r = detectMultiChannelGroups(lv, g, map, instances);
+    expect(r.addedIndexes).toEqual([]);
+    expect(r.groups).toEqual([{ typeName: '木板', instanceIds: ['wd1'] }]);
+  });
+
+  it('新建组追加到已有组之后，下标可对', () => {
+    const g = [goal('wd1'), goal('wd2')];
+    const lv = level({ goals: g, multiChannelGroups: [{ typeName: '原木', instanceIds: ['rw'] }] });
+    const r = detectMultiChannelGroups(lv, g, map, instances);
+    expect(r.addedIndexes).toEqual([1]);
+    expect(r.groups).toHaveLength(2);
+    expect(r.groups[1]).toEqual({ typeName: '木板', instanceIds: ['wd1', 'wd2'] });
+  });
+
+  it('不改动入参（纯函数）', () => {
+    const g = [goal('wd1'), goal('wd2')];
+    const lv = level({ goals: g, multiChannelGroups: [{ typeName: '原木', instanceIds: ['rw'] }] });
+    const before = JSON.stringify([lv, g, instances]);
+    detectMultiChannelGroups(lv, g, map, instances);
+    expect(JSON.stringify([lv, g, instances])).toBe(before);
   });
 });

@@ -15,6 +15,7 @@ import {
   collectUsedInstanceIds,
   deriveEffectiveWorkerStations,
   deriveWorkerStationLabels,
+  detectMultiChannelGroups,
   estimateBestTime,
   isValidQty,
   stationQtyEach,
@@ -245,46 +246,13 @@ function onGoalsUpdate(g: LevelGoal[]) {
   autoDetectMcGroups(g);
 }
 
-/** 自动检测多渠道生产组：当目标中出现同名多实例时，自动创建多渠道组 */
-function autoDetectMcGroups(goals: LevelGoal[]) {
+/** 自动检测多渠道生产组：当目标中出现同名多实例时，自动创建多渠道组（派生逻辑见 domain/level.ts） */
+function autoDetectMcGroups(g: LevelGoal[]) {
   if (!level.value) return;
-  const lv = level.value;
-  // 统计"目标 + 各类站点"中每个名称实际使用了多少个不同的实例 ID
-  const nameToIds = new Map<string, Set<string>>();
-  const collect = (id?: string) => {
-    if (!id) return;
-    const inst = store.instById.get(id);
-    if (!inst) return;
-    if (!nameToIds.has(inst.name)) nameToIds.set(inst.name, new Set());
-    nameToIds.get(inst.name)!.add(id);
-  };
-  for (const goal of goals) collect(goal.resourceId);
-  // 🎯 站点也是物资渠道来源：资源站点 / 外部站点（含刷新、购买）
-  for (const s of lv.resourceStationArr ?? []) collect(s.resourceId);
-  for (const s of lv.externalStationArr ?? []) collect(s.resourceId);
-  const multiNames = new Set<string>();
-  for (const [name, ids] of nameToIds) {
-    if (ids.size > 1) multiNames.add(name);
-  }
-  let changed = false;
-  let groups = [...(level.value.multiChannelGroups ?? [])];
-  const existing = new Set(groups.map((mc) => mc.typeName));
-  for (const name of multiNames) {
-    if (!existing.has(name)) {
-      const idx = groups.length;
-      const usedIds = getUsedInstanceIds(name);
-      groups.push({ typeName: name, instanceIds: usedIds });
-      mcExpanded[idx] = true;
-      // 如果没有任何实例被使用，则全部选中（旧行为，方便人工勾选）
-      if (!usedIds.length) {
-        groups[groups.length - 1].instanceIds = store.data.instances.filter((i) => i.name === name).map((i) => i.id);
-      }
-      changed = true;
-    }
-  }
-  if (changed) {
-    patchLevel({ multiChannelGroups: groups, hasMultipleInstances: true });
-  }
+  const { groups, addedIndexes } = detectMultiChannelGroups(level.value, g, store.instById, store.data.instances);
+  if (!addedIndexes.length) return;
+  for (const idx of addedIndexes) mcExpanded[idx] = true;
+  patchLevel({ multiChannelGroups: groups, hasMultipleInstances: true });
 }
 /** GoalEditor → 工人站点 unlockCost 变化回调 */
 function onWorkerStationsUpdate(arr: WorkerStation[]) {
