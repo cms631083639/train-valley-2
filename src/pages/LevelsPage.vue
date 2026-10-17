@@ -20,6 +20,16 @@ import {
   stationQtyEach,
 } from '@/domain/level';
 import type { StationContext, StationInfo } from '@/domain/level';
+import {
+  cargoOfLevel,
+  initMinTrainLevel,
+  maxTrainLevelFromCount,
+  maxTrainLevelOf,
+  resolveMaxTrainLevel,
+  upgradeCountMaxOf,
+  upgradeCountOf,
+  upgradeLevelOptionsOf,
+} from '@/domain/train';
 import AppIcon from '@/components/AppIcon.vue';
 import ResLabel from '@/components/ResLabel.vue';
 import TreeNode from '@/components/TreeNode.vue';
@@ -455,62 +465,32 @@ function alternativesInstances(ids: string[] | undefined) {
   return ids.map((id) => store.instById.get(id)).filter((i): i is NonNullable<typeof i> => !!i);
 }
 
-/** 列车数据最高等级（动态读 store，不硬编码） */
-const MAX_TRAIN_LEVEL = computed(() => {
-  const trains = store.data.trains;
-  return trains.length ? Math.max(...trains.map((t) => t.level)) : 6;
-});
+/** 列车数据最高等级（动态读 store，不硬编码；派生逻辑见 domain/train.ts） */
+const MAX_TRAIN_LEVEL = computed(() => maxTrainLevelOf(store.data.trains));
 
 /** 关卡当前可升到的最高火车等级（优先读用户配置，否则取初始最高等级；上限 = 列车最高等级） */
-const maxTrainLevel = computed(() => {
-  const trains = level.value?.initialTrains ?? [];
-  const initMax = trains.length ? Math.max(...trains.map((t) => t.level)) : 1;
-  const cfg = level.value?.maxTrainLevel;
-  const maxLv = MAX_TRAIN_LEVEL.value;
-  if (cfg && cfg >= initMax && cfg <= maxLv) return cfg;
-  // 默认升 1 级，使升级次数默认为 1
-  return Math.min(maxLv, initMax + 1);
-});
+const maxTrainLevel = computed(() => resolveMaxTrainLevel(level.value, MAX_TRAIN_LEVEL.value));
 
 /** 关卡初始列车最低等级（用于购买类站点 minQty） */
-const minTrainLevel = computed(() => {
-  const trains = level.value?.initialTrains ?? [];
-  return trains.length ? Math.min(...trains.map((t) => t.level)) : 1;
-});
+const minTrainLevel = computed(() => initMinTrainLevel(level.value));
 
 /** 根据火车等级查真实货运量（查 store.data.trains 的 capacity，找不到 fallback 到等级） */
 function cargoByLevel(lv: number): number {
-  const t = store.data.trains.find((x) => x.level === lv);
-  return t ? t.capacity : Math.max(1, Math.min(MAX_TRAIN_LEVEL.value, lv));
+  return cargoOfLevel(lv, store.data.trains, MAX_TRAIN_LEVEL.value);
 }
 
 /** 最高升级下拉选项：从初始最高等级到最高等级 */
-const upgradeLevelOptions = computed(() => {
-  const trains = level.value?.initialTrains ?? [];
-  const initLv = trains.length ? Math.max(...trains.map((t) => t.level)) : 1;
-  return store.data.trains.filter((t) => t.level >= initLv);
-});
+const upgradeLevelOptions = computed(() => upgradeLevelOptionsOf(level.value, store.data.trains));
 
 /** 升级次数（步进器展示用）= 最高升级 - 初始最高等级 */
-const upgradeCount = computed(() => {
-  const trains = level.value?.initialTrains ?? [];
-  const initMax = trains.length ? Math.max(...trains.map((t) => t.level)) : 1;
-  return Math.max(0, maxTrainLevel.value - initMax);
-});
+const upgradeCount = computed(() => upgradeCountOf(level.value, maxTrainLevel.value));
 
 /** 升级次数步进器允许的最大值（= 列车最高等级 - 初始最高等级） */
-const upgradeCountMax = computed(() => {
-  const trains = level.value?.initialTrains ?? [];
-  const initMax = trains.length ? Math.max(...trains.map((t) => t.level)) : 1;
-  return Math.max(0, MAX_TRAIN_LEVEL.value - initMax);
-});
+const upgradeCountMax = computed(() => upgradeCountMaxOf(level.value, MAX_TRAIN_LEVEL.value));
 
 /** 根据升级次数反算并写入 maxTrainLevel；count=0 代表"不升级"，最高等级 = 初始最高等级 */
 function applyUpgradeCount(count: number) {
-  const clamped = Math.max(0, Math.min(upgradeCountMax.value, Math.floor(count)));
-  const trains = level.value?.initialTrains ?? [];
-  const initMax = trains.length ? Math.max(...trains.map((t) => t.level)) : 1;
-  patchLevel({ maxTrainLevel: Math.min(MAX_TRAIN_LEVEL.value, initMax + clamped) });
+  patchLevel({ maxTrainLevel: maxTrainLevelFromCount(count, level.value, MAX_TRAIN_LEVEL.value) });
 }
 
 /** 电力类型可选实例（name=电力 的所有实例） */
