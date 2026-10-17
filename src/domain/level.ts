@@ -224,7 +224,7 @@ export function buildStationInfoByName(
         map.set(inst.name, {
           qtyEach: stationQtyEach(s, ctx),
           intervalSec: s.interval ?? ctx.defaultIntervalSec,
-          kind: '刷新',
+          kind: STATION_KIND.REFRESH,
         });
       } else if (s.kind === STATION_KIND.BUY) {
         const minQ = stationQtyMin(s, ctx);
@@ -232,7 +232,7 @@ export function buildStationInfoByName(
         map.set(inst.name, {
           qtyEach: maxQ, // 拆解树用最高数量算 perCycle
           intervalSec: 0,
-          kind: '购买',
+          kind: STATION_KIND.BUY,
           minQty: minQ,
           maxQty: maxQ,
           price: s.price ?? 0,
@@ -241,13 +241,13 @@ export function buildStationInfoByName(
         map.set(inst.name, {
           qtyEach: stationQtyEach(s, ctx),
           intervalSec: 0,
-          kind: '客流',
+          kind: STATION_KIND.PASSENGER,
         });
       } else if (s.kind === STATION_KIND.STOCK) {
         map.set(inst.name, {
           qtyEach: stationQtyEach(s, ctx), // 初始库存
           intervalSec: 0,
-          kind: '库存',
+          kind: STATION_KIND.STOCK,
           minQty: stationQtyMin(s, ctx),
           maxQty: stationQtyMax(s, ctx),
         });
@@ -265,7 +265,7 @@ export function buildStationInfoByName(
         map.set(inst.name, {
           qtyEach: qty,
           intervalSec: 0,
-          kind: '客流',
+          kind: STATION_KIND.PASSENGER,
         });
       }
     }
@@ -301,7 +301,7 @@ export function collectEffectiveExternalNeeds(
       const inst = instById.get(s.resourceId ?? '');
       if (!inst) continue;
       if (!merged.has(inst.name)) {
-        merged.set(inst.name, { name: inst.name, qty: 0, obtain: '客流' });
+        merged.set(inst.name, { name: inst.name, qty: 0, obtain: OBTAIN.PASSENGER });
       }
     }
   }

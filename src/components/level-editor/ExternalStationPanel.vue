@@ -48,7 +48,7 @@ const allResourceNames = computed(() => {
 
 /** 根据物资名称找可选 external 实例（站点产出只可能是外部供给：刷新/购买，排除库存） */
 function instancesOfName(name: string): ResourceInstance[] {
-  return store.data.instances.filter((i) => i.name === name && i.external && i.obtain !== '库存');
+  return store.data.instances.filter((i) => i.name === name && i.external && i.obtain !== OBTAIN.STOCK);
 }
 
 /**
@@ -58,7 +58,7 @@ function instancesOfName(name: string): ResourceInstance[] {
  */
 function availableKindsForStation(s: ExternalStation): ('刷新' | '购买' | '客流')[] {
   const inst = store.instById.get(s.resourceId ?? '');
-  if (!inst) return ['刷新', '购买', '客流'];
+  if (!inst) return [STATION_KIND.REFRESH, STATION_KIND.BUY, STATION_KIND.PASSENGER];
   const externals = instancesOfName(inst.name);
   const kinds = new Set<'刷新' | '购买' | '客流'>();
   for (const e of externals) {
@@ -386,26 +386,26 @@ defineExpose({ add, closePopups });
           <div v-if="store.instById.get(s.resourceId ?? '')" class="grid grid-cols-2 gap-0.5 min-w-[80px]">
             <div class="flex items-center">
               <button
-                v-if="availableKindsForStation(s).includes('刷新')"
+                v-if="availableKindsForStation(s).includes(STATION_KIND.REFRESH)"
                 type="button"
                 :disabled="isSingleKindStation(s)"
                 class="inline-flex h-6 w-full items-center justify-center rounded border text-[11px] font-semibold transition disabled:cursor-default"
                 :class="s.kind === STATION_KIND.REFRESH
                   ? 'border-amber-brand/40 bg-amber-brand text-white'
                   : 'border-ink-500 bg-transparent text-fog-300 hover:border-amber-brand hover:text-amber-brand'"
-                @click="updateStation(i, ensureKindDefaults(s, '刷新'))"
+                @click="updateStation(i, ensureKindDefaults(s, STATION_KIND.REFRESH))"
                 title="定时刷新（NPC 火车不占用玩家列车）">刷新</button>
             </div>
             <div class="flex items-center">
               <button
-                v-if="availableKindsForStation(s).includes('购买')"
+                v-if="availableKindsForStation(s).includes(STATION_KIND.BUY)"
                 type="button"
                 :disabled="isSingleKindStation(s)"
                 class="inline-flex h-6 w-full items-center justify-center rounded border text-[11px] font-semibold transition disabled:cursor-default"
                 :class="s.kind === STATION_KIND.BUY
                   ? 'border-steel-brand/40 bg-steel-brand text-white'
                   : 'border-ink-500 bg-transparent text-fog-300 hover:border-steel-brand hover:text-steel-brand'"
-                @click="updateStation(i, ensureKindDefaults(s, '购买'))"
+                @click="updateStation(i, ensureKindDefaults(s, STATION_KIND.BUY))"
                 title="空投购买（花钱，需玩家列车运送）">购买</button>
             </div>
           </div>

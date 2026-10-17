@@ -10,9 +10,9 @@ import InstanceForm from '@/components/InstanceForm.vue';
 const store = useGameStore();
 
 const kw = ref('');
-const filterExternal = ref<'all' | 'yes' | 'no'>('all');
-const filterNeedsPower = ref<'all' | 'yes' | 'no'>('all');
-const filterObtain = ref<'all' | '刷新' | '购买' | '无限' | '库存' | '客流'>('all');
+const filterExternal = ref<'all' | 'yes' | 'no'>(FILTER_ALL);
+const filterNeedsPower = ref<'all' | 'yes' | 'no'>(FILTER_ALL);
+const filterObtain = ref<'all' | '刷新' | '购买' | '无限' | '库存' | '客流'>(FILTER_ALL);
 
 const showForm = ref(false);
 const editing = ref<ResourceInstance | null>(null);

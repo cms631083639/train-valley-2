@@ -4,7 +4,7 @@ import { OBTAIN, STATION_KIND, FILTER_ALL } from '@/constants';
 import { computed, onMounted, ref, reactive, watch, watchEffect, nextTick } from 'vue';
 import type { RecipeChoice, BreakdownStrategy } from '@/engine/breakdown';
 import type { ExternalStation, LevelGoal, ResourceInstance, WorkerStation } from '@/types';
-import { WORKER_NAME } from '@/types';
+import { POWER_NAME, WORKER_NAME } from '@/types';
 import { useGameStore } from '@/stores/game';
 import { useLevelCalc } from '@/composables/useLevelCalc';
 import { CATEGORY_LABEL, fmtMinSec, fmtSeconds, starConditionText } from '@/utils/format';
@@ -188,10 +188,10 @@ watch(level, (lv) => {
   // 🎯 切换关卡时重置拆解策略：避免上一关的策略残留
   //    （如"配方输入最少"会禁用拆卸组，导致拆卸关卡结果被放大）
   activeStrategy.value = 'normal';
-  const oldPower = lv.instanceOverrides?.['电力'];
+  const oldPower = lv.instanceOverrides?.[POWER_NAME];
   if (oldPower && !lv.powerSources?.length) {
     const cleaned: Record<string, string> = { ...(lv.instanceOverrides ?? {}) };
-    delete cleaned['电力'];
+    delete cleaned[POWER_NAME];
     patchLevel({
       powerSources: [oldPower],
       instanceOverrides: Object.keys(cleaned).length ? cleaned : undefined,
@@ -308,7 +308,7 @@ function resolveExternalSupply(name: string, obtain: string): StationInfo {
   return {
     qtyEach: cargoByLevel(maxTrainLevel.value),
     intervalSec: obtain === OBTAIN.REFRESH ? DEFAULT_INTERVAL_SEC : 0,
-    kind: obtain === OBTAIN.REFRESH ? '刷新' : (obtain === OBTAIN.PASSENGER ? '客流' : (obtain === OBTAIN.STOCK ? '库存' : '购买')),
+    kind: obtain === OBTAIN.REFRESH ? STATION_KIND.REFRESH : (obtain === OBTAIN.PASSENGER ? STATION_KIND.PASSENGER : (obtain === OBTAIN.STOCK ? STATION_KIND.STOCK : STATION_KIND.BUY)),
   };
 }
 
@@ -413,7 +413,7 @@ const openOverrideIdx = ref('');
 /** 给警告行选定一个实例 → 电力走 powerSources，其他走 instanceOverrides */
 function applyOverride(name: string, instanceId: string) {
   if (!level.value) return;
-  if (name === '电力') {
+  if (name === POWER_NAME) {
     // 电力 → 勾进 powerSources（并放到第一位成为引擎拆解用的主电力）
     const cur = new Set(level.value.powerSources ?? []);
     cur.delete(instanceId);
@@ -462,16 +462,16 @@ function applyUpgradeCount(count: number) {
 }
 
 /** 电力类型可选实例（name=电力 的所有实例） */
-const powerOptions = computed(() => store.data.instances.filter((i) => i.name === '电力'));
+const powerOptions = computed(() => store.data.instances.filter((i) => i.name === POWER_NAME));
 /** 关卡当前勾选的电力来源 id 数组（0~N 个） */
 const currentPowerSources = computed<string[]>(() => level.value?.powerSources ?? []);
-/** 电力实例的人性化 label（电力4n → "煤炭"，电力Lb → "仅工人"，连工人都不需要 → "无限供给"） */
+/** 电力实例的人性化 label（电力4n → "煤炭"，电力Lb → "工人"，连工人都不需要 → "无限供给"） */
 function powerLabel(inst: ResourceInstance): string {
   const others = inst.inputs.filter((n) => n !== WORKER_NAME);
   if (others.length) return others.join(' + ');
   // 不含工人 → 无需工人即可供电，视为无限供给
   if (!inst.inputs.includes(WORKER_NAME)) return '无限供给';
-  return '仅工人';
+  return '工人';
 }
 /** 切换某个电力 id 的勾选状态 */
 function togglePowerSource(id: string) {

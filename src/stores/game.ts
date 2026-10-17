@@ -1,5 +1,6 @@
 import { USER_EDITABLE_FIELDS } from '@/domain/levelFields';
 import { ensureWorkerEY, mergeWithSeed, migrateLevelStations, validate } from '@/domain/migration';
+import { CONTENT } from '@/constants';
 import {
   STORAGE_KEY,
   fetchFileData,
@@ -279,7 +280,7 @@ export const useGameStore = defineStore('game', () => {
     return m;
   });
 
-  const baseLevels = computed(() => data.value.levels.filter((l) => l.category === '游戏本体'));
+  const baseLevels = computed(() => data.value.levels.filter((l) => l.category === CONTENT.BASE));
   const resourceNames = computed(() => [...instsByName.value.keys()]);
 
   function iconOf(item: { name: string; id: string }): string {

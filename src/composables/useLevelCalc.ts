@@ -9,7 +9,7 @@
  */
 
 import { computed, type Ref } from 'vue';
-import { VIA } from '@/constants';
+import { OBTAIN, VIA } from '@/constants';
 import { breakdownGoals } from '@/engine/breakdown';
 import type { BreakdownNode, BreakdownStrategy, RecipeChoice } from '@/engine/breakdown';
 import {
@@ -20,6 +20,7 @@ import {
   collectSuggestNames,
 } from '@/domain/level';
 import type { GameData, Level, LevelGoal, ResourceInstance } from '@/types';
+import { POWER_NAME } from '@/types';
 
 export interface LevelCalcInputs {
   /** 当前关卡 */
@@ -100,7 +101,7 @@ export function useLevelCalc(inputs: LevelCalcInputs) {
     const hasMulti = lv.hasMultipleInstances !== false && (lv.multiChannelGroups?.length ?? 0) > 0;
     const hasTimeBased = [...goalNames].some((name) => {
       const instances = data.value.instances.filter((i) => i.name === name);
-      return instances.some((i) => i.obtain === '刷新' || i.obtain === '库存');
+      return instances.some((i) => i.obtain === OBTAIN.REFRESH || i.obtain === OBTAIN.STOCK);
     });
 
     // 构建策略列表
@@ -181,7 +182,7 @@ export function useLevelCalc(inputs: LevelCalcInputs) {
         name: mg.typeName,
         instances: remaining.map((inst) => ({
           id: inst.id,
-          inputs: inst.inputs.filter((i) => i !== '电力').join(', ') || '仅工人',
+          inputs: inst.inputs.filter((i) => i !== POWER_NAME).join(', ') || '工人',
         })),
       });
     }

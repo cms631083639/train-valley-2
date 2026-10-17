@@ -163,11 +163,11 @@ const shownInstances = computed(() => {
         <template v-for="n in nodes" :key="n.name">
           <g v-if="pos.p.has(n.name)" class="cursor-pointer" @click="focus = n.name">
             <circle :cx="pos.p.get(n.name)!.x" :cy="pos.p.get(n.name)!.y" r="13" fill="#1b212a"
-              :stroke="n.name === '电力' ? '#e8a33d' : n.producers ? '#4f9dd9' : '#58b368'" stroke-width="1.4" />
+              :stroke="n.name === POWER_NAME ? '#e8a33d' : n.producers ? '#4f9dd9' : '#58b368'" stroke-width="1.4" />
             <use
               :href="`#icon-${resolveIcon(n.name)}`"
               :x="pos.p.get(n.name)!.x - 8" :y="pos.p.get(n.name)!.y - 8" width="16" height="16"
-              :style="{ color: n.name === '电力' ? '#e8a33d' : n.producers ? '#4f9dd9' : '#58b368' }"
+              :style="{ color: n.name === POWER_NAME ? '#e8a33d' : n.producers ? '#4f9dd9' : '#58b368' }"
             />
             <text :x="pos.p.get(n.name)!.x" :y="pos.p.get(n.name)!.y - 19" text-anchor="middle" class="text-[12px]">
               {{ n.name }}

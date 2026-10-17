@@ -5,6 +5,7 @@
  * 展开状态由父级持有（autoDetectMcGroups 也会写入），以对象形式共享。
  */
 import type { MultiChannelGroup, ResourceInstance } from '@/types';
+import { CATEGORY } from '@/constants';
 import { useGameStore } from '@/stores/game';
 import { useSuggestCombo } from '@/composables/useSuggestCombo';
 import { dedupeInputs } from '@/utils/recipe';
@@ -141,17 +142,17 @@ defineExpose({ add });
               <template v-if="inst.inputs.length">
                 <span v-for="([nm, cnt], ri) in dedupeInputs(inst.inputs)" :key="ri"
                   class="rounded px-1 font-medium whitespace-nowrap"
-                  :class="classifyName(nm, store.data) === 'raw' ? 'bg-good/15 text-good' :
-                    classifyName(nm, store.data) === 'processed' ? 'bg-steel-brand/15 text-steel-brand' :
-                    classifyName(nm, store.data) === 'compound' ? 'bg-amber-brand/15 text-amber-brand' : 'text-fog-100'">
+                  :class="classifyName(nm, store.data) === CATEGORY.RAW ? 'bg-good/15 text-good' :
+                    classifyName(nm, store.data) === CATEGORY.PROCESSED ? 'bg-steel-brand/15 text-steel-brand' :
+                    classifyName(nm, store.data) === CATEGORY.COMPOUND ? 'bg-amber-brand/15 text-amber-brand' : 'text-fog-100'">
                   {{ nm }}<span v-if="cnt > 1">×{{ cnt }}</span>
                 </span>
                 <span v-if="inst.needsPower" class="text-amber-brand" title="通电">⚡️</span>
                 <span class="text-fog-500 mx-0.5">→</span>
                 <span class="rounded px-1 font-medium"
-                  :class="classifyName(inst.name, store.data) === 'raw' ? 'bg-good/15 text-good' :
-                    classifyName(inst.name, store.data) === 'processed' ? 'bg-steel-brand/15 text-steel-brand' :
-                    classifyName(inst.name, store.data) === 'compound' ? 'bg-amber-brand/15 text-amber-brand' : 'text-fog-100'">
+                  :class="classifyName(inst.name, store.data) === CATEGORY.RAW ? 'bg-good/15 text-good' :
+                    classifyName(inst.name, store.data) === CATEGORY.PROCESSED ? 'bg-steel-brand/15 text-steel-brand' :
+                    classifyName(inst.name, store.data) === CATEGORY.COMPOUND ? 'bg-amber-brand/15 text-amber-brand' : 'text-fog-100'">
                   {{ inst.name }}
                 </span>
               </template>

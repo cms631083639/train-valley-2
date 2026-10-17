@@ -5,6 +5,7 @@
  * 通过 patch 回写 coProductionGroups。
  */
 import type { CoProductionGroup, CoProductionOutput, ResourceInstance, ResourceCategory } from '@/types';
+import { POWER_NAME } from '@/types';
 import { useGameStore } from '@/stores/game';
 import { useSuggestCombo } from '@/composables/useSuggestCombo';
 import { classifyName } from '@/engine/breakdown';
@@ -221,7 +222,7 @@ defineExpose({ add });
           <span class="flex flex-wrap items-center gap-0.5 text-[11px]">
             <template v-for="(item, ii) in cpInputItems(cp)" :key="ii">
               <span v-if="ii > 0" class="mx-0.5 text-fog-500">+</span>
-              <span v-if="item.name === '电力'" class="text-amber-brand">⚡️ 电力</span>
+              <span v-if="item.name === POWER_NAME" class="text-amber-brand">⚡️ 电力</span>
               <span v-else :class="CATEGORY_TEXT_CLS[item.category] || 'text-fog-200'">{{ item.name }}</span>
             </template>
           </span>

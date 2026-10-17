@@ -83,9 +83,9 @@ function setWorkerUnlockCost(label: string, cost: number) {
 }
 
 const CAT_LABEL: Record<ResourceCategory, string> = {
-  raw: '原料',
-  processed: '加工品',
-  compound: '复合品',
+  [CATEGORY.RAW]: '原料',
+  [CATEGORY.PROCESSED]: '加工品',
+  [CATEGORY.COMPOUND]: '复合品',
 };
 
 interface RowState {

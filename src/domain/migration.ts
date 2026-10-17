@@ -5,9 +5,10 @@
  * 「seed × 存档」的合并，不触碰任何持久化 I/O，便于单测与复用。
  */
 
-import { STATION_KIND } from '@/constants';
+import { OBTAIN, STATION_KIND } from '@/constants';
 import { USER_EDITABLE_FIELDS } from '@/domain/levelFields';
 import type { ExternalStation, GameData, InitialStation, Level, ResourceInstance, WorkerStation } from '@/types';
+import { WORKER_NAME } from '@/types';
 
 /** 空数据集（校验兜底用） */
 const EMPTY: GameData = { instances: [], levels: [], trains: [] };
@@ -223,20 +224,20 @@ export function ensureWorkerEY(data: GameData): GameData {
     if (xdIdx >= 0) {
       data.instances.splice(xdIdx + 1, 0, {
         id: '工人eY',
-        name: '工人',
+        name: WORKER_NAME,
         inputs: [],
         perOut: 1,
         external: true,
-        obtain: '刷新',
+        obtain: OBTAIN.REFRESH,
       });
     } else {
       data.instances.push({
         id: '工人eY',
-        name: '工人',
+        name: WORKER_NAME,
         inputs: [],
         perOut: 1,
         external: true,
-        obtain: '刷新',
+        obtain: OBTAIN.REFRESH,
       });
     }
   }

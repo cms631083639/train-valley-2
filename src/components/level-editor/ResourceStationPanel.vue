@@ -4,7 +4,9 @@
  * 面板自带「物资名联想 + 实例下拉」状态机与行 CRUD，通过 patch 事件回写 resourceStationArr。
  */
 import { computed } from 'vue';
+import { OBTAIN } from '@/constants';
 import type { ResourceInstance, ResourceStation } from '@/types';
+import { POWER_NAME, WORKER_NAME } from '@/types';
 import { useGameStore } from '@/stores/game';
 import { useSuggestCombo } from '@/composables/useSuggestCombo';
 
@@ -51,8 +53,8 @@ function setResource(idx: number, resourceId: string) {
   const arr = [...(props.stations ?? [])];
   const prevInst = arr[idx].resourceId ? store.data.instances.find((i) => i.id === arr[idx].resourceId) : undefined;
   const nextInst = resourceId ? store.data.instances.find((i) => i.id === resourceId) : undefined;
-  const nextHasStock = nextInst?.obtain === '库存';
-  const prevHasStock = prevInst?.obtain === '库存';
+  const nextHasStock = nextInst?.obtain === OBTAIN.STOCK;
+  const prevHasStock = prevInst?.obtain === OBTAIN.STOCK;
   const patch: Partial<ResourceStation> = { resourceId: resourceId || undefined };
   // 类型切换时清/置库存相关字段
   if (!prevHasStock && nextHasStock) {
@@ -114,7 +116,7 @@ function setUnlockCost(idx: number, cost: number) {
 const allRsNames = computed(() => {
   const set = new Set<string>();
   for (const i of store.data.instances) {
-    if (i.inputs.length === 0 && i.name !== '工人' && i.name !== '电力' && (i.obtain === '无限' || i.obtain === '库存')) {
+    if (i.inputs.length === 0 && i.name !== WORKER_NAME && i.name !== POWER_NAME && (i.obtain === OBTAIN.INFINITE || i.obtain === OBTAIN.STOCK)) {
       set.add(i.name);
     }
   }
@@ -124,7 +126,7 @@ const allRsNames = computed(() => {
 /** 根据物资名称找资源站点可用实例 */
 function rsInstancesOfName(name: string): ResourceInstance[] {
   return store.data.instances.filter(
-    (i) => i.name === name && i.inputs.length === 0 && i.name !== '工人' && i.name !== '电力' && (i.obtain === '无限' || i.obtain === '库存'),
+    (i) => i.name === name && i.inputs.length === 0 && i.name !== WORKER_NAME && i.name !== POWER_NAME && (i.obtain === OBTAIN.INFINITE || i.obtain === OBTAIN.STOCK),
   );
 }
 
@@ -261,7 +263,7 @@ defineExpose({ add });
                  @focus="($event.target as HTMLInputElement).select()" />
           <span class="text-[11px] text-fog-500">$</span>
         </template>
-        <template v-if="rsInst(idx)?.obtain === '库存'">
+        <template v-if="rsInst(idx)?.obtain === OBTAIN.STOCK">
           <span class="text-[11px] text-fog-500">库存</span>
           <input type="text" inputmode="numeric" class="w-[70px] text-center"
                  :value="rs.totalStock ?? ''"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** 拆解树节点（递归组件）：展示物资实例模型下的拆解结果，电力只作条件标记 */
-import { VIA, STATION_KIND } from '@/constants';
+import { VIA, STATION_KIND, CATEGORY } from '@/constants';
 import type { BreakdownNode } from '@/engine/breakdown';
 import { fmtMinSec } from '@/utils/format';
 import AppIcon from './AppIcon.vue';
@@ -39,7 +39,7 @@ function resolveQty(n: BreakdownNode): { qtyEach: number; cycles: number; fromSt
 
 function viaText(n: BreakdownNode): string {
   switch (n.via) {
-    case 'produce': {
+    case VIA.PRODUCE: {
       const r = resolveQty(n);
       // 关卡站点配了这个物资 → 显示为外部获取，不再说"工人生产"
       if (r.fromStation && r.stationKind) {
@@ -82,9 +82,9 @@ function viaText(n: BreakdownNode): string {
 }
 
 const CAT_TAG: Record<string, { text: string; cls: string }> = {
-  raw:       { text: '原料',   cls: 'border-good/60 text-good' },
-  processed: { text: '加工品', cls: 'border-steel-brand/60 text-steel-brand' },
-  compound:  { text: '复合品', cls: 'border-amber-brand/70 text-amber-brand' },
+  [CATEGORY.RAW]:       { text: '原料',   cls: 'border-good/60 text-good' },
+  [CATEGORY.PROCESSED]: { text: '加工品', cls: 'border-steel-brand/60 text-steel-brand' },
+  [CATEGORY.COMPOUND]:  { text: '复合品', cls: 'border-amber-brand/70 text-amber-brand' },
 };
 function catInfo(n: BreakdownNode) { return CAT_TAG[n.category]; }
 </script>
@@ -131,7 +131,7 @@ function catInfo(n: BreakdownNode) { return CAT_TAG[n.category]; }
       <div class="flex flex-wrap items-baseline gap-2 py-0.5">
         <ResLabel :id="node.instanceId" :name="node.name" :qty="node.qty || undefined" />
         <span v-if="node.via !== VIA.POWER_TAG && catInfo(node)" class="tag" :class="catInfo(node).cls">{{ catInfo(node).text }}</span>
-        <span v-if="node.via === 'produce'" class="text-xs text-fog-400">← {{ viaText(node) }}</span>
+        <span v-if="node.via === VIA.PRODUCE" class="text-xs text-fog-400">← {{ viaText(node) }}</span>
         <span v-else-if="node.via !== VIA.POWER_TAG && node.via !== VIA.UNKNOWN" class="text-xs text-fog-400">（{{ viaText(node) }}）</span>
         <span v-else-if="node.via === VIA.POWER_TAG" class="text-xs text-amber-brand/80">{{ viaText(node) }}</span>
         <span v-else class="text-xs text-warn">（{{ viaText(node) }}）</span>
