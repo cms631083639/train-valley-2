@@ -318,19 +318,19 @@ const result = computed(() => {
   if (!goals.value.length) return null;
   const lv = level.value;
   // 🎯 引擎内部根据 powerSources.length 推断 powerMode（none/single/multi）
-  return breakdownGoals(
-    goals.value.map((g) => ({ instanceId: g.resourceId, qty: g.qty })),
-    store.data,
-    choice.value,
-    localInstances.value,
-    lv?.instanceOverrides,
-    stationSuppliedNames.value,
-    lv?.powerSources ?? [],
-    lv?.hasMergedProduction === true ? lv?.coProductionGroups : undefined,
-    activeStrategy.value,
-    externalCaps.value,
-    lv?.multiChannelGroups,
-  );
+  return breakdownGoals({
+    goals: goals.value.map((g) => ({ instanceId: g.resourceId, qty: g.qty })),
+    data: store.data,
+    choice: choice.value,
+    localInstances: localInstances.value,
+    overrides: lv?.instanceOverrides,
+    stationSuppliedNames: stationSuppliedNames.value,
+    powerSources: lv?.powerSources ?? [],
+    coProductionGroups: lv?.hasMergedProduction === true ? lv?.coProductionGroups : undefined,
+    strategy: activeStrategy.value,
+    externalCaps: externalCaps.value,
+    multiChannelGroups: lv?.multiChannelGroups,
+  });
 });
 
 /** 站点货运量计算上下文（供 domain 派生函数使用） */
@@ -433,7 +433,19 @@ const strategyResults = computed(() => {
   }
 
   return strategies.map((s) => {
-    const r = breakdownGoals(baseGoals, store.data, 'fewestInputs', baseInstances, baseOverrides, baseSupplied, basePower, baseCoGroups, s.strategy, externalCaps.value, level.value?.multiChannelGroups);
+    const r = breakdownGoals({
+      goals: baseGoals,
+      data: store.data,
+      choice: 'fewestInputs',
+      localInstances: baseInstances,
+      overrides: baseOverrides,
+      stationSuppliedNames: baseSupplied,
+      powerSources: basePower,
+      coProductionGroups: baseCoGroups,
+      strategy: s.strategy,
+      externalCaps: externalCaps.value,
+      multiChannelGroups: level.value?.multiChannelGroups,
+    });
     return { key: s.key, strategy: s.strategy, label: s.label, result: r };
   });
 });

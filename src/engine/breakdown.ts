@@ -903,19 +903,46 @@ function expandCoProductionGroup(
 
 // ————————————————— 主入口 —————————————————
 
-export function breakdownGoals(
-  goals: { instanceId: string; qty: number }[],
-  data: GameData,
-  choice: RecipeChoice = 'fewestInputs',
-  localInstances?: ResourceInstance[],
-  overrides?: Record<string, string>,
-  stationSuppliedNames = new Set<string>(),
-  powerSources: string[] = [],
-  coProductionGroups?: CoProductionGroup[],
-  strategy: BreakdownStrategy = 'normal',
-  externalCaps?: { name: string; instanceId: string; qty: number }[],
-  multiChannelGroups?: { typeName: string; instanceIds: string[] }[],
-): BreakdownResult {
+/** breakdownGoals 的输入：把原先 11 个位置参数收敛为单一对象，避免调用点顺序错位 */
+export interface BreakdownOptions {
+  /** 目标列表（实例 id + 数量） */
+  goals: { instanceId: string; qty: number }[];
+  /** 全局物资/关卡数据 */
+  data: GameData;
+  /** 配方选择策略（默认 fewestInputs） */
+  choice?: RecipeChoice;
+  /** 关卡内活跃实例（局部按名优选，优先于全局主表） */
+  localInstances?: ResourceInstance[];
+  /** 警告面板手选的 name → instanceId 覆盖（优先级最高） */
+  overrides?: Record<string, string>;
+  /** 关卡站点已覆盖的 name 集合（这些 name 跳过 resolved/warnings） */
+  stationSuppliedNames?: Set<string>;
+  /** 关卡电力实例 id 数组（长度推断 none/single/multi） */
+  powerSources?: string[];
+  /** 拆卸工厂组（仅在关卡标记为 true 时传入） */
+  coProductionGroups?: CoProductionGroup[];
+  /** 拆解策略（默认 normal） */
+  strategy?: BreakdownStrategy;
+  /** 外部站「建议提供」额度 */
+  externalCaps?: { name: string; instanceId: string; qty: number }[];
+  /** 多渠道生产组 */
+  multiChannelGroups?: { typeName: string; instanceIds: string[] }[];
+}
+
+export function breakdownGoals(options: BreakdownOptions): BreakdownResult {
+  const {
+    goals,
+    data,
+    choice = 'fewestInputs',
+    localInstances,
+    overrides,
+    stationSuppliedNames = new Set<string>(),
+    powerSources = [],
+    coProductionGroups,
+    strategy = 'normal',
+    externalCaps,
+    multiChannelGroups,
+  } = options;
   // 🎯 策略映射
   let effectiveChoice = choice;
   let effectiveCoGroups = coProductionGroups;
