@@ -1,22 +1,17 @@
 <script setup lang="ts">
 /** 关卡速查 / 物资拆解（本体 50 关优先，可切换查看全部） */
-import { OBTAIN, STATION_KIND, FILTER_ALL, VIA } from '@/constants';
+import { OBTAIN, STATION_KIND, FILTER_ALL } from '@/constants';
 import { computed, onMounted, ref, reactive, watch, watchEffect, nextTick } from 'vue';
-import type { BreakdownNode, RecipeChoice, BreakdownStrategy } from '@/engine/breakdown';
-import { breakdownGoals } from '@/engine/breakdown';
+import type { RecipeChoice, BreakdownStrategy } from '@/engine/breakdown';
 import type { ExternalStation, LevelGoal, ResourceInstance, WorkerStation } from '@/types';
 import { WORKER_NAME } from '@/types';
 import { useGameStore } from '@/stores/game';
+import { useLevelCalc } from '@/composables/useLevelCalc';
 import { CATEGORY_LABEL, fmtMinSec, fmtSeconds, starConditionText } from '@/utils/format';
 import { recipeText } from '@/utils/recipe';
 import {
   buildStationInfoByName,
-  collectCpOutputNames,
   collectEffectiveExternalNeeds,
-  collectExternalCaps,
-  collectLocalInstances,
-  collectStationSuppliedNames,
-  collectSuggestNames,
   collectUsedInstanceIds,
   deriveEffectiveWorkerStations,
   deriveWorkerStationLabels,
@@ -296,41 +291,24 @@ function recipeInputCounts(inst: ResourceInstance) {
   return Array.from(map.entries());
 }
 
-// 🎯 外部物资站点覆盖的 name 集合 → 这些 name 在引擎里跳过 resolved/warnings（派生逻辑见 domain/level.ts）
-const stationSuppliedNames = computed(() => collectStationSuppliedNames(level.value, store.instById));
-
-/** 🔗 拆卸组产出实例的名称集合（供外部站「建议提供」触发判断，派生逻辑见 domain/level.ts） */
-const cpOutputNames = computed(() => collectCpOutputNames(level.value, store.instById));
-
-/**
- * 🛒 「建议提供」显示条件：关卡内存在同名不同实例的物资（含拆卸组产出）。
- * 只有同一物资名对应 ≥2 个不同实例时，才需要人工限定"外部站供多少份"。
- * 派生逻辑见 domain/level.ts。
- */
-const suggestNames = computed(() =>
-  collectSuggestNames(level.value, goals.value, store.instById, cpOutputNames.value),
-);
-
-/** 🛒 外部站建议提供量 → externalCaps（派生逻辑见 domain/level.ts） */
-const externalCaps = computed(() => collectExternalCaps(level.value, store.instById));
-
-const result = computed(() => {
-  if (!goals.value.length) return null;
-  const lv = level.value;
-  // 🎯 引擎内部根据 powerSources.length 推断 powerMode（none/single/multi）
-  return breakdownGoals({
-    goals: goals.value.map((g) => ({ instanceId: g.resourceId, qty: g.qty })),
-    data: store.data,
-    choice: choice.value,
-    localInstances: localInstances.value,
-    overrides: lv?.instanceOverrides,
-    stationSuppliedNames: stationSuppliedNames.value,
-    powerSources: lv?.powerSources ?? [],
-    coProductionGroups: lv?.hasMergedProduction === true ? lv?.coProductionGroups : undefined,
-    strategy: activeStrategy.value,
-    externalCaps: externalCaps.value,
-    multiChannelGroups: lv?.multiChannelGroups,
-  });
+// ————————— 需求量计算编排（实现见 composables/useLevelCalc.ts）—————————
+// 引擎参数装配 / 多方案对比 / 渠道分配预览整块抽离，页面只保留输入与消费
+const {
+  suggestNames,
+  localInstances,
+  result,
+  strategyResults,
+  remainingMultiChannel,
+  roots,
+  channelAllocations,
+  totalRawQty,
+} = useLevelCalc({
+  level,
+  goals,
+  data: computed(() => store.data),
+  instById: computed(() => store.instById),
+  choice,
+  activeStrategy,
 });
 
 /** 站点货运量计算上下文（供 domain 派生函数使用） */
@@ -356,11 +334,6 @@ function resolveExternalSupply(name: string, obtain: string): StationInfo {
   };
 }
 
-/** 计算某个拆解结果的基础原料总数量 */
-function totalRawQty(r: { rawNeeds: { name: string; qty: number }[] }): number {
-  return r.rawNeeds.reduce((sum, n) => sum + n.qty, 0);
-}
-
 /** 外部获取清单：引擎算的 externalNeeds + 外部物资站点里的刷新/购买（派生逻辑见 domain/level.ts） */
 const effectiveExternalNeeds = computed(() =>
   collectEffectiveExternalNeeds(result.value?.externalNeeds, level.value, store.instById),
@@ -368,87 +341,6 @@ const effectiveExternalNeeds = computed(() =>
 
 /** 工人站点标签列表：给 GoalEditor 用（派生逻辑见 domain/level.ts） */
 const workerStationLabels = computed(() => deriveWorkerStationLabels(level.value, goals.value));
-
-/** 关卡活跃实例集：目标 + 各类站点已配置的实例（派生逻辑见 domain/level.ts） */
-const localInstances = computed(() => collectLocalInstances(level.value, goals.value, store.instById));
-
-/** 多方案对比结果 */
-const strategyResults = computed(() => {
-  const lv = level.value;
-  if (!lv || !goals.value.length) return [];
-
-  const baseGoals = goals.value.map((g) => ({ instanceId: g.resourceId, qty: g.qty }));
-  const baseInstances = localInstances.value;
-  const baseOverrides = lv.instanceOverrides;
-  const baseSupplied = stationSuppliedNames.value;
-  const basePower = lv.powerSources ?? [];
-  const baseCoGroups = lv.hasMergedProduction === true ? lv.coProductionGroups : undefined;
-
-  // 判断条件（使用标记而非数据存在性，隐藏时不计入策略）
-  const hasCo = lv.hasMergedProduction === true && (lv.coProductionGroups?.length ?? 0) > 0;
-  const goalNames = new Set<string>();
-  for (const g of goals.value) {
-    const inst = store.instById.get(g.resourceId);
-    if (inst) goalNames.add(inst.name);
-  }
-  const hasMulti = lv.hasMultipleInstances !== false && (lv.multiChannelGroups?.length ?? 0) > 0;
-  const hasTimeBased = [...goalNames].some((name) => {
-    const instances = store.data.instances.filter((i) => i.name === name);
-    return instances.some((i) => i.obtain === '刷新' || i.obtain === '库存');
-  });
-
-  // 构建策略列表
-  type StrategyItem = { key: string; strategy: BreakdownStrategy; label: string };
-  const strategies: StrategyItem[] = [];
-
-  // 🎯 手动填写拆卸总个数 / 🛑 最多拆卸次数上限 → 拆卸通道已定，无需多方案对比
-  const hasManualOutput = (lv.coProductionGroups ?? []).some((cp) => (cp.manualOutput !== undefined && cp.manualOutput > 0) || (cp.maxCycles !== undefined && cp.maxCycles > 0));
-  if (hasManualOutput) {
-    // 手动总个数已确定，直接返回唯一解
-  } else if (hasCo && hasMulti) {
-    // 有拆卸工厂 + 多渠道：展示最少浪费方案 + 多渠道对比
-    strategies.push(
-      { key: 'minWaste', strategy: 'minCoProduction', label: '① 最少浪费方案' },
-      { key: 'fewestInputs', strategy: 'fewestInputs', label: '② 配方输入最少' },
-    );
-    if (hasTimeBased) {
-      strategies.push({ key: 'smallestCycle', strategy: 'smallestPerCycle', label: '③ 单周期产出最小' });
-    } else {
-      strategies.push({ key: 'mostInputs', strategy: 'mostInputs', label: '③ 最复杂方案' });
-    }
-  } else if (hasCo && !hasMulti) {
-    // 有拆卸工厂但无多渠道 → 无需多方案对比，主结果即为最优方案
-    return [];
-  } else if (!hasCo && hasMulti) {
-    // 只有多实例：多渠道对比
-    strategies.push(
-      { key: 'fewestInputs', strategy: 'fewestInputs', label: '① 配方输入最少' },
-    );
-    if (hasTimeBased) {
-      strategies.push({ key: 'smallestCycle', strategy: 'smallestPerCycle', label: '② 单周期产出最小' });
-    }
-    strategies.push({ key: 'mostInputs', strategy: 'mostInputs', label: hasTimeBased ? '③ 最复杂方案' : '② 最复杂方案' });
-  } else {
-    return [];
-  }
-
-  return strategies.map((s) => {
-    const r = breakdownGoals({
-      goals: baseGoals,
-      data: store.data,
-      choice: 'fewestInputs',
-      localInstances: baseInstances,
-      overrides: baseOverrides,
-      stationSuppliedNames: baseSupplied,
-      powerSources: basePower,
-      coProductionGroups: baseCoGroups,
-      strategy: s.strategy,
-      externalCaps: externalCaps.value,
-      multiChannelGroups: level.value?.multiChannelGroups,
-    });
-    return { key: s.key, strategy: s.strategy, label: s.label, result: r };
-  });
-});
 
 /** 是否展示多方案对比面板（按需求关闭；恢复时改回 strategyResults.value.length > 0） */
 const showStrategyComparison = computed(() => {
@@ -469,46 +361,6 @@ const strategyHint = computed(() => {
     return '该关卡存在拆卸工厂';
   }
   return '';
-});
-
-/** 拆卸工厂后的剩余多渠道物资 */
-const remainingMultiChannel = computed<{ name: string; instances: { id: string; inputs: string }[] }[] | null>(() => {
-  const lv = level.value;
-  if (!lv) return null;
-  if (!result.value) return null;
-  // 没有拆卸工厂或者没有多渠道，直接返回
-  if (!lv.coProductionGroups?.length && !lv.multiChannelGroups?.length) return null;
-  // 收集拆卸工厂输出的实例 ID
-  const cpOutputIds = new Set<string>();
-  for (const cp of lv.coProductionGroups ?? []) {
-    for (const out of cp.outputs) {
-      cpOutputIds.add(out.instanceId);
-    }
-  }
-  // 没有拆卸工厂，不显示剩余多渠道提醒（由策略面板处理）
-  if (cpOutputIds.size === 0) return null;
-  // 检查是否有拆卸组设置了手动总个数 / 最多拆卸次数上限 → 拆卸实例已确定，不再参与剩余多渠道
-  const hasManualOutput = (lv.coProductionGroups ?? []).some((cp) => (cp.manualOutput !== undefined && cp.manualOutput > 0) || (cp.maxCycles !== undefined && cp.maxCycles > 0));
-  const items: { name: string; instances: { id: string; inputs: string }[] }[] = [];
-  for (const mg of lv.multiChannelGroups ?? []) {
-    const instances = mg.instanceIds
-      .map((id) => store.instById.get(id))
-      .filter((inst): inst is ResourceInstance => !!inst);
-    // 过滤掉已确定的拆卸实例
-    const remaining = hasManualOutput
-      ? instances.filter((inst) => !cpOutputIds.has(inst.id))
-      : instances;
-    // 至少有2个剩余实例才是多渠道
-    if (remaining.length < 2) continue;
-    items.push({
-      name: mg.typeName,
-      instances: remaining.map((inst) => ({
-        id: inst.id,
-        inputs: inst.inputs.filter((i) => i !== '电力').join(', ') || '仅工人',
-      })),
-    });
-  }
-  return items.length > 0 ? items : null;
 });
 
 // 当多方案策略列表变化时，如果当前 activeStrategy 不在列表中则重置为第一个
@@ -548,46 +400,6 @@ const starConditions = computed(() => {
 
 /** 星级汇总：3（限时固定） + 每个有值列 1 星 */
 const starCount = computed(() => 3 + starConditions.value.length);
-
-const roots = computed<BreakdownNode[]>(() => result.value?.roots ?? []);
-
-/** 🔀 渠道分配预览（只读）：仅统计"同时存在拆卸渠道与非拆卸渠道"的物资 */
-const channelAllocations = computed(() => {
-  const lv = level.value;
-  if (!lv) return [];
-  // 拆卸组产出的实例 id 集合 → 用于区分"拆卸渠道 / 非拆卸渠道"
-  const cpIds = new Set<string>();
-  for (const cp of lv.coProductionGroups ?? []) for (const o of cp.outputs) cpIds.add(o.instanceId);
-  if (!cpIds.size) return [];
-  // 按实例汇总实际产出量（含拆卸组产出，qty≤0 的节点不计）
-  const byInst = new Map<string, number>();
-  const add = (id: string, q: number) => { if (id && q > 0) byInst.set(id, (byInst.get(id) ?? 0) + q); };
-  const walk = (n: BreakdownNode) => {
-    if (n.via === VIA.PRODUCE && n.instanceId) add(n.instanceId, n.qty);
-    if (n.coOutputs) for (const o of n.coOutputs) add(o.instanceId, o.produced);
-    for (const c of n.children) walk(c);
-  };
-  for (const r of roots.value) walk(r);
-  // 按物资名称聚合渠道
-  const byName = new Map<string, { instanceId: string; qty: number; isCp: boolean }[]>();
-  for (const [id, q] of byInst) {
-    const inst = store.instById.get(id);
-    if (!inst) continue;
-    const arr = byName.get(inst.name) ?? [];
-    arr.push({ instanceId: id, qty: q, isCp: cpIds.has(id) });
-    byName.set(inst.name, arr);
-  }
-  const out: { name: string; total: number; segments: { instanceId: string; qty: number; isCp: boolean }[] }[] = [];
-  for (const [name, segs] of byName) {
-    const hasCp = segs.some((s) => s.isCp);
-    const hasNonCp = segs.some((s) => !s.isCp);
-    if (!hasCp || !hasNonCp) continue; // 仅显示同时有拆卸渠道与非拆卸渠道的物资
-    segs.sort((a, b) => Number(b.isCp) - Number(a.isCp) || b.qty - a.qty);
-    out.push({ name, total: segs.reduce((s, x) => s + x.qty, 0), segments: segs });
-  }
-  out.sort((a, b) => b.total - a.total);
-  return out;
-});
 
 // ————————— 内联编辑：改 store.data 后 watch 自动持久化 —————————
 
