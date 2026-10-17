@@ -1,297 +1,20 @@
-import { STATION_KIND } from '@/constants';
 import { USER_EDITABLE_FIELDS } from '@/domain/levelFields';
+import { ensureWorkerEY, mergeWithSeed, migrateLevelStations, validate } from '@/domain/migration';
+import {
+  STORAGE_KEY,
+  fetchFileData,
+  idbDelete,
+  idbLoad,
+  idbSave,
+  pushFileData,
+  readLocal,
+  removeLocal,
+  writeLocal,
+} from '@/stores/persistence';
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { computed, ref } from 'vue';
 import seed from '@/data/tv2.json';
-import type { GameData, ResourceInstance, WorkerStation, ExternalStation, InitialStation, Level } from '@/types';
-
-const STORAGE_KEY = 'tv2-assistant-data-v2';
-const DB_NAME = 'tv2-assistant';
-const DB_VERSION = 1;
-const STORE_NAME = 'data';
-
-const EMPTY: GameData = { instances: [], levels: [], trains: [] };
-
-// ————————— 站点结构迁移（旧字段 → 三新数组）—————————
-/** 过滤掉值为 undefined 的键，避免用空值覆盖已有字段 */
-function stripUndefined<T extends object>(obj: T): Partial<T> {
-  const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(obj)) {
-    if (v !== undefined) out[k] = v;
-  }
-  return out as Partial<T>;
-}
-
-/**
- * 站点结构迁移与归一化（幂等）：
- * - workerStations (number) → workerStationArr 数量生成 A/B/C…
- * - initialStations (array) 的 external 行 → 合并进 externalStationArr（旧字段优先），非 external 行 → workerStationArr
- * - 迁移后删除 initialStations，保证 externalStationArr 是外部站点的唯一数据源
- * - goals.stationLabels / stationLabel → "工人N" 格式转成 A/B/C
- */
-function migrateLevelStations(levels: Level[]): void {
-  for (const lv of levels) {
-    // —— 站点数组迁移 ——
-    // 规则：workerStationArr 已有就不改；没有则从 workerStations(number) 或 goals.stationLabels 反推
-    if (!lv.workerStationArr) {
-      let count = 1;
-      if (typeof lv.workerStations === 'number') {
-        count = lv.workerStations;
-      } else if (Array.isArray(lv.goals)) {
-        // 从 goals 的 stationLabels 反推最大站点数
-        const maxIdx = lv.goals.reduce((mx, g) => {
-          const labels = [...(g.stationLabels ?? []), ...(g.stationLabel ? [g.stationLabel] : [])];
-          for (const lb of labels) {
-            // 支持 A/B/C 或 a/b/c 格式
-            const m = lb.match(/^([a-zA-Z])(\d*)$/);
-            if (m) {
-              if (m[2]) { mx = Math.max(mx, +m[2]); }
-              else { mx = Math.max(mx, m[1].toUpperCase().charCodeAt(0) - 64); }
-            } else {
-              // 旧格式 "工人N"
-              const n = lb.match(/^工人(\d+)$/);
-              if (n) mx = Math.max(mx, +n[1]);
-            }
-          }
-          return mx;
-        }, 0);
-        if (maxIdx > 0) count = maxIdx;
-      }
-      const arr: WorkerStation[] = [];
-      for (let i = 0; i < count; i++) arr.push({ label: String.fromCharCode(65 + i) });
-      lv.workerStationArr = arr;
-    }
-
-    // —— 外部站点归一化：旧 initialStations(刷新/购买/库存/客流) 并入 externalStationArr ——
-    // 规则：initialStations 是用户实际编辑的权威来源，字段值优先覆盖；
-    //       externalStationArr 中旧字段没有的行予以保留；合并后统一重编号 m1..mN；
-    //       迁移完成后删除 initialStations，彻底消除「同一份数据两处存储」的双源问题。
-    //       initialStations 里 kind 为空的按工人站点并入 workerStationArr。
-    const legacyExternal: ExternalStation[] = [];
-    const workerArr: WorkerStation[] = [...(lv.workerStationArr ?? [])];
-
-    if (Array.isArray(lv.initialStations)) {
-      for (const s of lv.initialStations as InitialStation[]) {
-        const isExternal =
-          s.kind === STATION_KIND.REFRESH ||
-          s.kind === STATION_KIND.BUY ||
-          s.kind === STATION_KIND.STOCK ||
-          s.kind === STATION_KIND.PASSENGER;
-        if (isExternal) {
-          legacyExternal.push({
-            label: s.label,
-            resourceId: s.resourceId,
-            qty: s.qty, qtyAuto: s.qtyAuto,
-            kind: s.kind,
-            refreshStart: s.refreshStart, startDelay: s.startDelay,
-            unlockPrice: s.unlockPrice, interval: s.interval,
-            price: s.price, minQty: s.minQty, minQtyAuto: s.minQtyAuto,
-            maxQty: s.maxQty, maxQtyAuto: s.maxQtyAuto,
-            suggestQty: s.suggestQty,
-          });
-        } else if (!workerArr.some((w) => w.label === s.label)) {
-          workerArr.push({ label: s.label, resourceId: s.resourceId, qty: s.qty, qtyAuto: s.qtyAuto });
-        }
-      }
-    }
-
-    const existingExternal: ExternalStation[] = lv.externalStationArr ?? [];
-    let mergedExternal: ExternalStation[];
-    if (legacyExternal.length) {
-      // 旧字段优先，按 resourceId 与已有行对齐；对齐时 undefined 不覆盖已有值
-      const consumed = new Set<number>();
-      const reconciled = legacyExternal.map((legacy) => {
-        const idx = existingExternal.findIndex(
-          (e, i) => !consumed.has(i) && !!e.resourceId && e.resourceId === legacy.resourceId,
-        );
-        if (idx < 0) return legacy;
-        consumed.add(idx);
-        return { ...existingExternal[idx], ...stripUndefined(legacy) };
-      });
-      const onlyNew = existingExternal.filter((_, i) => !consumed.has(i));
-      mergedExternal = [...reconciled, ...onlyNew];
-    } else {
-      mergedExternal = existingExternal;
-    }
-    // 重新编号 m1..mN（生成新对象，避免污染模块级 seed 引用）；
-    // 同时剔除空壳行：没有 resourceId 的外部站是"半途新增/历史遗留"，不算数据，
-    // 否则会随 seed 反复复活（与拆卸组/多渠道组同一类问题）。
-    mergedExternal = mergedExternal
-      .filter((e) => !!e.resourceId)
-      .map((e, i) => ({ ...e, label: 'm' + (i + 1) }));
-
-    workerArr.sort((a, b) => a.label.localeCompare(b.label));
-    if (workerArr.length) lv.workerStationArr = workerArr;
-    // 关键：只要该字段原本存在（或迁移出了行），就把剔除后的结果写回（含空数组），
-    // 否则全部为空壳时会被上面的 if(length) 跳过，导致未剔除的原数组继续留在数据里。
-    if (Array.isArray(lv.externalStationArr) || mergedExternal.length) {
-      lv.externalStationArr = mergedExternal;
-    }
-
-    // —— 站点/组：空壳行统一剔除（数据存在即为真）——
-    // 所有"可增删的配置行"共用一条通用规则：行内没有核心字段（外部站/资源站/客流站无 resourceId，
-    // 拆卸组无产出实例，多渠道组无类型名且无实例）就不算数据。否则用户删掉后，刷新时又会从
-    // seed 快照里被合并回来，表现成"删掉的空行/空组又冒出来"。在此对每个关卡一次性归一化。
-    if (lv.resourceStationArr) {
-      lv.resourceStationArr = lv.resourceStationArr.filter((s) => !!s.resourceId);
-    }
-    if (lv.passengerStationArr) {
-      lv.passengerStationArr = lv.passengerStationArr.filter((s) => !!s.resourceId);
-    }
-    if (lv.coProductionGroups) {
-      lv.coProductionGroups = lv.coProductionGroups.filter(
-        (cp) => cp.outputs?.some((o) => !!o.instanceId),
-      );
-    }
-    if (lv.multiChannelGroups) {
-      lv.multiChannelGroups = lv.multiChannelGroups.filter(
-        (g) => !!g.typeName?.trim() || (g.instanceIds?.length ?? 0) > 0,
-      );
-    }
-
-    // —— 特殊站点标记与数据对齐 ——
-    // hasXxx 标记同时是"页面渲染开关"和"列表筛选依据"，必须由对应数据数组的有无推导，
-    // 否则历史数据里标记缺失时，已填内容不会显示（进关卡默认不显示、必须手点一下）。
-    if (lv.resourceStationArr?.length) lv.hasResourceStation = true;
-    if (lv.passengerStationArr?.length) lv.hasPassengerStation = true;
-    if (lv.externalStationArr?.length) lv.hasExternalStation = true;
-    if (lv.coProductionGroups?.length) lv.hasMergedProduction = true;
-    if (lv.multiChannelGroups?.length) lv.hasMultipleInstances = true;
-
-    // 旧字段彻底移除，后续以 externalStationArr 为唯一数据源
-    if ('initialStations' in lv) delete (lv as { initialStations?: InitialStation[] }).initialStations;
-
-    // —— goal stationLabel 格式迁移："工人N" → A/B/C ——
-    if (Array.isArray(lv.goals)) {
-      let changed = false;
-      lv.goals = lv.goals.map((g) => {
-        const fix = (old?: string): string | undefined => {
-          if (!old) return old;
-          const m = old.match(/^工人(\d+)$/);
-          if (m) { changed = true; return String.fromCharCode(64 + (+m[1])); }
-          return old;
-        };
-        const newLabels = g.stationLabels?.map(fix).filter(Boolean) as string[] | undefined;
-        const newSingle = fix(g.stationLabel);
-        if (!changed) return g;
-        return { ...g, stationLabels: newLabels, stationLabel: newSingle };
-      });
-    }
-  }
-}
-
-// ————————— IndexedDB 工具 —————————
-function openDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME);
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function idbSave(key: string, value: unknown): Promise<void> {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    tx.objectStore(STORE_NAME).put(value, key);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-}
-
-async function idbLoad<T>(key: string): Promise<T | null> {
-  try {
-    const db = await openDB();
-    return await new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const req = tx.objectStore(STORE_NAME).get(key);
-      req.onsuccess = () => resolve((req.result as T) ?? null);
-      req.onerror = () => reject(req.error);
-    });
-  } catch {
-    return null;
-  }
-}
-
-async function idbDelete(key: string): Promise<void> {
-  try {
-    const db = await openDB();
-    await new Promise<void>((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).delete(key);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-  } catch { /* ignore */ }
-}
-
-// ————————— 导入校验 —————————
-export function validate(raw: unknown): { data: GameData | null; issues: string[] } {
-  const issues: string[] = [];
-  if (typeof raw !== 'object' || raw === null) {
-    return { data: null, issues: ['根节点必须是对象'] };
-  }
-  const o = raw as Partial<GameData>;
-  for (const key of ['instances', 'levels', 'trains'] as const) {
-    if (!Array.isArray(o[key])) issues.push(`缺少数组字段「${key}」，将按空表处理`);
-  }
-  const data: GameData = { ...EMPTY, ...o } as GameData;
-
-  const ids = new Set<string>();
-  for (const it of data.instances) {
-    if (!it.id) issues.push('物资实例缺少 id');
-    else if (ids.has(it.id)) issues.push(`物资实例重复 id：${it.id}`);
-    ids.add(it.id);
-    if (!it.name) issues.push(`物资实例 ${it.id} 缺少名称`);
-  }
-
-  const names = new Set(data.instances.map((i) => i.name));
-  for (const it of data.instances) {
-    for (const input of it.inputs) {
-      if (!names.has(input)) issues.push(`物资 ${it.id} 的配方输入「${input}」在物资主表中不存在`);
-    }
-  }
-
-  for (const lv of data.levels) {
-    for (const g of lv.goals ?? []) {
-      if (!ids.has(g.resourceId)) issues.push(`关卡「${lv.name}」的目标引用了不存在的物资实例：${g.resourceId}`);
-    }
-  }
-
-  return { data, issues };
-}
-
-function ensureWorkerEY(data: GameData): GameData {
-  if (!data.instances.some((i) => i.id === '工人eY')) {
-    const xdIdx = data.instances.findIndex((i) => i.id === '工人XD');
-    if (xdIdx >= 0) {
-      data.instances.splice(xdIdx + 1, 0, {
-        id: '工人eY',
-        name: '工人',
-        inputs: [],
-        perOut: 1,
-        external: true,
-        obtain: '刷新',
-      });
-    } else {
-      data.instances.push({
-        id: '工人eY',
-        name: '工人',
-        inputs: [],
-        perOut: 1,
-        external: true,
-        obtain: '刷新',
-      });
-    }
-  }
-  return data;
-}
+import type { GameData, ResourceInstance } from '@/types';
 
 export const useGameStore = defineStore('game', () => {
   const initialData = ensureWorkerEY(seed as unknown as GameData);
@@ -347,41 +70,16 @@ export const useGameStore = defineStore('game', () => {
     }
     // 写 localStorage 在当前数据之前，作为保险
     const wrapper = { ...data.value, __deletedSeedInstIds: [...deletedSeedInstIds.value] };
-    const jsonAll = JSON.stringify(wrapper);
-    try { localStorage.setItem(STORAGE_KEY, jsonAll); } catch { /* ignore */ }
+    writeLocal(STORAGE_KEY, wrapper);
     lastSaved.value = Date.now();
 
     if (import.meta.env.DEV) {
       // 文件 payload 也带上 __deletedSeedInstIds，确保 hydration 能恢复
-      const payload = {
+      return pushFileData({
         instances: data.value.instances,
         trains: data.value.trains,
         levels: data.value.levels,
         __deletedSeedInstIds: [...deletedSeedInstIds.value],
-      };
-      const json = JSON.stringify(payload);
-      // 再尝试写文件
-      return fetch('/api/save-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: json,
-      }).then(async (r) => {
-        const text = await r.text();
-        try {
-          const res = JSON.parse(text);
-          if (res.ok) {
-            console.log(`[store] 💾 已写入 src/data/tv2.json (${res.bytes} bytes)`);
-            return true;
-          }
-          console.warn('[store] ⚠️ middleware 返回失败:', res.msg);
-          return false;
-        } catch {
-          console.warn('[store] ⚠️ 响应非 JSON (status=' + r.status + '), body=' + text.slice(0, 100));
-          return false;
-        }
-      }).catch((e) => {
-        console.warn('[store] ⚠️ middleware 请求失败:', e.message);
-        return false;
       });
     }
     // 非 dev 模式
@@ -392,94 +90,6 @@ export const useGameStore = defineStore('game', () => {
 
   // 轮询删掉，没用
 
-  /**
-   * 合并 seed 和存档。
-   * @param preferSavedInstances dev 模式下为 true —— 此时文件系统 tv2.json 是唯一权威，
-   *   且 vite 会把该文件从 watcher 排除（见 vite.config），编译时 seed 快照可能是陈旧的，
-   *   因此 instances 必须以 saved（load-data 读到的文件内容）为准，seed 只兜底缺失 id。
-   */
-  function mergeWithSeed(saved: GameData, preferSavedInstances = false): GameData {
-    const seedData = seed as unknown as GameData;
-
-    // 从存档里恢复 deletedSeedInstIds（如果存档有这个字段）
-    const savedDeleted = (saved as any).__deletedSeedInstIds as string[] | undefined;
-    if (savedDeleted?.length) {
-      for (const id of savedDeleted) deletedSeedInstIds.value.add(id);
-    }
-
-    let mergedInstances: ResourceInstance[];
-    if (preferSavedInstances) {
-      // dev：以文件系统为准（含 sync 对已有实例字段的更新），删除标记照常剔除
-      const savedIds = new Set(saved.instances.map((i) => i.id));
-      mergedInstances = [
-        ...saved.instances.filter((i) => !deletedSeedInstIds.value.has(i.id)),
-        // seed 里有而 saved 缺失的（理论上 dev 不该发生），兜底并入
-        ...seedData.instances.filter((i) => !deletedSeedInstIds.value.has(i.id) && !savedIds.has(i.id)),
-      ];
-    } else {
-      // 非 dev：seed 编译快照为最新元数据，用户新增的追加，用户删过的剔除
-      const seedInstIds = new Set(seedData.instances.map((i) => i.id));
-      const userAddedInsts = saved.instances.filter((i) => !seedInstIds.has(i.id));
-      mergedInstances = [
-        ...seedData.instances.filter((i) => !deletedSeedInstIds.value.has(i.id)),
-        ...userAddedInsts,
-      ];
-    }
-
-    const mergedTrains = seedData.trains;
-
-    // 关卡：以 seed 为准，用户可编辑字段用存档值覆盖
-    const savedMap = new Map(saved.levels.map((l) => [l.id, l]));
-
-    const mergedLevels = seedData.levels.map((seedLv) => {
-      const savedLv = savedMap.get(seedLv.id);
-      if (!savedLv) return { ...seedLv };
-      // ⚠️ 仅当存档字段有定义时才覆盖：否则存档里 undefined 的可选标记会抹掉 seed 的 true
-      const overrides: Record<string, unknown> = {};
-      for (const k of USER_EDITABLE_FIELDS) {
-        const v = (savedLv as any)[k];
-        if (v !== undefined) overrides[k] = v;
-      }
-      const merged = { ...seedLv, ...overrides } as typeof seedLv;
-      // initialStations（旧字段）：存档一旦包含该关卡，即以其为准（含「已迁移删除」的情况），
-      // 避免编译期陈旧快照把旧字段复活，导致双源再次发散
-      if ('initialStations' in savedLv) (merged as any).initialStations = (savedLv as any).initialStations;
-      else delete (merged as any).initialStations;
-      return merged;
-    });
-
-    // 存档里有但 seed 里没有的关卡（老版本遗留）—— 保留
-    for (const savedLv of saved.levels) {
-      if (!seedData.levels.some((s) => s.id === savedLv.id)) {
-        mergedLevels.push(savedLv);
-      }
-    }
-
-    // —— 站点结构迁移：旧字段 → 新三数组 ——
-    migrateLevelStations(mergedLevels);
-
-    const merged: GameData = {
-      instances: mergedInstances,
-      trains: mergedTrains,
-      levels: mergedLevels,
-    };
-
-    // 检查是否有元数据变化
-    let metaChanged = 0;
-    for (const seedLv of seedData.levels) {
-      const savedLv = savedMap.get(seedLv.id);
-      if (!savedLv) { metaChanged++; continue; }
-      const seedKey = JSON.stringify({ c: seedLv.constraints, e: seedLv.earn, s: seedLv.spend, sec: seedLv.seconds });
-      const saveKey = JSON.stringify({ c: savedLv.constraints, e: savedLv.earn, s: savedLv.spend, sec: savedLv.seconds });
-      if (seedKey !== saveKey) metaChanged++;
-    }
-    if (metaChanged > 0) {
-      console.log(`[store] 🔄 检测到 ${metaChanged} 个关卡元数据已更新（来自最新 seed）`);
-    }
-
-    return merged;
-  }
-
   /** 加载存档：dev 模式优先代码 JSON，非 dev 读 localStorage/IndexedDB */
   async function hydrate(): Promise<void> {
     const countGoals = (d: GameData) => d.levels.reduce((sum, l) => sum + (l.goals?.length ?? 0), 0);
@@ -488,17 +98,15 @@ export const useGameStore = defineStore('game', () => {
     if (import.meta.env.DEV) {
       // 🎯 dev 模式：fetch middleware 最新文件系统内容，不用编译时 import 快照
       try {
-        const resp = await fetch('/api/load-data?t=' + Date.now());
-        if (resp.ok) {
-          const saved = await resp.json();
+        const saved = await fetchFileData<GameData>();
+        if (saved) {
           // dev：实例以文件系统为准（编译 seed 快照可能陈旧）
-          const merged = mergeWithSeed(saved as GameData, true);
+          const merged = mergeWithSeed(saved, seedData, deletedSeedInstIds.value, true);
 
           // 额外：合并 localStorage 中的用户修改（防止 POST 保存失败导致数据丢失）
           try {
-            const localRaw = localStorage.getItem(STORAGE_KEY);
-            if (localRaw) {
-              const localData = JSON.parse(localRaw) as GameData;
+            const localData = readLocal<GameData>(STORAGE_KEY);
+            if (localData) {
               const localMap = new Map(localData.levels.map((l) => [l.id, l]));
               let mergedCount = 0;
               for (const lv of merged.levels) {
@@ -531,12 +139,11 @@ export const useGameStore = defineStore('game', () => {
       } catch { /* ignore */ }
       // fallback：先尝试从 localStorage 恢复（防止 middleware 写入失败导致数据丢失）
       try {
-        const localRaw = localStorage.getItem(STORAGE_KEY);
-        if (localRaw) {
-          const localData = JSON.parse(localRaw) as GameData;
+        const localData = readLocal<GameData>(STORAGE_KEY);
+        if (localData) {
           const localGoals = localData.levels?.reduce((s, l) => s + (l.goals?.length ?? 0), 0) ?? 0;
           if (localGoals > 0) {
-            const merged = mergeWithSeed(localData, false);
+            const merged = mergeWithSeed(localData, seedData, deletedSeedInstIds.value);
             migrateLevelStations(merged.levels);
             setData(merged);
             hydrated.value = true;
@@ -556,7 +163,7 @@ export const useGameStore = defineStore('game', () => {
 
     // ——— 非 dev 模式：localStorage + IndexedDB 双读 ———
     const idbRaw = await idbLoad<unknown>(STORAGE_KEY);
-    const lsRaw = localStorage.getItem(STORAGE_KEY);
+    const lsRaw = readLocal<unknown>(STORAGE_KEY);
 
     let idbData: GameData | null = null;
     let lsData: GameData | null = null;
@@ -566,10 +173,8 @@ export const useGameStore = defineStore('game', () => {
       if (v) idbData = v;
     }
     if (lsRaw) {
-      try {
-        const { data: v } = validate(JSON.parse(lsRaw));
-        if (v) lsData = v;
-      } catch { /* ignore */ }
+      const { data: v } = validate(lsRaw);
+      if (v) lsData = v;
     }
 
     if (!idbData && !lsData) {
@@ -592,9 +197,8 @@ export const useGameStore = defineStore('game', () => {
     }
     console.log(`[store] 📊 存储对比: LS goals=${lsGoals}, IDB goals=${idbGoals}, winner=${winnerName}`);
 
-    const merged = mergeWithSeed(winner);
-    const jsonStr = JSON.stringify(merged);
-    try { localStorage.setItem(STORAGE_KEY, jsonStr); } catch { /* ignore */ }
+    const merged = mergeWithSeed(winner, seedData, deletedSeedInstIds.value);
+    writeLocal(STORAGE_KEY, merged);
     idbSave(STORAGE_KEY, merged).catch(() => {});
     setData(merged);
     hydrated.value = true;
@@ -628,8 +232,7 @@ export const useGameStore = defineStore('game', () => {
     issues.value = iss;
     source.value = '导入文件';
     // 立刻写入 localStorage + IndexedDB + 文件（防止后续保存失败导致数据丢失）
-    const jsonStr = JSON.stringify(v);
-    try { localStorage.setItem(STORAGE_KEY, jsonStr); } catch { /* ignore */ }
+    writeLocal(STORAGE_KEY, v);
     idbSave(STORAGE_KEY, v).catch(() => {});
     lastSaved.value = Date.now();
     // 再写入文件（forceSave 会写 localStorage 一次，但没关系，覆盖相同数据）
@@ -638,7 +241,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function reset(): void {
-    localStorage.removeItem(STORAGE_KEY);
+    removeLocal(STORAGE_KEY);
     idbDelete(STORAGE_KEY).catch(() => {});
     deletedSeedInstIds.value.clear();
     setData(seed as unknown as GameData);
@@ -653,7 +256,7 @@ export const useGameStore = defineStore('game', () => {
       const raw = await idbLoad<any>(STORAGE_KEY);
       if (!raw) return false;
       const wrapper = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(wrapper));
+      writeLocal(STORAGE_KEY, wrapper);
       if (wrapper.__deletedSeedInstIds?.length) {
         deletedSeedInstIds.value = new Set(wrapper.__deletedSeedInstIds);
       }
