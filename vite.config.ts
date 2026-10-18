@@ -112,9 +112,9 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    // 关键：排除 tv2.json 的文件系统变化从 HMR 中，写存档不会触发整页 reload
+    // 关键：排除 tv2.json 与备份目录的文件系统变化从 HMR 中，写存档不会触发整页 reload
     watch: {
-      ignored: [path.resolve(__dirname, 'src/data/tv2.json'), path.resolve(__dirname, 'src/data/instances_from_base.ndjson'), path.resolve(__dirname, 'src/data/backups')],
+      ignored: [path.resolve(__dirname, 'src/data/tv2.json'), path.resolve(__dirname, 'src/data/backups')],
     },
   },
 });
