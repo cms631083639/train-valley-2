@@ -618,9 +618,7 @@
         "加工橡胶",
         "玻璃"
       ],
-      "perOut": 1,
-      "external": true,
-      "obtain": "购买"
+      "perOut": 1
     },
     {
       "id": "电线3N",
@@ -1212,6 +1210,14 @@
       "needsPower": true
     },
     {
+      "id": "电器up",
+      "name": "电器",
+      "inputs": [],
+      "perOut": 1,
+      "external": true,
+      "obtain": "购买"
+    },
+    {
       "id": "土豆da",
       "name": "土豆",
       "inputs": [
@@ -1795,7 +1801,8 @@
           "order": 1,
           "stationLabels": [
             "A"
-          ]
+          ],
+          "uid": "gmvdq9ggx13"
         },
         {
           "resourceId": "奶牛kP",
@@ -1804,7 +1811,8 @@
           "order": 2,
           "stationLabels": [
             "A"
-          ]
+          ],
+          "uid": "gmvdq9ggx14"
         },
         {
           "resourceId": "砂土rh",
@@ -1813,7 +1821,8 @@
           "order": 1,
           "stationLabels": [
             "A"
-          ]
+          ],
+          "uid": "gmvdq9ggx15"
         }
       ],
       "initialTrains": [
@@ -1914,28 +1923,32 @@
           "qty": 6,
           "stackId": "A",
           "order": 1,
-          "stationLabel": "B"
+          "stationLabel": "B",
+          "uid": "gmvdq9gesz"
         },
         {
           "resourceId": "奶牛kP",
           "qty": 4,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9ges10"
         },
         {
           "resourceId": "小麦E9",
           "qty": 4,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmvdq9ges11"
         },
         {
           "resourceId": "加工橡胶HS",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmvdq9ges12"
         }
       ],
       "workerStations": 2,
@@ -1979,28 +1992,32 @@
           "qty": 6,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gdyv"
         },
         {
           "resourceId": "木板5y",
           "qty": 4,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gdyw"
         },
         {
           "resourceId": "砖块3F",
           "qty": 12,
           "stationLabel": "A",
           "stackId": "C",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gdyx"
         },
         {
           "resourceId": "木板5y",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gdyy"
         }
       ],
       "workerStations": 2,
@@ -2044,21 +2061,24 @@
           "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gd3s"
         },
         {
           "resourceId": "玻璃qV",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gd3t"
         },
         {
           "resourceId": "加工橡胶HS",
           "qty": 12,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gd3u"
         }
       ],
       "workerStations": 2,
@@ -2103,21 +2123,24 @@
           "qty": 8,
           "stackId": "A",
           "order": 1,
-          "stationLabel": "A"
+          "stationLabel": "A",
+          "uid": "gmvdq9gcap"
         },
         {
           "resourceId": "奶牛kP",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gcaq"
         },
         {
           "resourceId": "木板5y",
           "qty": 10,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gcar"
         }
       ],
       "workerStations": 2,
@@ -2161,28 +2184,32 @@
           "qty": 6,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gbel"
         },
         {
           "resourceId": "砖块3F",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gbem"
         },
         {
           "resourceId": "加工橡胶HS",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gben"
         },
         {
           "resourceId": "砖块3F",
           "qty": 6,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9gbeo"
         }
       ],
       "workerStations": 2,
@@ -2227,21 +2254,24 @@
           "qty": 8,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fx6i"
         },
         {
           "resourceId": "加工橡胶HS",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fx6j"
         },
         {
           "resourceId": "木板5y",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fx6k"
         }
       ],
       "workerStations": 2,
@@ -2285,21 +2315,24 @@
           "qty": 6,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9frif"
         },
         {
           "resourceId": "钢坯OP",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9frig"
         },
         {
           "resourceId": "砖块3F",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9frih"
         }
       ],
       "workerStations": 2,
@@ -2406,14 +2439,16 @@
           "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fg6d"
         },
         {
           "resourceId": "钢坯OP",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fg6e"
         }
       ],
       "workerStations": 2,
@@ -2457,28 +2492,32 @@
           "qty": 6,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fb59"
         },
         {
           "resourceId": "玻璃qV",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fb5a"
         },
         {
           "resourceId": "砖块3F",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fb5b"
         },
         {
           "resourceId": "铜锭nQ",
           "qty": 8,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9fb5c"
         }
       ],
       "workerStations": 2,
@@ -2522,34 +2561,39 @@
           "resourceId": "钢坯OP",
           "qty": 6,
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9eff4"
         },
         {
           "resourceId": "煤炭gF",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9eff5"
         },
         {
           "resourceId": "木板5y",
           "qty": 9,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9eff6"
         },
         {
           "resourceId": "工具Cy",
           "qty": 4,
           "stationLabel": "B",
           "stackId": "C",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9eff7"
         },
         {
           "resourceId": "工具Cy",
           "qty": 4,
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9eff8"
         }
       ],
       "workerStations": 2,
@@ -2655,28 +2699,32 @@
           "qty": 6,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9e490"
         },
         {
           "resourceId": "木板5y",
           "qty": 9,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9e491"
         },
         {
           "resourceId": "砖块3F",
           "qty": 6,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9e492"
         },
         {
           "resourceId": "家具7U",
           "qty": 8,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvdq9e493"
         }
       ],
       "workerStations": 2,
@@ -3971,7 +4019,7 @@
       "goals": [
         {
           "resourceId": "木板5y",
-          "qty": 5,
+          "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
           "order": 1,
@@ -4035,6 +4083,9 @@
         {
           "label": "C"
         }
+      ],
+      "powerSources": [
+        "电力Lb"
       ]
     },
     {
@@ -4057,21 +4108,24 @@
           "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz8wq0"
         },
         {
           "resourceId": "罐头食品od",
           "qty": 10,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz8wq1"
         },
         {
           "resourceId": "钢坯OP",
           "qty": 10,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz8wq2"
         }
       ],
       "workerStations": 2,
@@ -4095,6 +4149,9 @@
         {
           "label": "B"
         }
+      ],
+      "powerSources": [
+        "电力4n"
       ]
     },
     {
@@ -4116,35 +4173,40 @@
           "qty": 5,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz96i3"
         },
         {
           "resourceId": "机械师F8",
           "qty": 5,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz96i4"
         },
         {
           "resourceId": "铜锭nQ",
           "qty": 5,
           "stationLabel": "C",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz96i5"
         },
         {
           "resourceId": "机械师F8",
           "qty": 5,
           "stationLabel": "D",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz96i6"
         },
         {
           "resourceId": "电器kV",
           "qty": 5,
           "stationLabel": "E",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz96i7"
         }
       ],
       "workerStations": 5,
@@ -4178,6 +4240,9 @@
         {
           "label": "E"
         }
+      ],
+      "powerSources": [
+        "电力lf"
       ]
     },
     {
@@ -4200,35 +4265,40 @@
           "qty": 10,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz9hr8"
         },
         {
           "resourceId": "木板5y",
           "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz9hr9"
         },
         {
           "resourceId": "工具Cy",
           "qty": 10,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz9hra"
         },
         {
           "resourceId": "玻璃qV",
           "qty": 10,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz9hrb"
         },
         {
           "resourceId": "家具7U",
           "qty": 10,
           "stationLabel": "A",
           "stackId": "C",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcbz9hrc"
         }
       ],
       "workerStations": 2,
@@ -4263,7 +4333,7 @@
           "refreshStart": "timed",
           "startDelay": 0,
           "interval": 110,
-          "price": 0,
+          "price": 35000,
           "minQty": 5,
           "maxQty": 6
         }
@@ -4289,28 +4359,32 @@
           "qty": 15,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg6q415"
         },
         {
           "resourceId": "汽车Sd",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg6q416"
         },
         {
           "resourceId": "加工橡胶u7",
           "qty": 15,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg6q417"
         },
         {
           "resourceId": "机械师F8",
           "qty": 18,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg6q418"
         }
       ],
       "workerStations": 2,
@@ -4338,7 +4412,7 @@
       "externalStationArr": [
         {
           "label": "m1",
-          "resourceId": "电器ar",
+          "resourceId": "电器up",
           "qty": 5,
           "kind": "购买",
           "refreshStart": "timed",
@@ -4364,7 +4438,10 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力Lb"
+      ]
     },
     {
       "id": "9¾ 站台",
@@ -4386,21 +4463,24 @@
           "qty": 10,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg7czq9"
         },
         {
           "resourceId": "铜锭nQ",
           "qty": 10,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg7czqa"
         },
         {
           "resourceId": "货物ld",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg7czqb"
         }
       ],
       "workerStations": 2,
@@ -4446,7 +4526,10 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力Lb"
+      ]
     },
     {
       "id": "列车墓场",
@@ -4552,7 +4635,10 @@
       "instanceOverrides": {
         "砂土": "砂土rh"
       },
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力Lb"
+      ]
     },
     {
       "id": "关西机场",
@@ -4574,35 +4660,40 @@
           "qty": 6,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg90gec"
         },
         {
           "resourceId": "钢板L6",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg90ged"
         },
         {
           "resourceId": "燃料t3",
           "qty": 15,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmvcg90gee"
         },
         {
           "resourceId": "飞机EG",
           "qty": 6,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 3
+          "order": 3,
+          "uid": "gmvcg90gef"
         },
         {
           "resourceId": "钢坯OP",
           "qty": 10,
           "stationLabel": "C",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg90geg"
         }
       ],
       "workerStations": 3,
@@ -4648,7 +4739,11 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力lf",
+        "电力4n"
+      ]
     },
     {
       "id": "南极洲",
@@ -4670,35 +4765,40 @@
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg9g5bh"
         },
         {
           "resourceId": "电线lH",
           "qty": 14,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmvcg9g5bi"
         },
         {
           "resourceId": "微型芯片xO",
           "qty": 7,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 3
+          "order": 3,
+          "uid": "gmvcg9g5bj"
         },
         {
           "resourceId": "微型芯片xO",
           "qty": 7,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg9g5bk"
         },
         {
           "resourceId": "砖块3F",
           "qty": 18,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcg9g5bl"
         }
       ],
       "workerStations": 2,
@@ -4756,7 +4856,10 @@
       "instanceOverrides": {
         "砂土": "砂土rh"
       },
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力0q"
+      ]
     },
     {
       "id": "曼谷",
@@ -4777,28 +4880,32 @@
           "qty": 21,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvclzf0t5"
         },
         {
           "resourceId": "玻璃yq",
           "qty": 12,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvclzf0t6"
         },
         {
           "resourceId": "纸2w",
           "qty": 14,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvclzf0t7"
         },
         {
           "resourceId": "首饰Xd",
           "qty": 14,
           "stationLabel": "B",
           "stackId": "C",
-          "order": 1
+          "order": 1,
+          "uid": "gmvclzf0t8"
         }
       ],
       "workerStations": 2,
@@ -4839,7 +4946,11 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力lf",
+        "电力4n"
+      ]
     },
     {
       "id": "厄勒海峡大桥",
@@ -4861,28 +4972,32 @@
           "qty": 18,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm0aua9"
         },
         {
           "resourceId": "机械师QQ",
           "qty": 12,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm0auaa"
         },
         {
           "resourceId": "汽车Sd",
           "qty": 21,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmvcm0auab"
         },
         {
           "resourceId": "加工橡胶HS",
           "qty": 12,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 2
+          "order": 2,
+          "uid": "gmvcm0auac"
         }
       ],
       "workerStations": 2,
@@ -4924,7 +5039,10 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力4n"
+      ]
     },
     {
       "id": "垃圾山",
@@ -4946,35 +5064,40 @@
           "qty": 18,
           "stationLabel": "C",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm0ljnd"
         },
         {
           "resourceId": "钢坯E7",
           "qty": 18,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm0ljne"
         },
         {
           "resourceId": "玻璃O0",
           "qty": 18,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm0ljnf"
         },
         {
           "resourceId": "家具7U",
           "qty": 12,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm0ljng"
         },
         {
           "resourceId": "工具Cy",
           "qty": 12,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm0ljnh"
         }
       ],
       "workerStations": 3,
@@ -5019,7 +5142,10 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力0q"
+      ]
     },
     {
       "id": "AMADEE-18",
@@ -5041,28 +5167,32 @@
           "qty": 18,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm10rui"
         },
         {
           "resourceId": "玻璃qV",
           "qty": 18,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm10ruj"
         },
         {
           "resourceId": "计算机hb",
           "qty": 21,
           "stationLabel": "B",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm10ruk"
         },
         {
           "resourceId": "微型芯片xO",
           "qty": 7,
           "stationLabel": "A",
           "stackId": "B",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm10rul"
         }
       ],
       "workerStations": 2,
@@ -5133,7 +5263,10 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力0q"
+      ]
     },
     {
       "id": "新西兰",
@@ -5154,21 +5287,24 @@
           "qty": 7,
           "stationLabel": "A",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm1c4um"
         },
         {
           "resourceId": "书籍9S",
           "qty": 7,
           "stationLabel": "B",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm1c4un"
         },
         {
           "resourceId": "加工橡胶HS",
           "qty": 1,
           "stationLabel": "C",
           "stackId": "A",
-          "order": 1
+          "order": 1,
+          "uid": "gmvcm1c4uo"
         }
       ],
       "workerStations": 3,
@@ -5216,7 +5352,10 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力Lb"
+      ]
     },
     {
       "id": "射电望远镜FAST",
@@ -5241,7 +5380,8 @@
             "A",
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvcmk5ms0"
         },
         {
           "resourceId": "微型芯片xO",
@@ -5251,7 +5391,8 @@
             "A",
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvcmk5ms1"
         },
         {
           "resourceId": "电线lH",
@@ -5260,7 +5401,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvcmk5ms2"
         },
         {
           "resourceId": "铜锭EC",
@@ -5269,7 +5411,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvcmk5ms3"
         },
         {
           "resourceId": "机床lh",
@@ -5278,7 +5421,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvcmk5ms4"
         }
       ],
       "workerStations": 3,
@@ -5324,7 +5468,10 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力Lb"
+      ]
     },
     {
       "id": "超级高铁",
@@ -5348,7 +5495,8 @@
           "order": 1,
           "stationLabels": [
             "B"
-          ]
+          ],
+          "uid": "gmvcmke9w5"
         },
         {
           "resourceId": "汽车Sd",
@@ -5357,7 +5505,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvcmke9w6"
         },
         {
           "resourceId": "飞机EG",
@@ -5366,7 +5515,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvcmke9w7"
         },
         {
           "resourceId": "燃料t3",
@@ -5375,7 +5525,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvcmke9w8"
         }
       ],
       "workerStations": 3,
@@ -5421,7 +5572,11 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "powerSources": [
+        "电力4n",
+        "电力Lb"
+      ]
     },
     {
       "id": "新加坡",
@@ -5508,7 +5663,7 @@
         },
         {
           "label": "m2",
-          "resourceId": "电器ar",
+          "resourceId": "电器up",
           "qty": 3,
           "qtyAuto": true,
           "kind": "购买",
@@ -5552,7 +5707,11 @@
           "maxQtyAuto": true
         }
       ],
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "startMoney": "90000",
+      "powerSources": [
+        "电力Lb"
+      ]
     },
     {
       "id": "向火星发射火箭",
@@ -8392,22 +8551,41 @@
       "goals": [
         {
           "resourceId": "蜡烛V6",
-          "qty": 4
+          "qty": 4,
+          "uid": "gmvdvz5t60"
         },
         {
           "resourceId": "信封al",
-          "qty": 4
+          "qty": 4,
+          "uid": "gmvdvz5t61"
         },
         {
           "resourceId": "信封Su",
-          "qty": 4
+          "qty": 4,
+          "uid": "gmvdvz5t62"
         }
       ],
       "workerStationArr": [
         {
           "label": "A"
         }
-      ]
+      ],
+      "hasMultipleInstances": true,
+      "multiChannelGroups": [
+        {
+          "typeName": "信封",
+          "instanceIds": [
+            "信封al",
+            "信封Su"
+          ]
+        }
+      ],
+      "instanceOverrides": {
+        "蓝色药水": "蓝色药水vT",
+        "铜矿": "铜矿gp",
+        "红色药水": "红色药水Uh"
+      },
+      "hasInterception": true
     },
     {
       "id": "火箭过家家",
