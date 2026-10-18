@@ -224,6 +224,26 @@ const filtered = computed(() =>
 );
 
 /**
+ * 关卡列表键盘导航：↑ / ↓ 在当前可见列表内切换上一关 / 下一关。
+ * 监听器挂在列表容器上（@keydown），因此只在焦点位于关卡列表内时才生效，
+ * 不会冒泡到别处，也不影响目标录入区里实例下拉自己的 ↑↓ 选择。
+ * - 当前选中项不在可见列表（被搜索 / 筛选过滤掉）时：↓ 从列表首项进入、↑ 从末项进入
+ * - 已在列表两端时不做任何事，也不吃掉按键
+ */
+function onLevelListKeydown(e: KeyboardEvent) {
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+  if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  const list = filtered.value;
+  if (!list.length) return;
+  const down = e.key === 'ArrowDown';
+  const cur = list.findIndex((l) => l.id === selectedId.value);
+  const next = cur === -1 ? (down ? 0 : list.length - 1) : cur + (down ? 1 : -1);
+  if (next < 0 || next >= list.length) return;
+  e.preventDefault();
+  pickedId.value = list[next].id;
+}
+
+/**
  * 关卡稳定序号：按"原始列表顺序"编号（仅受内容类型范围影响，不受标记筛选 / 搜索影响）。
  * 这样筛选「主线 + 外部站点」时，显示的是关卡原本的编号（如 05、12、30），
  * 而不是对筛选后的结果从 01 重新编号。
@@ -629,7 +649,7 @@ function getUsedInstanceIds(typeName: string): string[] {
         <AppIcon name="search" :size="14" class="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-fog-400" />
         <input v-model="keyword" type="text" placeholder="搜索关卡名 / 章节" class="w-full pl-7" />
       </div>
-      <div ref="levelListRef" @scroll="saveLevelListScroll" class="mt-3 grid flex-1 min-h-0 grid-cols-1 gap-1.5 overflow-y-auto pr-1">
+      <div ref="levelListRef" tabindex="-1" @scroll="saveLevelListScroll" @keydown="onLevelListKeydown" class="mt-3 grid flex-1 min-h-0 grid-cols-1 gap-1.5 overflow-y-auto pr-1">
         <button
           v-for="l in filtered" :key="l.id"
           :data-level-id="l.id"
