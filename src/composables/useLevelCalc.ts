@@ -9,8 +9,9 @@
  */
 
 import { computed, type Ref } from 'vue';
-import { OBTAIN, VIA } from '@/constants';
-import { breakdownGoals } from '@/engine/breakdown';
+import { OBTAIN, VIA, STRATEGY_CARD } from '@/constants';
+import type { StrategyCardKey } from '@/constants';
+import { breakdownGoals, RECIPE_CHOICE, BREAKDOWN_STRATEGY } from '@/engine/breakdown';
 import type { BreakdownNode, BreakdownStrategy, RecipeChoice } from '@/engine/breakdown';
 import {
   collectCpOutputNames,
@@ -105,7 +106,7 @@ export function useLevelCalc(inputs: LevelCalcInputs) {
     });
 
     // 构建策略列表
-    type StrategyItem = { key: string; strategy: BreakdownStrategy; label: string };
+    type StrategyItem = { key: StrategyCardKey; strategy: BreakdownStrategy; label: string };
     const strategies: StrategyItem[] = [];
 
     // 🎯 手动填写拆卸总个数 / 🛑 最多拆卸次数上限 → 拆卸通道已定，无需多方案对比
@@ -117,13 +118,13 @@ export function useLevelCalc(inputs: LevelCalcInputs) {
     } else if (hasCo && hasMulti) {
       // 有拆卸工厂 + 多渠道：展示最少浪费方案 + 多渠道对比
       strategies.push(
-        { key: 'minWaste', strategy: 'minCoProduction', label: '① 最少浪费方案' },
-        { key: 'fewestInputs', strategy: 'fewestInputs', label: '② 配方输入最少' },
+        { key: STRATEGY_CARD.MIN_WASTE, strategy: BREAKDOWN_STRATEGY.MIN_COPRODUCTION, label: '① 最少浪费方案' },
+        { key: STRATEGY_CARD.FEWEST_INPUTS, strategy: BREAKDOWN_STRATEGY.FEWEST_INPUTS, label: '② 配方输入最少' },
       );
       if (hasTimeBased) {
-        strategies.push({ key: 'smallestCycle', strategy: 'smallestPerCycle', label: '③ 单周期产出最小' });
+        strategies.push({ key: STRATEGY_CARD.SMALLEST_CYCLE, strategy: BREAKDOWN_STRATEGY.SMALLEST_PER_CYCLE, label: '③ 单周期产出最小' });
       } else {
-        strategies.push({ key: 'mostInputs', strategy: 'mostInputs', label: '③ 最复杂方案' });
+        strategies.push({ key: STRATEGY_CARD.MOST_INPUTS, strategy: BREAKDOWN_STRATEGY.MOST_INPUTS, label: '③ 最复杂方案' });
       }
     } else if (hasCo && !hasMulti) {
       // 有拆卸工厂但无多渠道 → 无需多方案对比，主结果即为最优方案
@@ -131,18 +132,18 @@ export function useLevelCalc(inputs: LevelCalcInputs) {
     } else if (!hasCo && hasMulti) {
       // 只有多实例：多渠道对比
       strategies.push(
-        { key: 'fewestInputs', strategy: 'fewestInputs', label: '① 配方输入最少' },
+        { key: STRATEGY_CARD.FEWEST_INPUTS, strategy: BREAKDOWN_STRATEGY.FEWEST_INPUTS, label: '① 配方输入最少' },
       );
       if (hasTimeBased) {
-        strategies.push({ key: 'smallestCycle', strategy: 'smallestPerCycle', label: '② 单周期产出最小' });
+        strategies.push({ key: STRATEGY_CARD.SMALLEST_CYCLE, strategy: BREAKDOWN_STRATEGY.SMALLEST_PER_CYCLE, label: '② 单周期产出最小' });
       }
-      strategies.push({ key: 'mostInputs', strategy: 'mostInputs', label: hasTimeBased ? '③ 最复杂方案' : '② 最复杂方案' });
+      strategies.push({ key: STRATEGY_CARD.MOST_INPUTS, strategy: BREAKDOWN_STRATEGY.MOST_INPUTS, label: hasTimeBased ? '③ 最复杂方案' : '② 最复杂方案' });
     } else {
       return [];
     }
 
     return strategies.map((s) => {
-      const r = breakdownGoals(buildOptions('fewestInputs', s.strategy));
+      const r = breakdownGoals(buildOptions(RECIPE_CHOICE.FEWEST_INPUTS, s.strategy));
       return { key: s.key, strategy: s.strategy, label: s.label, result: r };
     });
   });

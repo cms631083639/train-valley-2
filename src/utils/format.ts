@@ -43,17 +43,6 @@ export const OBTAIN_LABEL: Record<ObtainMethod, string> = {
   客流: '客流（乘客运输）',
 };
 
-/** 拆解节点解析方式的展示文案 */
-export const VIA_LABEL: Record<string, string> = {
-  produce: '生产',
-  external: '空投购买',
-  refresh: '定时站点',
-  infinite: '无限供给',
-  auto: '通电自动生产',
-  power: '电力条件',
-  unknown: '未知来源',
-};
-
 /** 限制条件列名 → 展示文案（value 为表内原始值） */
 export function constraintText(key: string, value: string): string {
   switch (key) {

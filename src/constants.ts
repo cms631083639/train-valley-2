@@ -36,6 +36,7 @@ export const VIA = {
   AUTO: 'auto',           // 自动生产（机械师等）
   UNKNOWN: 'unknown',     // 未知（警告用）
   POWER_TAG: 'power-tag', // 多实例电力标记
+  POWER: 'power',          // 单电力来源的通电条件（不计入消耗）
   CO_PRODUCTION: 'co-production', // 拆卸组（共享配方，一次生产同时产出多实例）
 } as const;
 
@@ -52,23 +53,16 @@ export const CONTENT = {
   DLC: 'DLC',
 } as const;
 
-// ———————————————— 多实例选择策略 RecipeChoice ————————————————
-export const RECIPE_CHOICE = {
+// ———————————————— 多方案对比卡片标识 ————————————————
+// 注意：这张表的"键"与引擎 BREAKDOWN_STRATEGY 的"值"存在重名（fewestInputs / mostInputs），
+// 但二者是两个命名空间——这里是 UI 卡片标识，那里是引擎策略参数，勿混用。
+export const STRATEGY_CARD = {
+  MIN_WASTE: 'minWaste',
   FEWEST_INPUTS: 'fewestInputs',
-  SMALLEST_PER_CYCLE: 'smallestPerCycle',
-  FIRST: 'first',
+  SMALLEST_CYCLE: 'smallestCycle',
   MOST_INPUTS: 'mostInputs',
 } as const;
-export type RecipeChoiceConst = (typeof RECIPE_CHOICE)[keyof typeof RECIPE_CHOICE];
-
-// ———————————————— 拆解策略 BreakdownStrategy ————————————————
-export const BREAKDOWN_STRATEGY = {
-  NORMAL: 'normal',
-  SKIP_COPRODUCTION: 'skipCoProduction',
-  MIN_COPRODUCTION: 'minCoProduction',
-  MOST_INPUTS: 'mostInputs',
-} as const;
-export type BreakdownStrategyConst = (typeof BREAKDOWN_STRATEGY)[keyof typeof BREAKDOWN_STRATEGY];
+export type StrategyCardKey = (typeof STRATEGY_CARD)[keyof typeof STRATEGY_CARD];
 
 // ———————————————— 筛选器 "全部" 哨兵值 ————————————————
 export const FILTER_ALL = 'all' as const;

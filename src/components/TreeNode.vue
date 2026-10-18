@@ -75,8 +75,8 @@ function viaText(n: BreakdownNode): string {
       const r = resolveQty(n);
       return `拆卸组 · ${r.cycles} 周期 × 每周期 ${n.perCycle || 1} 次消耗`;
     }
-    case 'power': return '需通电（发电消耗不计入总需求）';
-    case 'power-tag': return `⚡️ 需通电 ${n.qty} 次（多电力来源，不计入消耗）`;
+    case VIA.POWER: return '需通电（发电消耗不计入总需求）';
+    case VIA.POWER_TAG: return `⚡️ 需通电 ${n.qty} 次（多电力来源，不计入消耗）`;
     default: return '未知来源，需人工确认';
   }
 }

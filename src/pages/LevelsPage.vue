@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /** 关卡速查 / 物资拆解（本体 50 关优先，可切换查看全部） */
-import { OBTAIN, STATION_KIND, FILTER_ALL } from '@/constants';
+import { OBTAIN, STATION_KIND, FILTER_ALL, STRATEGY_CARD } from '@/constants';
 import { computed, onMounted, ref, reactive, watch, watchEffect, nextTick } from 'vue';
+import { RECIPE_CHOICE, BREAKDOWN_STRATEGY } from '@/engine/breakdown';
 import type { RecipeChoice, BreakdownStrategy } from '@/engine/breakdown';
 import type { ExternalStation, LevelGoal, ResourceInstance, WorkerStation } from '@/types';
 import { POWER_NAME, WORKER_NAME } from '@/types';
@@ -50,10 +51,10 @@ const coProductionPanelRef = ref<InstanceType<typeof CoProductionPanel> | null>(
 const externalPanelRef = ref<InstanceType<typeof ExternalStationPanel> | null>(null);
 
 const pickedId = ref('');
-const choice = ref<RecipeChoice>('fewestInputs');
+const choice = ref<RecipeChoice>(RECIPE_CHOICE.FEWEST_INPUTS);
 
 /** 拆解策略（用于多方案对比） */
-const activeStrategy = ref<BreakdownStrategy>('normal');
+const activeStrategy = ref<BreakdownStrategy>(BREAKDOWN_STRATEGY.NORMAL);
 
 /** 刷新站点间隔默认值：1 分 50 秒 */
 const DEFAULT_INTERVAL_SEC = 0;
@@ -187,7 +188,7 @@ watch(level, (lv) => {
   if (!lv) return;
   // 🎯 切换关卡时重置拆解策略：避免上一关的策略残留
   //    （如"配方输入最少"会禁用拆卸组，导致拆卸关卡结果被放大）
-  activeStrategy.value = 'normal';
+  activeStrategy.value = BREAKDOWN_STRATEGY.NORMAL;
   const oldPower = lv.instanceOverrides?.[POWER_NAME];
   if (oldPower && !lv.powerSources?.length) {
     const cleaned: Record<string, string> = { ...(lv.instanceOverrides ?? {}) };
@@ -329,13 +330,13 @@ const showStrategyComparison = computed(() => {
 const strategyHint = computed(() => {
   const keys = strategyResults.value.map((s) => s.key);
   if (keys.length === 0) return '';
-  if (keys.includes('minWaste') && keys.includes('fewestInputs')) {
+  if (keys.includes(STRATEGY_CARD.MIN_WASTE) && keys.includes(STRATEGY_CARD.FEWEST_INPUTS)) {
     return '该关卡存在拆卸工厂和同类物资多个配方';
   }
-  if (keys.includes('fewestInputs') || keys.includes('mostInputs')) {
+  if (keys.includes(STRATEGY_CARD.FEWEST_INPUTS) || keys.includes(STRATEGY_CARD.MOST_INPUTS)) {
     return '该关卡存在同类物资多个配方';
   }
-  if (keys.includes('minWaste')) {
+  if (keys.includes(STRATEGY_CARD.MIN_WASTE)) {
     return '该关卡存在拆卸工厂';
   }
   return '';
@@ -346,13 +347,13 @@ watch(strategyResults, (results) => {
   // 多方案对比 UI 已关闭时，不允许自动切换策略：
   // 一律用 normal（最佳配平），否则清空「建议拆 N 次」会让策略跳到 minCoProduction
   if (!showStrategyComparison.value) {
-    if (activeStrategy.value !== 'normal') activeStrategy.value = 'normal';
+    if (activeStrategy.value !== BREAKDOWN_STRATEGY.NORMAL) activeStrategy.value = BREAKDOWN_STRATEGY.NORMAL;
     return;
   }
   if (results.length === 0) {
     // 无多方案列表（拆卸手动/上限已定，或单一方案关卡）→ 强制回落 normal，
     // 避免残留上一关的策略禁用拆卸组
-    if (activeStrategy.value !== 'normal') activeStrategy.value = 'normal';
+    if (activeStrategy.value !== BREAKDOWN_STRATEGY.NORMAL) activeStrategy.value = BREAKDOWN_STRATEGY.NORMAL;
     return;
   }
   const valid = results.some((r) => r.strategy === activeStrategy.value);

@@ -19,13 +19,27 @@ import type { GameData, ResourceInstance, ResourceCategory, CoProductionGroup } 
 import { OBTAIN, VIA, CATEGORY } from '@/constants';
 
 /** 同一物资名称存在多个生产实例时的选择策略 */
-export type RecipeChoice = 'fewestInputs' | 'smallestPerCycle' | 'first' | 'mostInputs';
+export const RECIPE_CHOICE = {
+  FEWEST_INPUTS: 'fewestInputs',
+  SMALLEST_PER_CYCLE: 'smallestPerCycle',
+  FIRST: 'first',
+  MOST_INPUTS: 'mostInputs',
+} as const;
+export type RecipeChoice = (typeof RECIPE_CHOICE)[keyof typeof RECIPE_CHOICE];
 
 /** 拆解策略：控制拆卸组的使用方式 */
-export type BreakdownStrategy = 'normal' | 'skipCoProduction' | 'minCoProduction' | 'mostInputs' | 'fewestInputs' | 'smallestPerCycle';
+export const BREAKDOWN_STRATEGY = {
+  NORMAL: 'normal',
+  SKIP_COPRODUCTION: 'skipCoProduction',
+  MIN_COPRODUCTION: 'minCoProduction',
+  MOST_INPUTS: 'mostInputs',
+  FEWEST_INPUTS: 'fewestInputs',
+  SMALLEST_PER_CYCLE: 'smallestPerCycle',
+} as const;
+export type BreakdownStrategy = (typeof BREAKDOWN_STRATEGY)[keyof typeof BREAKDOWN_STRATEGY];
 
 /** 节点解析方式 */
-export type NodeVia = typeof VIA[keyof typeof VIA] | 'power';
+export type NodeVia = typeof VIA[keyof typeof VIA];
 
 export interface CoProductionOutputDetail {
   instanceId: string;
@@ -386,15 +400,15 @@ function chooseProducer(candidates: ResourceInstance[], choice: RecipeChoice): R
   if (candidates.length === 1) return candidates[0];
   const sorted = [...candidates];
   switch (choice) {
-    case 'smallestPerCycle':
+    case RECIPE_CHOICE.SMALLEST_PER_CYCLE:
       sorted.sort((a, b) => (a.perOut ?? 1) - (b.perOut ?? 1) || a.inputs.length - b.inputs.length);
       break;
-    case 'first':
+    case RECIPE_CHOICE.FIRST:
       break;
-    case 'mostInputs':
+    case RECIPE_CHOICE.MOST_INPUTS:
       sorted.sort((a, b) => b.inputs.length - a.inputs.length || (b.perOut ?? 1) - (a.perOut ?? 1));
       break;
-    case 'fewestInputs':
+    case RECIPE_CHOICE.FEWEST_INPUTS:
     default:
       sorted.sort((a, b) => a.inputs.length - b.inputs.length);
   }
@@ -677,7 +691,7 @@ function leaf(
     via,
     category,
     obtain,
-    requiresPower: requiresPower || via === 'power',
+    requiresPower: requiresPower || via === VIA.POWER,
     perCycle,
     cycles: perCycle ? Math.ceil(qty / perCycle) : 0,
     inputNames: [],
@@ -694,7 +708,7 @@ function collect(
   power: Set<string>,
   infinite: Set<string>,
 ) {
-  if (node.via === 'power') return;
+  if (node.via === VIA.POWER) return;
   if (node.name === POWER_NAME) return;
 
   // 拆卸组：每个产出实例分别计入 productionLoad，children 继续展开
@@ -745,7 +759,7 @@ function collect(
 function collectRaw(node: BreakdownNode, raw: Map<string, number>, rawCountNames?: Set<string>): void {
   // 电力节点：完全隔离，自身及 children 都不计入最终基础物资
   if (node.name === POWER_NAME) return;
-  if (node.via === 'power' || node.name === WORKER_NAME) return;
+  if (node.via === VIA.POWER || node.name === WORKER_NAME) return;
 
   // 拆卸组：不把节点自身计为原料，继续下钻 children 展开
   if (node.via === VIA.CO_PRODUCTION) {
@@ -808,7 +822,7 @@ function expandCoProductionGroup(
   resolved: StructuredWarning[],
   depth: number,
   data: GameData,
-  strategy: BreakdownStrategy = 'normal',
+  strategy: BreakdownStrategy = BREAKDOWN_STRATEGY.NORMAL,
   forcedCycles?: number,
 ): BreakdownNode {
   // 1. 汇总组内各 output 的总需求量
@@ -835,7 +849,7 @@ function expandCoProductionGroup(
     });
   }
   // 🎯 minCoProduction 策略：组周期取最小需求，而非最大
-  if (strategy === 'minCoProduction') {
+  if (strategy === BREAKDOWN_STRATEGY.MIN_COPRODUCTION) {
     let minCycles = Infinity;
     for (const out of group.outputs) {
       const demand = demandMap.get(out.instanceId) ?? 0;
@@ -933,13 +947,13 @@ export function breakdownGoals(options: BreakdownOptions): BreakdownResult {
   const {
     goals,
     data,
-    choice = 'fewestInputs',
+    choice = RECIPE_CHOICE.FEWEST_INPUTS,
     localInstances,
     overrides,
     stationSuppliedNames = new Set<string>(),
     powerSources = [],
     coProductionGroups,
-    strategy = 'normal',
+    strategy = BREAKDOWN_STRATEGY.NORMAL,
     externalCaps,
     multiChannelGroups,
   } = options;
@@ -947,23 +961,23 @@ export function breakdownGoals(options: BreakdownOptions): BreakdownResult {
   let effectiveChoice = choice;
   let effectiveCoGroups = coProductionGroups;
   switch (strategy) {
-    case 'mostInputs':
-      effectiveChoice = 'mostInputs' as RecipeChoice;
+    case BREAKDOWN_STRATEGY.MOST_INPUTS:
+      effectiveChoice = RECIPE_CHOICE.MOST_INPUTS;
       effectiveCoGroups = undefined;
       break;
-    case 'fewestInputs':
-      effectiveChoice = 'fewestInputs' as RecipeChoice;
+    case BREAKDOWN_STRATEGY.FEWEST_INPUTS:
+      effectiveChoice = RECIPE_CHOICE.FEWEST_INPUTS;
       effectiveCoGroups = undefined;
       break;
-    case 'smallestPerCycle':
-      effectiveChoice = 'smallestPerCycle' as RecipeChoice;
+    case BREAKDOWN_STRATEGY.SMALLEST_PER_CYCLE:
+      effectiveChoice = RECIPE_CHOICE.SMALLEST_PER_CYCLE;
       effectiveCoGroups = undefined;
       break;
-    case 'skipCoProduction':
+    case BREAKDOWN_STRATEGY.SKIP_COPRODUCTION:
       effectiveCoGroups = undefined;
       break;
-    case 'minCoProduction':
-    case 'normal':
+    case BREAKDOWN_STRATEGY.MIN_COPRODUCTION:
+    case BREAKDOWN_STRATEGY.NORMAL:
     default:
       // 保持默认
       break;
@@ -1166,7 +1180,7 @@ export function breakdownGoals(options: BreakdownOptions): BreakdownResult {
           const nm = idx.byId.get(a.instanceId)?.name ?? a.instanceId;
           const demand = probeDemand.get(nm) ?? 0;
           const n = Math.ceil(demand / (a.perOut || 1));
-          if (strategy === 'minCoProduction') need = need === 0 ? n : Math.min(need, n);
+          if (strategy === BREAKDOWN_STRATEGY.MIN_COPRODUCTION) need = need === 0 ? n : Math.min(need, n);
           else need = Math.max(need, n);
         }
         // 🛑 maxCycles 上限：用户指定最多拆 N 次，超出则封顶（缺口由非拆卸实例补齐）
@@ -1318,7 +1332,7 @@ export function breakdownGoals(options: BreakdownOptions): BreakdownResult {
   }
 
   // ⑥ minCoProduction 策略：组周期按最小需求计算，缺口部分用独立实例补充
-  if (strategy === 'minCoProduction') {
+  if (strategy === BREAKDOWN_STRATEGY.MIN_COPRODUCTION) {
     for (const r of roots) {
       if (r.via === VIA.CO_PRODUCTION && r.coOutputs) {
         for (const o of r.coOutputs) {
