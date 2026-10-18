@@ -6388,7 +6388,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxku3x0"
         },
         {
           "resourceId": "书籍lg",
@@ -6397,7 +6398,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxku3x1"
         },
         {
           "resourceId": "机械师G8",
@@ -6406,7 +6408,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxku3x2"
         }
       ],
       "initialTrains": [
@@ -6471,7 +6474,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxku893"
         },
         {
           "resourceId": "原木sv",
@@ -6480,7 +6484,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxku894"
         },
         {
           "resourceId": "玻璃qV",
@@ -6489,7 +6494,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxku895"
         },
         {
           "resourceId": "家具7U",
@@ -6498,7 +6504,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxku896"
         },
         {
           "resourceId": "木板5y",
@@ -6507,7 +6514,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxku897"
         },
         {
           "resourceId": "玻璃qV",
@@ -6516,7 +6524,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxku898"
         }
       ],
       "maxTrainLevel": 3,
@@ -6584,7 +6593,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkumc9"
         }
       ],
       "workerStationArr": [
@@ -6631,7 +6641,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkun7a"
         },
         {
           "resourceId": "原木sv",
@@ -6640,7 +6651,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkun7b"
         },
         {
           "resourceId": "木板5y",
@@ -6649,7 +6661,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkun7c"
         },
         {
           "resourceId": "聚合物E1",
@@ -6658,7 +6671,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkun7d"
         },
         {
           "resourceId": "工人XD",
@@ -6667,7 +6681,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 3
+          "order": 3,
+          "uid": "gmvdxkun7e"
         },
         {
           "resourceId": "原木sv",
@@ -6676,7 +6691,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkun7f"
         },
         {
           "resourceId": "聚合物E1",
@@ -6685,7 +6701,8 @@
           "stationLabels": [
             "C"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkun7g"
         }
       ],
       "workerStationArr": [
@@ -6734,7 +6751,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkuo8h"
         },
         {
           "resourceId": "鱼tr",
@@ -6743,7 +6761,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkuo8i"
         },
         {
           "resourceId": "罐头食品20",
@@ -6752,7 +6771,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkuo8j"
         },
         {
           "resourceId": "钢板L6",
@@ -6761,7 +6781,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkuo8k"
         },
         {
           "resourceId": "货物I5",
@@ -6770,7 +6791,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkuo8l"
         }
       ],
       "workerStationArr": [
@@ -7003,7 +7025,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkuq8m"
         }
       ],
       "workerStationArr": [
@@ -7069,7 +7092,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkur7n"
         },
         {
           "resourceId": "越野车yB",
@@ -7078,7 +7102,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkur7o"
         }
       ],
       "workerStationArr": [
@@ -7244,7 +7269,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkustp"
         },
         {
           "resourceId": "石油oQ",
@@ -7253,7 +7279,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkustq"
         },
         {
           "resourceId": "金锭rP",
@@ -7262,7 +7289,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkustr"
         },
         {
           "resourceId": "金锭rP",
@@ -7271,7 +7299,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkusts"
         },
         {
           "resourceId": "石油oQ",
@@ -7280,7 +7309,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkustt"
         }
       ],
       "workerStationArr": [
@@ -7878,7 +7908,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkuyou"
         },
         {
           "resourceId": "奶牛kP",
@@ -7887,7 +7918,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkuyov"
         },
         {
           "resourceId": "玻璃O0",
@@ -7896,7 +7928,8 @@
           "stationLabels": [
             "A"
           ],
-          "order": 3
+          "order": 3,
+          "uid": "gmvdxkuyow"
         },
         {
           "resourceId": "小麦E9",
@@ -7905,7 +7938,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkuyox"
         },
         {
           "resourceId": "金锭rP",
@@ -7914,7 +7948,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkuyoy"
         },
         {
           "resourceId": "玻璃O0",
@@ -7923,7 +7958,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 1
+          "order": 1,
+          "uid": "gmvdxkuyoz"
         },
         {
           "resourceId": "金矿1f",
@@ -7932,7 +7968,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 2
+          "order": 2,
+          "uid": "gmvdxkuyo10"
         },
         {
           "resourceId": "奶牛kP",
@@ -7941,7 +7978,8 @@
           "stationLabels": [
             "B"
           ],
-          "order": 3
+          "order": 3,
+          "uid": "gmvdxkuyo11"
         }
       ],
       "workerStationArr": [
@@ -8570,6 +8608,12 @@
           "label": "A"
         }
       ],
+      "instanceOverrides": {
+        "蓝色药水": "蓝色药水vT",
+        "铜矿": "铜矿gp",
+        "红色药水": "红色药水Uh"
+      },
+      "hasInterception": true,
       "hasMultipleInstances": true,
       "multiChannelGroups": [
         {
@@ -8579,13 +8623,7 @@
             "信封Su"
           ]
         }
-      ],
-      "instanceOverrides": {
-        "蓝色药水": "蓝色药水vT",
-        "铜矿": "铜矿gp",
-        "红色药水": "红色药水Uh"
-      },
-      "hasInterception": true
+      ]
     },
     {
       "id": "火箭过家家",
