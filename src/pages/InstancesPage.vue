@@ -120,6 +120,7 @@ function onRemove(r: ResourceInstance) {
         <div class="w-[100px] px-2 py-1.5 text-center">获取方式</div>
         <div class="w-[140px] px-2 py-1.5">配方输入</div>
         <div class="w-[100px] px-2 py-1.5 text-center">产出·消耗</div>
+        <div class="w-[90px] px-2 py-1.5 text-center">总价</div>
         <div class="w-[160px] px-2 py-1.5 text-center">备注</div>
         <div class="flex-1" />
         <div class="w-[100px] px-2 py-1.5 text-center">操作</div>
@@ -157,6 +158,10 @@ function onRemove(r: ResourceInstance) {
           <div class="w-[100px] px-2 text-center text-fog-300">
             <template v-if="!r.external && (r.perOut || r.perIn)">{{ r.perOut ?? '?' }} · {{ r.perIn ?? '?' }}</template>
             <template v-else><span class="text-fog-500">—</span></template>
+          </div>
+
+          <div class="w-[90px] px-2 text-center font-mono text-fog-100">
+            {{ r.totalPrice != null ? r.totalPrice.toLocaleString() : '—' }}
           </div>
 
           <div class="w-[160px] truncate px-2 text-fog-400 text-[11px]" :title="r.notes || ''">{{ r.notes || '—' }}</div>

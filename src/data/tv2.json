@@ -6,7 +6,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "木板5y",
@@ -15,7 +16,8 @@
         "工人",
         "原木"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "小麦E9",
@@ -23,7 +25,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "砂土rh",
@@ -31,7 +34,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "奶牛kP",
@@ -40,7 +44,8 @@
         "工人",
         "小麦"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "砖块3F",
@@ -49,7 +54,8 @@
         "工人",
         "砂土"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "玻璃qV",
@@ -58,7 +64,8 @@
         "工人",
         "砂土"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "天然橡胶T2",
@@ -66,7 +73,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "加工橡胶HS",
@@ -75,7 +83,8 @@
         "工人",
         "天然橡胶"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "煤炭gF",
@@ -83,7 +92,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "铁矿qI",
@@ -91,7 +101,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "钢坯OP",
@@ -101,7 +112,8 @@
         "煤炭",
         "铁矿"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 8000
     },
     {
       "id": "家具DC",
@@ -110,7 +122,8 @@
         "工人",
         "玻璃"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 9000
     },
     {
       "id": "金矿1f",
@@ -118,7 +131,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "金锭rP",
@@ -128,7 +142,8 @@
         "煤炭",
         "金矿"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 8000
     },
     {
       "id": "铜矿gp",
@@ -136,7 +151,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "铜锭nQ",
@@ -146,7 +162,8 @@
         "煤炭",
         "铜矿"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 8000
     },
     {
       "id": "工具Sl",
@@ -155,7 +172,8 @@
         "工人",
         "钢坯"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 10000
     },
     {
       "id": "首饰Xd",
@@ -165,7 +183,8 @@
         "金锭",
         "玻璃"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 13000
     },
     {
       "id": "电器kV",
@@ -175,7 +194,8 @@
         "铜锭",
         "加工橡胶"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 13000
     },
     {
       "id": "石油oQ",
@@ -183,7 +203,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "电力4n",
@@ -192,7 +213,8 @@
         "工人",
         "煤炭"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "燃料t3",
@@ -202,7 +224,8 @@
         "石油"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 6000
     },
     {
       "id": "钢板L6",
@@ -212,7 +235,8 @@
         "钢坯"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 8000
     },
     {
       "id": "聚合物Zm",
@@ -222,7 +246,8 @@
         "石油"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 6000
     },
     {
       "id": "罐头食品od",
@@ -234,7 +259,8 @@
         "钢板"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 17000
     },
     {
       "id": "电线lH",
@@ -245,7 +271,8 @@
         "聚合物"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 13000
     },
     {
       "id": "木板b2",
@@ -253,7 +280,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "木板B5",
@@ -261,7 +289,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 3000
     },
     {
       "id": "金锭0o",
@@ -269,7 +298,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "钢坯8k",
@@ -277,7 +307,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "建筑材料4w",
@@ -288,7 +319,8 @@
         "玻璃"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 15000
     },
     {
       "id": "货物ld",
@@ -299,7 +331,8 @@
         "木板"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 12000
     },
     {
       "id": "机床lh",
@@ -310,7 +343,8 @@
         "电线"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 20000
     },
     {
       "id": "胶水ji",
@@ -319,7 +353,8 @@
         "工人",
         "天然橡胶"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "书籍9S",
@@ -330,7 +365,8 @@
         "胶水"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 13000
     },
     {
       "id": "纸2w",
@@ -339,7 +375,8 @@
         "工人",
         "原木"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "机械师F8",
@@ -350,7 +387,8 @@
         "电器"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 20000
     },
     {
       "id": "炸药PW",
@@ -358,7 +396,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 2000
     },
     {
       "id": "汽车Sd",
@@ -371,7 +410,8 @@
         "机械师"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 27000
     },
     {
       "id": "飞机EG",
@@ -384,7 +424,8 @@
         "燃料"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 27000
     },
     {
       "id": "铀iB",
@@ -392,7 +433,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "微型芯片xO",
@@ -405,7 +447,8 @@
         "砂土"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 27000
     },
     {
       "id": "债券Yn",
@@ -416,7 +459,8 @@
         "金锭"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 13000
     },
     {
       "id": "计算机hb",
@@ -429,7 +473,8 @@
         "玻璃"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 32000
     },
     {
       "id": "钱MW",
@@ -439,7 +484,8 @@
         "债券"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 13000
     },
     {
       "id": "火箭Vv",
@@ -454,7 +500,8 @@
         "机械师"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 36000
     },
     {
       "id": "蜡烛V6",
@@ -462,7 +509,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "信封al",
@@ -472,7 +520,8 @@
         "蓝色药水",
         "蜡烛"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "红色药水Uh",
@@ -481,7 +530,8 @@
         "工人",
         "铁矿"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "蓝色药水vT",
@@ -490,7 +540,8 @@
         "工人",
         "铜矿"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "铜锭EC",
@@ -498,7 +549,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "电力Lb",
@@ -506,7 +558,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "钢板3s",
@@ -514,7 +567,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 5000
     },
     {
       "id": "煤炭4a",
@@ -522,7 +576,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 2000
     },
     {
       "id": "家具7U",
@@ -532,7 +587,8 @@
         "玻璃",
         "木板"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 12000
     },
     {
       "id": "玻璃O0",
@@ -540,7 +596,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "石油oW",
@@ -548,7 +605,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 2000
     },
     {
       "id": "铜矿Y6",
@@ -556,7 +614,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 2000
     },
     {
       "id": "聚合物qh",
@@ -564,7 +623,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "电力lf",
@@ -572,7 +632,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "无限",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 0
     },
     {
       "id": "加工橡胶zv",
@@ -580,7 +641,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "书籍9U",
@@ -589,7 +651,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 7000
     },
     {
       "id": "书籍CX",
@@ -597,7 +660,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 6000
     },
     {
       "id": "加工橡胶u7",
@@ -606,7 +670,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 4000
     },
     {
       "id": "电器ar",
@@ -618,7 +683,8 @@
         "加工橡胶",
         "玻璃"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 23000
     },
     {
       "id": "电线3N",
@@ -626,7 +692,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 7000
     },
     {
       "id": "机械师QQ",
@@ -635,7 +702,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 8000
     },
     {
       "id": "铜锭Sn",
@@ -643,7 +711,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 3000
     },
     {
       "id": "电力0q",
@@ -652,7 +721,8 @@
         "工人",
         "铀"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "聚合物dE",
@@ -660,7 +730,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 3000
     },
     {
       "id": "原木a8",
@@ -668,7 +739,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 2000
     },
     {
       "id": "玻璃yq",
@@ -677,7 +749,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 4000
     },
     {
       "id": "钢板rb",
@@ -685,7 +758,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 4000
     },
     {
       "id": "钢坯E7",
@@ -694,7 +768,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 4000
     },
     {
       "id": "工具Cy",
@@ -704,7 +779,8 @@
         "木板",
         "钢坯"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 13000
     },
     {
       "id": "机械师HG",
@@ -712,7 +788,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 7000
     },
     {
       "id": "首饰D3",
@@ -720,7 +797,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 6000
     },
     {
       "id": "天然橡胶ez",
@@ -728,7 +806,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 2000
     },
     {
       "id": "金锭m9",
@@ -736,7 +815,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 3000
     },
     {
       "id": "微型芯片5P",
@@ -744,7 +824,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 8000
     },
     {
       "id": "信封Su",
@@ -754,7 +835,8 @@
         "红色药水",
         "蜡烛"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "电力VV",
@@ -763,7 +845,8 @@
         "工人",
         "石油"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "火箭FI",
@@ -775,7 +858,8 @@
         "石油",
         "胶水"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 13000
     },
     {
       "id": "飞机b1",
@@ -784,7 +868,8 @@
       "perOut": 1,
       "needsPower": true,
       "obtain": "无限",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 9000
     },
     {
       "id": "木板cS",
@@ -794,7 +879,8 @@
         "飞机"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 13000
     },
     {
       "id": "钢板oa",
@@ -804,7 +890,8 @@
         "飞机"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 14000
     },
     {
       "id": "胶水RD",
@@ -813,7 +900,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 4000
     },
     {
       "id": "纸qW",
@@ -821,7 +909,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 3000
     },
     {
       "id": "燃料Qp",
@@ -829,7 +918,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 3000
     },
     {
       "id": "铜锭36",
@@ -838,7 +928,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 4000
     },
     {
       "id": "电线LS",
@@ -847,7 +938,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 7000
     },
     {
       "id": "聚合物5J",
@@ -856,7 +948,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 4000
     },
     {
       "id": "石油pX",
@@ -865,7 +958,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 3000
     },
     {
       "id": "微型芯片gs",
@@ -874,7 +968,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 9000
     },
     {
       "id": "纸Rj",
@@ -882,7 +977,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "木板9Y",
@@ -891,7 +987,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 4000
     },
     {
       "id": "机械师ez",
@@ -899,7 +996,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 7000
     },
     {
       "id": "聚合物yn",
@@ -907,7 +1005,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 3000
     },
     {
       "id": "原木7n",
@@ -915,7 +1014,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 2000
     },
     {
       "id": "钢坯rx",
@@ -923,7 +1023,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 3000
     },
     {
       "id": "木板GC",
@@ -931,7 +1032,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 3000
     },
     {
       "id": "工人XD",
@@ -939,7 +1041,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "无限",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 1000
     },
     {
       "id": "煤炭jI",
@@ -948,7 +1051,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 3000
     },
     {
       "id": "钢板Xi",
@@ -957,7 +1061,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 5000
     },
     {
       "id": "微型芯片9l",
@@ -965,7 +1070,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 8000
     },
     {
       "id": "石油Pv",
@@ -974,7 +1080,8 @@
         "工人",
         "工具"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 9000
     },
     {
       "id": "书籍xf",
@@ -983,7 +1090,8 @@
         "工人",
         "金矿"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 9000
     },
     {
       "id": "工具5F",
@@ -992,7 +1100,8 @@
         "工人",
         "书籍"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 13000
     },
     {
       "id": "机械师G8",
@@ -1002,7 +1111,8 @@
         "书籍",
         "电器"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 20000
     },
     {
       "id": "电器h1",
@@ -1010,7 +1120,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 7000
     },
     {
       "id": "书籍lg",
@@ -1018,7 +1129,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 6000
     },
     {
       "id": "砂土eJ",
@@ -1026,7 +1138,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 2000
     },
     {
       "id": "砂土kk",
@@ -1034,7 +1147,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 2000
     },
     {
       "id": "砂土LM",
@@ -1043,7 +1157,8 @@
         "工人",
         "玻璃"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "蓝色药水jW",
@@ -1052,7 +1167,8 @@
         "工人",
         "客流A"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "客流Ajj",
@@ -1060,7 +1176,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "客流",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 0
     },
     {
       "id": "客流BHp",
@@ -1068,7 +1185,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "客流",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 0
     },
     {
       "id": "红色药水yw",
@@ -1077,7 +1195,8 @@
         "工人",
         "客流B"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "客流Du9",
@@ -1085,7 +1204,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "客流",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 0
     },
     {
       "id": "黄色药水bo",
@@ -1094,7 +1214,8 @@
         "工人",
         "客流D"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "书籍Vc",
@@ -1106,7 +1227,8 @@
         "红色药水",
         "黄色药水"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 10000
     },
     {
       "id": "聚合物E1",
@@ -1115,7 +1237,8 @@
         "工人",
         "石油"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "鱼tr",
@@ -1123,7 +1246,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "货物I5",
@@ -1132,7 +1256,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 6000
     },
     {
       "id": "罐头食品20",
@@ -1143,7 +1268,8 @@
         "钢板"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 12000
     },
     {
       "id": "建筑材料3M",
@@ -1151,7 +1277,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 8000
     },
     {
       "id": "木板v8",
@@ -1159,7 +1286,8 @@
       "inputs": [
         "建筑材料"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 10000
     },
     {
       "id": "钢板If",
@@ -1167,7 +1295,8 @@
       "inputs": [
         "建筑材料"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 11000
     },
     {
       "id": "燃料Nl",
@@ -1176,7 +1305,8 @@
         "工人",
         "石油"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "电力g0",
@@ -1185,7 +1315,8 @@
         "工人",
         "燃料"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 4000
     },
     {
       "id": "越野车yB",
@@ -1198,7 +1329,8 @@
         "机械师"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 20000
     },
     {
       "id": "电器1m",
@@ -1207,7 +1339,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 7000
     },
     {
       "id": "电器up",
@@ -1215,7 +1348,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 6000
     },
     {
       "id": "土豆da",
@@ -1223,7 +1357,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "电力3j",
@@ -1232,7 +1367,8 @@
         "工人",
         "土豆"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "电力cT",
@@ -1242,7 +1378,8 @@
         "机床",
         "土豆"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 10000
     },
     {
       "id": "炸药lT",
@@ -1251,7 +1388,8 @@
         "工人",
         "煤炭"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 5000
     },
     {
       "id": "金伯利岩Iw",
@@ -1259,7 +1397,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "钻石cM",
@@ -1268,7 +1407,8 @@
         "工人",
         "金伯利岩"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 1000
     },
     {
       "id": "煤炭bO",
@@ -1277,7 +1417,8 @@
         "工人",
         "金伯利岩"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 3000
     },
     {
       "id": "债券yT",
@@ -1288,7 +1429,8 @@
         "钻石"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 10000
     },
     {
       "id": "煤炭g5",
@@ -1297,7 +1439,8 @@
         "工人",
         "石油"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 5000
     },
     {
       "id": "罐头食品bg",
@@ -1309,7 +1452,8 @@
         "纸"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 14000
     },
     {
       "id": "货车mn",
@@ -1321,7 +1465,8 @@
         "燃料"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 11000
     },
     {
       "id": "公交车Ji",
@@ -1333,7 +1478,8 @@
         "玻璃",
         "燃料"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 14000
     },
     {
       "id": "卡车9N",
@@ -1344,7 +1490,8 @@
         "加工橡胶",
         "燃料"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 11000
     },
     {
       "id": "文物Sc",
@@ -1352,7 +1499,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "库存",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 0
     },
     {
       "id": "钢板Uy",
@@ -1362,7 +1510,8 @@
         "文物"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 5000
     },
     {
       "id": "燃料DF",
@@ -1372,7 +1521,8 @@
         "文物"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 4000
     },
     {
       "id": "机械师Ng",
@@ -1382,7 +1532,8 @@
         "文物"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 8000
     },
     {
       "id": "加工橡胶p1",
@@ -1390,7 +1541,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "库存",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 3000
     },
     {
       "id": "机床Mj",
@@ -1398,7 +1550,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 9000
     },
     {
       "id": "钢板AC",
@@ -1407,7 +1560,8 @@
         "机床"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 13000
     },
     {
       "id": "加工橡胶3E",
@@ -1416,7 +1570,8 @@
         "机床"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 12000
     },
     {
       "id": "燃料mz",
@@ -1425,7 +1580,8 @@
         "机床"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 12000
     },
     {
       "id": "燃料b7",
@@ -1434,7 +1590,8 @@
       "perOut": 1,
       "perIn": 1,
       "obtain": "库存",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 3000
     },
     {
       "id": "机械师qJ",
@@ -1443,7 +1600,8 @@
         "机床"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 16000
     },
     {
       "id": "玻璃Dm",
@@ -1451,7 +1609,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 3000
     },
     {
       "id": "钱he",
@@ -1459,7 +1618,8 @@
       "inputs": [
         "电线"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 12000
     },
     {
       "id": "机床Um",
@@ -1467,7 +1627,8 @@
       "inputs": [
         "工人"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 10000
     },
     {
       "id": "电线k3",
@@ -1476,7 +1637,8 @@
         "工人",
         "机床"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 16000
     },
     {
       "id": "钢板EN",
@@ -1485,7 +1647,8 @@
         "工人",
         "机床"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 14000
     },
     {
       "id": "建筑材料EZ",
@@ -1494,7 +1657,8 @@
         "工人"
       ],
       "perOut": 1,
-      "needsPower": true
+      "needsPower": true,
+      "totalPrice": 8000
     },
     {
       "id": "机械师x9",
@@ -1502,7 +1666,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "无限",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 7000
     },
     {
       "id": "玻璃D2",
@@ -1511,7 +1676,8 @@
         "工人",
         "建筑材料"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 11000
     },
     {
       "id": "聚合物8R",
@@ -1520,7 +1686,8 @@
         "工人",
         "建筑材料"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 11000
     },
     {
       "id": "钢板9O",
@@ -1528,7 +1695,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 4000
     },
     {
       "id": "机床kO",
@@ -1540,7 +1708,8 @@
         "石油",
         "机械师"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 29000
     },
     {
       "id": "火箭vz",
@@ -1548,7 +1717,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "购买"
+      "obtain": "购买",
+      "totalPrice": 0
     },
     {
       "id": "火箭Zs",
@@ -1556,7 +1726,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 0
     },
     {
       "id": "机械师FP",
@@ -1565,7 +1736,8 @@
         "工人",
         "火箭"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 8000
     },
     {
       "id": "机械师AO",
@@ -1573,7 +1745,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "库存",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 7000
     },
     {
       "id": "微型芯片EO",
@@ -1582,7 +1755,8 @@
         "工人",
         "火箭"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 9000
     },
     {
       "id": "钢板eP",
@@ -1591,7 +1765,8 @@
         "工人",
         "火箭"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 5000
     },
     {
       "id": "光剑水晶si",
@@ -1602,7 +1777,8 @@
         "建筑材料",
         "聚合物"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 17000
     },
     {
       "id": "玻璃R5",
@@ -1610,7 +1786,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 3000
     },
     {
       "id": "玻璃Dn",
@@ -1619,7 +1796,8 @@
         "工人",
         "计算机"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 14000
     },
     {
       "id": "电线mF",
@@ -1628,7 +1806,8 @@
         "工人",
         "计算机"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 17000
     },
     {
       "id": "聚合物Mo",
@@ -1637,7 +1816,8 @@
         "工人",
         "计算机"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 14000
     },
     {
       "id": "钢坯1I",
@@ -1645,7 +1825,8 @@
       "inputs": [
         "建筑材料"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 10000
     },
     {
       "id": "书籍yw",
@@ -1653,7 +1834,8 @@
       "inputs": [],
       "perOut": 1,
       "obtain": "库存",
-      "initialSetup": true
+      "initialSetup": true,
+      "totalPrice": 6000
     },
     {
       "id": "煤炭9L",
@@ -1662,7 +1844,8 @@
         "工人",
         "木板"
       ],
-      "perOut": 1
+      "perOut": 1,
+      "totalPrice": 6000
     },
     {
       "id": "工人eY",
@@ -1670,7 +1853,8 @@
       "inputs": [],
       "perOut": 1,
       "external": true,
-      "obtain": "刷新"
+      "obtain": "刷新",
+      "totalPrice": 1000
     }
   ],
   "trains": [
@@ -6696,7 +6880,7 @@
         },
         {
           "resourceId": "聚合物E1",
-          "qty": 5,
+          "qty": 4,
           "stackId": "A",
           "stationLabels": [
             "C"
@@ -7068,7 +7252,8 @@
         "燃料": "燃料t3"
       },
       "hasMultipleInstances": false,
-      "hasExternalStation": true
+      "hasExternalStation": true,
+      "notes": "每4个燃料差不多能生产不到6个单位"
     },
     {
       "id": "发现蠕虫",
@@ -7160,7 +7345,8 @@
         "电力4n"
       ],
       "hasExternalStation": true,
-      "hasResourceStation": true
+      "hasResourceStation": true,
+      "notes": "尽快造电器"
     },
     {
       "id": "土豆之力",
@@ -7246,7 +7432,30 @@
         "电力cT"
       ],
       "hasIndependentEvent": true,
-      "notes": "土豆和机床的发电厂五分钟后失效\n"
+      "notes": "土豆和机床的发电厂五分钟后失效，前期尽量造一组机床2-4个都行运到快炸的发电厂，然后全力造满机床20个，等最后一个发电厂开了之后再造个10个机床就差不多了，中间玻璃和钢板不能断，玻璃能续就续。\n",
+      "hasSpecialProduction": false,
+      "earnPlan": [
+        {
+          "uid": "emvgljxmw0",
+          "resourceId": "机床lh",
+          "qty": 40
+        },
+        {
+          "uid": "emvgloz0e0",
+          "resourceId": "电线3N",
+          "qty": 20
+        },
+        {
+          "uid": "emvglpjv71",
+          "resourceId": "建筑材料4w",
+          "qty": 30
+        },
+        {
+          "uid": "emvglwtfx2",
+          "resourceId": "钢板Xi",
+          "qty": 1
+        }
+      ]
     },
     {
       "id": "猛犸象保护区",
@@ -10054,5 +10263,69 @@
       ]
     }
   ],
-  "__deletedSeedInstIds": []
+  "__deletedSeedInstIds": [],
+  "prices": {
+    "工人": 1000,
+    "原木": 2000,
+    "木板": 3000,
+    "小麦": 2000,
+    "砂土": 2000,
+    "奶牛": 3000,
+    "砖块": 3000,
+    "玻璃": 3000,
+    "天然橡胶": 2000,
+    "加工橡胶": 3000,
+    "煤炭": 2000,
+    "铁矿": 2000,
+    "钢坯": 3000,
+    "家具": 5000,
+    "金矿": 2000,
+    "金锭": 3000,
+    "铜矿": 2000,
+    "铜锭": 3000,
+    "工具": 6000,
+    "首饰": 6000,
+    "电器": 6000,
+    "石油": 2000,
+    "燃料": 3000,
+    "钢板": 4000,
+    "聚合物": 3000,
+    "罐头食品": 7000,
+    "电线": 6000,
+    "建筑材料": 7000,
+    "货物": 5000,
+    "机床": 9000,
+    "胶水": 3000,
+    "书籍": 6000,
+    "纸": 3000,
+    "机械师": 7000,
+    "炸药": 2000,
+    "汽车": 9000,
+    "飞机": 9000,
+    "铀": 2000,
+    "微型芯片": 8000,
+    "债券": 6000,
+    "计算机": 10000,
+    "钱": 6000,
+    "火箭": 0,
+    "蜡烛": 0,
+    "信封": 0,
+    "红色药水": 0,
+    "蓝色药水": 0,
+    "黄色药水": 0,
+    "客流A": 0,
+    "客流B": 0,
+    "客流D": 0,
+    "鱼": 0,
+    "越野车": 0,
+    "土豆": 0,
+    "金伯利岩": 0,
+    "钻石": 0,
+    "货车": 0,
+    "电力": 0,
+    "公交车": 0,
+    "卡车": 0,
+    "文物": 0,
+    "光剑水晶": 0
+  }
 }

@@ -13,7 +13,7 @@
 
 | 层 | 目录 | 职责 | 允许 import |
 |---|---|---|---|
-| L0 基础 | `src/types.ts`、`src/constants.ts`、`src/icons/` | 类型与值对象、图标注册表 | 仅 L0 |
+| L0 基础 | `src/types.ts`、`src/constants.ts`、`src/icons/`、`shared/enums.js`（跨 TS/JS 两侧共用的纯值对象） | 类型与值对象、图标注册表 | 仅 L0 |
 | L1 领域 | `src/domain/*.ts` | 纯函数派生逻辑（无 Vue、无 I/O、无副作用） | L0 |
 | L1 引擎 | `src/engine/*.ts` | 拆解计算（含其专属策略常量） | L0 |
 | L2 展示工具 | `src/utils/*.ts` | 纯格式化 / 文案映射 | L0 |
@@ -40,17 +40,21 @@ grep -rn "useGameStore\|from '@/stores" src/composables
 
 | 概念 | 权威定义处 | 消费方 import 自 |
 |---|---|---|
-| `OBTAIN`、`STATION_KIND`、`REFRESH_START`、`VIA`、`CATEGORY`、`CONTENT`、`STRATEGY_CARD`、`FILTER_ALL` | `src/constants.ts` | `@/constants` |
+| `OBTAIN`、`STATION_KIND`、`REFRESH_START`、`VIA`、`CATEGORY`、`STRATEGY_CARD`、`FILTER_ALL` | `src/constants.ts` | `@/constants` |
 | `RECIPE_CHOICE`、`BREAKDOWN_STRATEGY`（引擎策略参数） | `src/engine/breakdown.ts` | `@/engine/breakdown` |
 | `POWER_NAME`、`WORKER_NAME` | `src/types.ts` | `@/types`（**是值，不能用 `import type`**） |
 | 内容分类文案 `CONTENT_CATEGORY_LABEL`、物资分类样式 `RESOURCE_CATEGORY_STYLE`、`OBTAIN_LABEL` | `src/utils/format.ts` | `@/utils/format` |
 | 展示文案函数 `constraintText` / `starConditionText` / `fmtSeconds` / `fmtMinSec` | `src/utils/format.ts` | `@/utils/format` |
+| 跨 TS/JS 两侧共用的纯值对象：`CONTENT`（内容分类值）、constraints 列清单 | `shared/enums.js`（类型在 `shared/enums.d.ts`，需同步改） | 应用侧经 `src/constants.ts` re-export 后仍从 `@/constants` 取；脚本侧 `import ... from '../shared/enums.js'` |
+| 飞书 Base 表 ID、字段名（含历史别名）、Excel 工作表/列名 | `scripts/feishu-fields.cjs` | 脚本内 `require('./feishu-fields.cjs')` / `import fields from './feishu-fields.cjs'` |
 
 **写法约定**：
 - 值对象一律 `as const` 值对象 + `(typeof X)[keyof typeof X]` 派生类型。
 - `types.ts` 有值导出与 type 导出混用，导入值时必须用普通 `import`。
 - 当「类型在 `types.ts`、值在 `constants.ts`」时，必须用 `Record<该类型, ...>` 消费（如 `OBTAIN_LABEL: Record<ObtainMethod, string>`），让 TS 强制两份定义对齐，防止静默漂移。
 - 两个**同名但不同命名空间**的表必须在定义处写注释说明边界（范例：`STRATEGY_CARD` 与 `BREAKDOWN_STRATEGY` 重名但一个是 UI 卡片标识、一个是引擎参数，**不得互相顶替引用**）。
+- `scripts/` 是 Node 侧、不受第 1 节分层约束（无法 import `src/` 的 TS），但飞书侧的表/字段名只许在 `feishu-fields.cjs` 定义一次；飞书改字段名时在字典的**别名数组**里追加新名、保留旧名，业务脚本禁止再写裸字符串。理由：这些脚本多含**整表替换写回**，字段名取不到值时会静默把 `tv2.json` 的 `name`/`inputs` 写空（2026-10-18 飞书把「物资名称」改名「物资类型」即触发此风险）。
+- 跨 TS/JS **两侧都要用**的值对象一律下沉到 `shared/enums.js`，禁止两侧各写一份：应用侧由 `src/constants.ts` re-export（消费方仍从 `@/constants` 取），脚本侧直接 import 该 JS 模块。原因：Node 加载不了 `.ts`、也不认 `@/` 别名，"共享同一份"只能靠一个 JS 模块实现；此时在 TS 侧再写一份即违规。注意 `.cjs` 脚本在 Node 20 下不能 `require` ESM，需要用到该模块时先把脚本改名 `.mjs`。
 
 ---
 

@@ -2,6 +2,12 @@
 // 用法：node scripts/convert.mjs "train valley 2.xlsx"
 import * as XLSX from 'xlsx';
 import { readFileSync, writeFileSync } from 'node:fs';
+import fields from './feishu-fields.cjs';
+import { CONTENT, CONSTRAINT_COLS } from '../shared/enums.js';
+
+const {
+  SHEETS, INSTANCE_FIELDS, LEVEL_FIELDS, GOAL_FIELDS, TRAIN_FIELDS,
+} = fields;
 
 const file = process.argv[2] || 'train valley 2.xlsx';
 const wb = XLSX.read(readFileSync(file), { type: 'buffer' });
@@ -19,66 +25,72 @@ const num = (v) => {
   return s(v) === '' || Number.isNaN(n) ? null : n;
 };
 
+/** 取一列的值：字段定义是别名数组，命中第一个存在的列名（缺失回落 ''） */
+function cell(row, def) {
+  for (const key of def) if (row[key] !== undefined) return row[key];
+  return '';
+}
+
 // ---------- 物资主表 → ResourceInstance ----------
-const instances = sheetRows('物资主表')
-  .filter((r) => s(r['物资名称']) !== '')
+const instances = sheetRows(SHEETS.INSTANCES)
+  .filter((r) => s(cell(r, INSTANCE_FIELDS.NAME)) !== '')
   .map((r) => ({
-    id: s(r['物资ID']),
-    name: s(r['物资名称']),
-    inputs: s(r['配方物资类型']).split(/[,，]/).map(s).filter(Boolean),
-    external: s(r['外部获取']) === '1',
-    obtain: s(r['获取方式']) || null,
-    needsPower: s(r['电力依赖']) === '1',
-    perOut: num(r['单次产出']) ?? 1,
-    perIn: num(r['单次消耗']) ?? 1,
+    id: s(cell(r, INSTANCE_FIELDS.ID)),
+    name: s(cell(r, INSTANCE_FIELDS.NAME)),
+    inputs: s(cell(r, INSTANCE_FIELDS.RECIPE)).split(/[,，]/).map(s).filter(Boolean),
+    external: s(cell(r, INSTANCE_FIELDS.EXTERNAL)) === '1',
+    obtain: s(cell(r, INSTANCE_FIELDS.OBTAIN)) || null,
+    needsPower: s(cell(r, INSTANCE_FIELDS.NEEDS_POWER)) === '1',
+    perOut: num(cell(r, INSTANCE_FIELDS.PER_OUT)) ?? 1,
+    perIn: num(cell(r, INSTANCE_FIELDS.PER_IN)) ?? 1,
+    totalPrice: num(cell(r, INSTANCE_FIELDS.TOTAL_PRICE)) ?? 0,
   }));
 
 // ---------- 关卡 → Level（constraints 只保留非空列） ----------
-const CONSTRAINT_COLS = [
-  '运送列车', '不停车', '不掉头', '不升车', '买车限制',
-  '避免碰撞', '碰撞数量', '避免错站', '进错站数',
-  '不摧毁物品', '摧毁物价值', '不摧毁铺片', '铺片限制',
-  '不造桥', '桥梁限制', '建造桥梁', '不造隧道', '隧道限制', '建造隧道',
-];
-
-const goalRows = sheetRows('关卡目标').filter(
-  (r) => s(r['关卡']) !== '' && s(r['目标物资']) !== '',
+const goalRows = sheetRows(SHEETS.GOALS).filter(
+  (r) => s(cell(r, GOAL_FIELDS.LEVEL)) !== '' && s(cell(r, GOAL_FIELDS.RESOURCE)) !== '',
 );
 
-const levels = sheetRows('关卡')
-  .filter((r) => s(r['名称']) !== '')
+const levels = sheetRows(SHEETS.LEVELS)
+  .filter((r) => s(cell(r, LEVEL_FIELDS.NAME)) !== '')
   .map((r) => {
     const constraints = {};
-    for (const c of CONSTRAINT_COLS) if (s(r[c]) !== '') constraints[c] = s(r[c]);
-    const name = s(r['名称']);
+    for (const c of CONSTRAINT_COLS) {
+      const v = s(cell(r, [c]));
+      if (v !== '') constraints[c] = v;
+    }
+    const name = s(cell(r, LEVEL_FIELDS.NAME));
     return {
       id: name,
       name,
-      contentType: s(r['内容类型']),
-      category: s(r['内容分类']) === '游戏本体' ? '游戏本体' : 'DLC',
-      chapter: s(r['章节']),
-      seconds: num(r['秒数']),
-      bestTime: s(r['最佳时间']),
-      earn: s(r['挣钱']),
-      spend: s(r['花钱']),
+      contentType: s(cell(r, LEVEL_FIELDS.CONTENT_TYPE)),
+      category: s(cell(r, LEVEL_FIELDS.CONTENT_CATEGORY)) === CONTENT.BASE ? CONTENT.BASE : CONTENT.DLC,
+      chapter: s(cell(r, LEVEL_FIELDS.CHAPTER)),
+      seconds: num(cell(r, LEVEL_FIELDS.SECONDS)),
+      bestTime: s(cell(r, LEVEL_FIELDS.BEST_TIME)),
+      earn: s(cell(r, LEVEL_FIELDS.EARN)),
+      spend: s(cell(r, LEVEL_FIELDS.SPEND)),
       constraints,
       goals: goalRows
-        .filter((g) => s(g['关卡']) === name)
-        .map((g) => ({ resourceId: s(g['目标物资']), qty: num(g['数量']) ?? 1 })),
+        .filter((g) => s(cell(g, GOAL_FIELDS.LEVEL)) === name)
+        .map((g) => ({
+          resourceId: s(cell(g, GOAL_FIELDS.RESOURCE)),
+          qty: num(cell(g, GOAL_FIELDS.QTY)) ?? 1,
+        })),
     };
   });
 
 // ---------- 列车 → TrainLevel ----------
-const trains = sheetRows('列车')
-  .filter((r) => s(r['等级']) !== '')
+const trains = sheetRows(SHEETS.TRAINS)
+  .filter((r) => s(cell(r, TRAIN_FIELDS.LEVEL)) !== '')
   .map((r) => ({
-    level: num(r['等级']) ?? 0,
-    capacity: num(r['载货量']) ?? 0,
-    price: num(r['价格']) ?? 0,
-    upgrade: num(r['升级']),
-    upgradable: s(r['可升级']) === '1',
+    level: num(cell(r, TRAIN_FIELDS.LEVEL)) ?? 0,
+    capacity: num(cell(r, TRAIN_FIELDS.CAPACITY)) ?? 0,
+    price: num(cell(r, TRAIN_FIELDS.PRICE)) ?? 0,
+    upgrade: num(cell(r, TRAIN_FIELDS.UPGRADE)),
+    upgradable: s(cell(r, TRAIN_FIELDS.UPGRADABLE)) === '1',
   }));
 
 const data = { instances, levels, trains };
 writeFileSync('src/data/tv2.json', JSON.stringify(data), 'utf8');
-console.log(`instances=${instances.length} levels=${levels.length} (本体=${levels.filter((l) => l.category === '游戏本体').length}) trains=${trains.length} goals=${goalRows.length}`);
+console.log(`instances=${instances.length} levels=${levels.length} (本体=${levels.filter((l) => l.category === CONTENT.BASE).length}) trains=${trains.length} goals=${goalRows.length}`);

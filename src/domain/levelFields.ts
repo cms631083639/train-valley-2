@@ -32,6 +32,7 @@ export const USER_EDITABLE_FIELDS = [
   'coProductionGroups',
   'multiChannelGroups',
   'deletedSeedInstIds',
+  'earnPlan',
 ] as const;
 
 export type UserEditableField = (typeof USER_EDITABLE_FIELDS)[number];

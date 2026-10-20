@@ -72,16 +72,24 @@ function saveDataPlugin(): any {
 
           // 重要：合并实例数据，以文件中的实例为准（防止浏览器旧数据覆盖新增实例）
           let existingInstances: any[] = [];
+          let existingPrices: Record<string, number> | undefined;
           try {
             const existingRaw = fs.readFileSync(DATA_FILE, 'utf-8');
             const existing = JSON.parse(existingRaw);
             existingInstances = existing.instances || [];
+            existingPrices = existing.prices;
           } catch {}
           if (existingInstances.length > 0) {
             // 只保留 saved 中不在文件里的新实例（如 user 新增的）
             const existingIds = new Set(existingInstances.map((i: any) => i.id));
             const newInstances = parsed.instances.filter((i: any) => !existingIds.has(i.id));
             parsed.instances = [...existingInstances, ...newInstances];
+          }
+
+          // 单价表随 seed 加载、不由用户编辑：浏览器运行时若没有 prices（旧会话），
+          // 整份回写会把 62 项价格抹掉，故以文件现有 prices 兜底。
+          if (!parsed.prices || Object.keys(parsed.prices).length === 0) {
+            if (existingPrices) parsed.prices = existingPrices;
           }
 
           backupDataFile();

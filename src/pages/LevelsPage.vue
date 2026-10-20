@@ -22,6 +22,7 @@ import {
   stationQtyEach,
 } from '@/domain/level';
 import type { StationContext, StationInfo } from '@/domain/level';
+import { earnTargetOf } from '@/domain/earn';
 import {
   cargoOfLevel,
   initMinTrainLevel,
@@ -41,6 +42,7 @@ import ResourceStationPanel from '@/components/level-editor/ResourceStationPanel
 import MultiChannelPanel from '@/components/level-editor/MultiChannelPanel.vue';
 import CoProductionPanel from '@/components/level-editor/CoProductionPanel.vue';
 import ExternalStationPanel from '@/components/level-editor/ExternalStationPanel.vue';
+import EarnPanel from '@/components/level-editor/EarnPanel.vue';
 
 const store = useGameStore();
 const goalEditorRef = ref<InstanceType<typeof GoalEditor> | null>(null);
@@ -340,6 +342,9 @@ const effectiveExternalNeeds = computed(() =>
 
 /** 工人站点标签列表：给 GoalEditor 用（派生逻辑见 domain/level.ts） */
 const workerStationLabels = computed(() => deriveWorkerStationLabels(level.value, goals.value));
+
+/** 挣钱目标值（>0 时显示挣钱测算区块；派生逻辑见 domain/earn.ts） */
+const earnTarget = computed(() => earnTargetOf(level.value));
 
 /** 是否展示多方案对比面板（按需求关闭；恢复时改回 strategyResults.value.length > 0） */
 const showStrategyComparison = computed(() => {
@@ -974,6 +979,15 @@ function getUsedInstanceIds(typeName: string): string[] {
           @patch="patchLevel"
         />
       </div>
+
+      <!-- 💰 挣钱测算：置于最终需求上方；仅当关卡有挣钱目标时提供显示/隐藏入口，数据完全旁路（不参与拆解计算） -->
+      <EarnPanel
+        v-if="earnTarget > 0"
+        :level="level"
+        :instances="store.data.instances"
+        :prices="store.data.prices"
+        @patch="patchLevel"
+      />
 
       <div class="panel">
         <div class="flex flex-wrap items-center gap-2">

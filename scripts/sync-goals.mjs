@@ -1,23 +1,23 @@
 // 从本地已下载的飞书 Base ndjson 文件同步关卡目标到 src/data/tv2.json
 // 前置：先用 lark-cli 下载最新的 3 张表（关卡、物资主表、关卡目标）
 //    lark-cli base +record-list --base-token 'GwhybMnDVaxyoesbxM5copADnQf' \
-//      --table-id 'tblvpgH6QxwfRgRn'       --as user --page-size 200 --format ndjson
+//      --table-id <TABLES.LEVELS>     --as user --page-size 300 --format ndjson
 //    lark-cli base +record-list --base-token 'GwhybMnDVaxyoesbxM5copADnQf' \
-//      --table-id 'tbl6df5T6NZ9vjo2'       --as user --page-size 200 --format ndjson
+//      --table-id <TABLES.INSTANCES>  --as user --page-size 300 --format ndjson
 //    lark-cli base +record-list --base-token 'GwhybMnDVaxyoesbxM5copADnQf' \
-//      --table-id 'tbljsssYmtxnYFOF'       --as user --page-size 200 --format ndjson
+//      --table-id <TABLES.GOALS>      --as user --page-size 300 --format ndjson
+//   （表 ID 见 scripts/feishu-fields.cjs）
 // 用法：node scripts/sync-goals.mjs
 
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fields from './feishu-fields.cjs';
+
+const { TABLES, INSTANCE_FIELDS, LEVEL_FIELDS, GOAL_FIELDS, text, num, links } = fields;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
-
-const LEVELS_TABLE = 'tblvpgH6QxwfRgRn';   // 关卡表
-const INSTANCES_TABLE = 'tbl6df5T6NZ9vjo2'; // 物资主表
-const GOALS_TABLE = 'tbljsssYmtxnYFOF';     // 关卡目标表
 
 function latestNdjson(prefix) {
   const files = readdirSync(ROOT).filter(
@@ -43,9 +43,9 @@ function parseNdjson(file) {
 }
 
 console.log('📥 读取本地 ndjson 文件…');
-const lvlFile = latestNdjson(LEVELS_TABLE);
-const instFile = latestNdjson(INSTANCES_TABLE);
-const goalFile = latestNdjson(GOALS_TABLE);
+const lvlFile = latestNdjson(TABLES.LEVELS);
+const instFile = latestNdjson(TABLES.INSTANCES);
+const goalFile = latestNdjson(TABLES.GOALS);
 console.log('  关卡表 →', lvlFile.split(/[\\/]/).pop());
 console.log('  物资表 →', instFile.split(/[\\/]/).pop());
 console.log('  目标表 →', goalFile.split(/[\\/]/).pop());
@@ -56,15 +56,15 @@ const goalRecs = parseNdjson(goalFile);
 console.log(`✅ 关卡 ${lvlRecs.length} · 物资 ${instRecs.length} · 目标 ${goalRecs.length}`);
 
 // 映射：飞书 record_id → 本地标识
-const lvlMap = new Map(lvlRecs.map((r) => [r.record_id, (r['名称'] || '').trim()]));
-const instMap = new Map(instRecs.map((r) => [r.record_id, (r['物资ID'] || '').trim()]));
+const lvlMap = new Map(lvlRecs.map((r) => [r.record_id, text(r, LEVEL_FIELDS.NAME).trim()]));
+const instMap = new Map(instRecs.map((r) => [r.record_id, text(r, INSTANCE_FIELDS.ID).trim()]));
 
 // 按关卡分组目标
 const goalsByLevel = new Map();
 for (const g of goalRecs) {
-  const lvlIds = (g['关卡'] || []).map((x) => x.id);
-  const resIds = (g['目标物资'] || []).map((x) => x.id);
-  const qty = g['数量'];
+  const lvlIds = links(g, GOAL_FIELDS.LEVEL);
+  const resIds = links(g, GOAL_FIELDS.RESOURCE);
+  const qty = num(g, GOAL_FIELDS.QTY, null);
   if (!lvlIds.length || !resIds.length || qty == null) continue;
 
   for (const lvlId of lvlIds) {

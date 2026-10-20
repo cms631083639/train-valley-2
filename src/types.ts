@@ -35,6 +35,11 @@ export interface ResourceInstance {
   perOut?: number;
   /** 单次消耗（生产类必填；外部/初始配置类通常不需要） */
   perIn?: number;
+  /**
+   * 总价：每完成一个该实例（含配方输入与成品交付）可获得的总货币
+   * （= 配方各输入的物资价格之和「配方单价」+ 产出物资价格「成品单价」）
+   */
+  totalPrice?: number;
   /** 是否标记为「关卡初始配置」候选 —— 可作为关卡资源站点（无限/库存）或外部物资站点 */
   initialSetup?: boolean;
   /** 备注信息 */
@@ -56,6 +61,21 @@ export interface LevelGoal {
   stackId?: string;
   /** 栈内顺序（1=最先送） */
   order?: number;
+}
+
+/**
+ * 挣钱测算的一行：玩家计划完成的某个物资实例及其次数。
+ * 纯旁路数据 —— 只用于「挣钱测算」区块，绝不影响基础物资拆解引擎：
+ * 不写入 goals / 各站点数组 / instanceOverrides / coProductionGroups /
+ * multiChannelGroups / powerSources 等任何引擎输入。
+ */
+export interface EarnPlanRow {
+  /** 稳定行标识：仅用于 UI 绑定行内状态，行重排/删除时不随之改变；不参与业务计算 */
+  uid?: string;
+  /** 物资实例 id */
+  resourceId: string;
+  /** 计划完成次数 */
+  qty: number;
 }
 
 /** —— 站点类型：三种，独立编号、独立 resourceId 筛选 —— */
@@ -231,6 +251,12 @@ export interface Level {
   /** 最终交付目标（待录入时为空） */
   goals: LevelGoal[];
 
+  /**
+   * 挣钱测算计划：玩家手动输入的"打算完成哪些物资实例、各多少次"。
+   * 完全旁路 —— 只用于「挣钱测算」区块的合计与达标判定，不参与拆解计算。
+   */
+  earnPlan?: EarnPlanRow[];
+
   /** 关卡局部覆盖：物资名 → 强制使用的实例 id（解决同一物资名在不同关卡用不同实例的问题） */
   instanceOverrides?: Record<string, string>;
 
@@ -295,6 +321,11 @@ export interface GameData {
   instances: ResourceInstance[];
   levels: Level[];
   trains: TrainLevel[];
+  /**
+   * 物资名 → 单价（来自飞书《物资类型》表的「价格」）。
+   * 用于挣钱测算等需要「单份物资货币价值」的场景；随 seed 加载，非用户可编辑。
+   */
+  prices?: Record<string, number>;
 }
 
 /**

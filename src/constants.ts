@@ -48,10 +48,8 @@ export const CATEGORY = {
 } as const;
 
 // ———————————————— 内容分类 ContentCategory ————————————————
-export const CONTENT = {
-  BASE: '游戏本体',
-  DLC: 'DLC',
-} as const;
+// 值对象定义在 shared/enums.js（TS 与 Node 脚本两侧共用，见 dev-standards §2），此处 re-export 保持 `@/constants` 入口不变
+export { CONTENT } from '../shared/enums.js';
 
 // ———————————————— 多方案对比卡片标识 ————————————————
 // 注意：这张表的"键"与引擎 BREAKDOWN_STRATEGY 的"值"存在重名（fewestInputs / mostInputs），

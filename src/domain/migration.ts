@@ -321,6 +321,8 @@ export function mergeWithSeed(
     instances: mergedInstances,
     trains: mergedTrains,
     levels: mergedLevels,
+    // 物资单价表随 seed 加载（非用户可编辑），与 trains 同性质
+    prices: seedData.prices,
   };
 
   // 检查是否有元数据变化

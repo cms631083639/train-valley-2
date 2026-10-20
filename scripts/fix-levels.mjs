@@ -2,6 +2,12 @@
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fields from './feishu-fields.cjs';
+
+const {
+  TABLES, LEVEL_FIELDS, text,
+  CONSTRAINT_BOOL_COLS, CONSTRAINT_NUM_COLS, CONSTRAINT_ALIAS,
+} = fields;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -19,22 +25,14 @@ function parseNdjson(file) {
 }
 
 // constraints 中参与星级的列（需要正确识别值的类型）
-const CONSTRAINT_BOOL = new Set([
-  '不停车', '不掉头', '不升车', '不造桥', '不造隧道', '避免碰撞', '避免错站', '不摧毁铺片', '不摧毁物品',
-]);
-const CONSTRAINT_NUM = new Set([
-  '碰撞数量', '进错站数', '摧毁限制', '摧毁物价值', '铺片限制', '桥梁限制', '隧道限制',
-  '买车限制', '运送列车', '建造桥梁', '建造隧道',
-]);
+const CONSTRAINT_BOOL = new Set(CONSTRAINT_BOOL_COLS);
+const CONSTRAINT_NUM = new Set(CONSTRAINT_NUM_COLS);
 
 // 字段名 → constraints 里的 key（飞书字段名可能和约束 key 有差异）
-const FIELD_ALIAS = {
-  不摧毁物品: '不摧毁物品',
-  摧毁限制: '摧毁物价值',
-};
+const FIELD_ALIAS = CONSTRAINT_ALIAS;
 
 console.log('📥 读取 ndjson…');
-const lvlFile = latestNdjson('tblvpgH6QxwfRgRn');
+const lvlFile = latestNdjson(TABLES.LEVELS);
 const lvlRecs = parseNdjson(lvlFile);
 console.log('  关卡表 →', lvlFile.split(/[\\/]/).pop(), `(${lvlRecs.length} 关)`);
 
@@ -45,7 +43,7 @@ const tv2 = JSON.parse(readFileSync(tv2Path, 'utf8'));
 const fixes = [];
 
 for (const rec of lvlRecs) {
-  const name = (rec['名称'] || '').trim();
+  const name = text(rec, LEVEL_FIELDS.NAME).trim();
   const lvl = tv2.levels.find((l) => l.name === name);
   if (!lvl) { console.warn(`⚠️ tv2.json 里找不到关卡: ${name}`); continue; }
 

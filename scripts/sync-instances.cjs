@@ -4,10 +4,11 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { TABLES, INSTANCE_FIELDS, text, list, flag, num } = require('./feishu-fields.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 // 找最新的 record 文件（脚本执行前先跑 lark-cli base +record-list）
-const files = fs.readdirSync(ROOT).filter((f) => f.startsWith('tbl6df5T6NZ9vjo2_') && f.endsWith('.ndjson'));
+const files = fs.readdirSync(ROOT).filter((f) => f.startsWith(`${TABLES.INSTANCES}_`) && f.endsWith('.ndjson'));
 files.sort((a, b) => fs.statSync(path.join(ROOT, b)).mtimeMs - fs.statSync(path.join(ROOT, a)).mtimeMs);
 const NDJSON = path.join(ROOT, files[0]);
 console.log(`使用 record 文件: ${files[0]}`);
@@ -20,21 +21,22 @@ console.log(`NDJSON 有效记录: ${lines.length}`);
 
 /** 飞书字段(中文) -> 项目字段 */
 function mapInstance(rec) {
-  const id = rec['物资ID'] || ''; // formula: 物资名称 + RIGHT(RECORD_ID(),2)
-  const name = (rec['物资名称'] && rec['物资名称'][0]) || ''; // select: ['原木']
-  const recipeRaw = rec['配方物资类型'] || []; // multi-select: ['工人','原木']
-  const inputs = recipeRaw.map((r) => r).filter(Boolean);
-  const external = !!rec['外部获取']; // checkbox — 能作为关卡外部物资站点候选
-  const initialSetup = !!rec['初始配置']; // checkbox — 能作为关卡初始资源站点候选
-  const obtain = (rec['获取方式'] && rec['获取方式'][0]) || ''; // select: ['刷新']['无限']['库存'] 始终解析
-  const perOut = rec['单次产出'] ?? 1; // number
-  const needsPower = !!rec['电力依赖']; // checkbox
+  const id = text(rec, INSTANCE_FIELDS.ID); // formula: 物资名称 + RIGHT(RECORD_ID(),2)
+  const name = text(rec, INSTANCE_FIELDS.NAME); // select: ['原木']
+  const inputs = list(rec, INSTANCE_FIELDS.RECIPE); // multi-select: ['工人','原木']
+  const external = flag(rec, INSTANCE_FIELDS.EXTERNAL); // checkbox — 能作为关卡外部物资站点候选
+  const initialSetup = flag(rec, INSTANCE_FIELDS.INITIAL_SETUP); // checkbox — 能作为关卡初始资源站点候选
+  const obtain = text(rec, INSTANCE_FIELDS.OBTAIN); // select: ['刷新']['无限']['库存'] 始终解析
+  const perOut = num(rec, INSTANCE_FIELDS.PER_OUT, 1); // number
+  const needsPower = flag(rec, INSTANCE_FIELDS.NEEDS_POWER); // checkbox
+  const totalPrice = num(rec, INSTANCE_FIELDS.TOTAL_PRICE, 0); // formula：每完成该实例可获得的总货币
 
   const inst = { id, name, inputs, perOut: Number(perOut) || 1 };
   if (external) inst.external = true;
   if (obtain) inst.obtain = obtain;
   if (needsPower) inst.needsPower = true;
   if (initialSetup) inst.initialSetup = true;
+  if (totalPrice != null && totalPrice !== '') inst.totalPrice = Number(totalPrice) || 0;
   return inst;
 }
 
