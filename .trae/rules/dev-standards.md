@@ -43,6 +43,7 @@ grep -rn "useGameStore\|from '@/stores" src/composables
 | `OBTAIN`、`STATION_KIND`、`REFRESH_START`、`VIA`、`CATEGORY`、`STRATEGY_CARD`、`FILTER_ALL` | `src/constants.ts` | `@/constants` |
 | `RECIPE_CHOICE`、`BREAKDOWN_STRATEGY`（引擎策略参数） | `src/engine/breakdown.ts` | `@/engine/breakdown` |
 | `POWER_NAME`、`WORKER_NAME` | `src/types.ts` | `@/types`（**是值，不能用 `import type`**） |
+| 上线站用户态 DTO：`AuthUser`、`CaptchaPayload`、`CommentItem`、`SuggestionItem`、`SuggestionStatus` | `src/types.ts` | `@/types`（类型，用 `import type`） |
 | 内容分类文案 `CONTENT_CATEGORY_LABEL`、物资分类样式 `RESOURCE_CATEGORY_STYLE`、`OBTAIN_LABEL` | `src/utils/format.ts` | `@/utils/format` |
 | 展示文案函数 `constraintText` / `starConditionText` / `fmtSeconds` / `fmtMinSec` | `src/utils/format.ts` | `@/utils/format` |
 | 跨 TS/JS 两侧共用的纯值对象：`CONTENT`（内容分类值）、constraints 列清单 | `shared/enums.js`（类型在 `shared/enums.d.ts`，需同步改） | 应用侧经 `src/constants.ts` re-export 后仍从 `@/constants` 取；脚本侧 `import ... from '../shared/enums.js'` |

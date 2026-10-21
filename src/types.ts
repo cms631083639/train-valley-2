@@ -376,3 +376,58 @@ export interface CoProductionOutput {
 export const POWER_NAME = '电力';
 /** 工人：外部供给类，不进入消耗链 */
 export const WORKER_NAME = '工人';
+
+// ———————————————— 上线站（攻略站）用户态 DTO ————————————————
+// 与后端接口契约一一对应；拆解引擎不消费这些类型，仅登录 / 评论 / 建议相关 UI 使用。
+
+/** 账号角色：唯一管理员 / 只读用户 */
+export type AuthRole = 'admin' | 'user';
+
+/** 当前登录用户（后端只下发公开字段，不含口令哈希） */
+export interface AuthUser {
+  id: string;
+  email: string;
+  nickname: string;
+  role: AuthRole;
+}
+
+/**
+ * 验证码统一提交体。
+ * provider 决定填写哪些字段：
+ * - simple    → challengeId + answer（Phase 0 自研）
+ * - turnstile → token（Phase 1 Cloudflare Turnstile）
+ */
+export interface CaptchaPayload {
+  provider: 'simple' | 'turnstile';
+  challengeId?: string;
+  answer?: string;
+  token?: string;
+}
+
+/** 评论区单条评论 */
+export interface CommentItem {
+  id: string;
+  content: string;
+  createdAt: number;
+  author: string;
+  mine: boolean;
+}
+
+/** 修改建议的审批状态 */
+export type SuggestionStatus = 'pending' | 'approved' | 'rejected';
+
+/** 用户提交的修改建议（pending 待管理员审批） */
+export interface SuggestionItem {
+  id: string;
+  userId: string;
+  category: string;
+  targetId: string;
+  title: string;
+  content: string;
+  status: SuggestionStatus;
+  reviewNote?: string;
+  createdAt: number;
+  reviewedAt?: number | null;
+  author?: string;
+  authorEmail?: string;
+}

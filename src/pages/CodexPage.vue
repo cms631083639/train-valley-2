@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import { useGameStore } from '@/stores/game';
 import { OBTAIN_LABEL } from '@/utils/format';
 import AppIcon from '@/components/AppIcon.vue';
+import CommentSection from '@/components/CommentSection.vue';
 
 const store = useGameStore();
 const kw = ref('');
@@ -27,7 +28,7 @@ function consumersOf(name: string): string {
 </script>
 
 <template>
-  <div>
+  <div class="h-full overflow-y-auto">
     <div class="panel">
       <h2 class="panel-title"><AppIcon name="locomotive" :size="15" class="mr-1 text-amber-brand" />列车等级</h2>
       <table class="w-full text-[13px]">
@@ -84,5 +85,8 @@ function consumersOf(name: string): string {
         共 {{ resources.length }} 个实例 · 同名多实例=不同关卡的不同获取途径；电力只作通电条件，不计入消耗。
       </p>
     </div>
+
+    <!-- 上线站用户功能：图鉴讨论（未登录只读） -->
+    <CommentSection target-type="instance" target-id="all-instances" />
   </div>
 </template>

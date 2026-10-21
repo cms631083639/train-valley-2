@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useGameStore } from '@/stores/game';
-import LevelsPage from '@/pages/LevelsPage.vue';
-import GraphPage from '@/pages/GraphPage.vue';
-import CodexPage from '@/pages/CodexPage.vue';
-import InstancesPage from '@/pages/InstancesPage.vue';
+import { useAuthStore } from '@/stores/auth';
 import AppIcon from '@/components/AppIcon.vue';
 
-type Tab = 'levels' | 'graph' | 'codex' | 'instances';
-const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'levels', label: '关卡速查 / 物资拆解', icon: 'target' },
-  { id: 'graph', label: '生产链依赖图', icon: 'graph' },
-  { id: 'instances', label: '物资实例管理', icon: 'box' },
-  { id: 'codex', label: '列车与物资图鉴', icon: 'book' },
-];
+/** 顶部导航：管理员专属项按角色显隐 */
+const NAV = [
+  { to: '/', label: '关卡速查 / 物资拆解', icon: 'target', adminOnly: false },
+  { to: '/graph', label: '生产链依赖图', icon: 'graph', adminOnly: false },
+  { to: '/codex', label: '列车与物资图鉴', icon: 'book', adminOnly: false },
+  { to: '/instances', label: '物资实例管理', icon: 'box', adminOnly: true },
+  { to: '/admin/suggestions', label: '建议审批', icon: 'check', adminOnly: true },
+] as const;
 
 const store = useGameStore();
-const tab = ref<Tab>('levels');
+const auth = useAuthStore();
+const router = useRouter();
 const msg = ref('');
+
+const navItems = computed(() => NAV.filter((n) => !n.adminOnly || auth.isAdmin));
 
 onMounted(async () => {
   await store.hydrate();
@@ -69,6 +71,11 @@ function handleReset() {
   store.reset();
   msg.value = '已恢复内置示例';
 }
+
+async function handleLogout() {
+  await auth.logout();
+  router.push('/');
+}
 </script>
 
 <template>
@@ -80,39 +87,53 @@ function handleReset() {
       <span class="text-xs text-fog-400">关卡条件速查 · 最终物资拆解 · 生产链推演</span>
       <span class="flex-1" />
       <span class="text-xs text-fog-500">{{ counts }}</span>
+
+      <!-- 账号区 -->
+      <template v-if="auth.isLoggedIn">
+        <span class="flex items-center gap-1 text-xs text-fog-100">
+          {{ auth.user?.nickname || auth.user?.email }}
+          <span v-if="auth.isAdmin" class="rounded border border-amber-brand/50 bg-amber-brand/10 px-1 text-[10px] text-amber-brand">管理员</span>
+        </span>
+        <button class="btn" @click="handleLogout">退出</button>
+      </template>
+      <template v-else>
+        <RouterLink to="/login" class="btn">登录</RouterLink>
+        <RouterLink to="/register" class="btn btn-primary">注册</RouterLink>
+      </template>
     </header>
 
     <!-- 标签页 + 操作栏（合并为 Tailwind stacked shell 顶栏风格） -->
     <div class="mb-3 flex shrink-0 flex-wrap items-center gap-3 border-b border-ink-600 pb-0">
       <nav class="flex gap-0.5">
-        <button
-          v-for="t in TABS" :key="t.id"
-          class="relative flex cursor-pointer items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors"
-          :class="tab === t.id ? 'text-amber-brand' : 'text-fog-400 hover:text-fog-100'"
-          @click="tab = t.id"
-        >
-          <AppIcon :name="t.icon" :size="14" /> {{ t.label }}
-          <span v-if="tab === t.id" class="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-amber-brand" />
-        </button>
+        <RouterLink v-for="t in navItems" :key="t.to" :to="t.to" custom v-slot="{ isActive, navigate }">
+          <button
+            class="relative flex cursor-pointer items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors"
+            :class="isActive ? 'text-amber-brand' : 'text-fog-400 hover:text-fog-100'"
+            @click="navigate"
+          >
+            <AppIcon :name="t.icon" :size="14" /> {{ t.label }}
+            <span v-if="isActive" class="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-amber-brand" />
+          </button>
+        </RouterLink>
       </nav>
       <span class="flex-1" />
       <span v-if="savedText" class="text-xs text-good">{{ savedText }}</span>
       <span class="text-xs text-fog-500">{{ store.source }}</span>
-      <label class="btn"><AppIcon name="import" :size="12" class="mr-1 inline align-[-0.1em]" />导入
-        <input type="file" accept=".json,application/json" class="hidden" @change="onFile" />
-      </label>
-      <button class="btn" @click="exportJson"><AppIcon name="export" :size="12" class="mr-1 inline align-[-0.1em]" />导出</button>
-      <button class="btn border-bad/50 text-bad hover:border-bad hover:bg-bad/10" @click="handleReset">
-        <AppIcon name="reset" :size="12" class="mr-1 inline align-[-0.1em]" />恢复示例
-      </button>
+      <!-- 数据导入 / 导出 / 重置会改动权威数据，仅管理员可用 -->
+      <template v-if="auth.isAdmin">
+        <label class="btn"><AppIcon name="import" :size="12" class="mr-1 inline align-[-0.1em]" />导入
+          <input type="file" accept=".json,application/json" class="hidden" @change="onFile" />
+        </label>
+        <button class="btn" @click="exportJson"><AppIcon name="export" :size="12" class="mr-1 inline align-[-0.1em]" />导出</button>
+        <button class="btn border-bad/50 text-bad hover:border-bad hover:bg-bad/10" @click="handleReset">
+          <AppIcon name="reset" :size="12" class="mr-1 inline align-[-0.1em]" />恢复示例
+        </button>
+      </template>
       <span v-if="msg" class="text-xs text-fog-400">{{ msg }}</span>
     </div>
 
     <div class="flex-1 min-h-0">
-      <LevelsPage v-if="tab === 'levels'" />
-      <GraphPage v-else-if="tab === 'graph'" />
-      <InstancesPage v-else-if="tab === 'instances'" />
-      <CodexPage v-else />
+      <RouterView />
     </div>
   </div>
 </template>

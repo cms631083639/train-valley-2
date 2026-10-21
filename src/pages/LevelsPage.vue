@@ -36,6 +36,8 @@ import {
 import AppIcon from '@/components/AppIcon.vue';
 import ResLabel from '@/components/ResLabel.vue';
 import TreeNode from '@/components/TreeNode.vue';
+import CommentSection from '@/components/CommentSection.vue';
+import SuggestionPanel from '@/components/SuggestionPanel.vue';
 import GoalEditor from '@/components/GoalEditor.vue';
 import PassengerStationPanel from '@/components/level-editor/PassengerStationPanel.vue';
 import ResourceStationPanel from '@/components/level-editor/ResourceStationPanel.vue';
@@ -1403,6 +1405,10 @@ function getUsedInstanceIds(typeName: string): string[] {
           </ul>
         </template>
       </div>
+
+      <!-- 上线站用户功能：讨论 + 修改建议（未登录只读） -->
+      <CommentSection target-type="level" :target-id="level.id" />
+      <SuggestionPanel category="level" :target-id="level.id" />
     </div>
   </div>
 </template>

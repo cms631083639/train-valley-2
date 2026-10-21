@@ -1,9 +1,10 @@
-import { defineConfig, type Connect } from 'vite';
+import { defineConfig, loadEnv, type Connect } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath, URL } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
+import { mockApiPlugin } from './scripts/mock-api.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = path.resolve(__dirname, 'src/data/tv2.json');
@@ -110,19 +111,31 @@ function saveDataPlugin(): any {
   };
 }
 
-export default defineConfig({
-  plugins: [vue(), tailwindcss(), saveDataPlugin()],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+export default defineConfig(({ mode }) => {
+  // 读取 .env* 里的自定义变量（ADMIN_EMAIL / JWT_SECRET 等），供 mock 后端使用
+  const env = loadEnv(mode, process.cwd(), '');
+
+  return {
+    plugins: [
+      vue(),
+      tailwindcss(),
+      saveDataPlugin(),
+      // Phase 0 Mock 后端：与真后端接口契约一致，切 Fastify 时仅改 baseURL
+      mockApiPlugin({ adminEmail: env.ADMIN_EMAIL, jwtSecret: env.JWT_SECRET }),
+    ],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+      },
     },
-  },
-  server: {
-    port: 5173,
-    strictPort: true,
-    // 关键：排除 tv2.json 与备份目录的文件系统变化从 HMR 中，写存档不会触发整页 reload
-    watch: {
-      ignored: [path.resolve(__dirname, 'src/data/tv2.json'), path.resolve(__dirname, 'src/data/backups')],
+    server: {
+      port: 5173,
+      strictPort: true,
+      // 关键：排除 tv2.json 与备份目录的文件系统变化从 HMR 中，写存档不会触发整页 reload
+      watch: {
+        ignored: [path.resolve(__dirname, 'src/data/tv2.json'), path.resolve(__dirname, 'src/data/backups')],
+      },
     },
-  },
+  };
 });
+
