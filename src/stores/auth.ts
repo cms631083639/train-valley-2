@@ -64,7 +64,7 @@ export const useAuthStore = defineStore(
 
     async function logout(): Promise<void> {
       try {
-        await http.post('/api/auth/logout');
+        await http.post('/api/auth/logout', {});
       } catch {
         /* 网络异常也要清本地态 */
       }

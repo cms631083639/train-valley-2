@@ -20,18 +20,26 @@ function emitAuthLost() {
 
 let accessToken = '';
 
+/**
+ * API 基址：
+ * - 留空 = 同源（Phase 0 mock / Vite 代理）
+ * - 填写 = 直连真后端（跨域时需后端 CORS + Cookie SameSite 配套）
+ */
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
 /** 写入 / 清空内存中的 AccessToken（不落 localStorage，防 XSS 直取） */
 export function setAccessToken(token: string | null): void {
   accessToken = token || '';
 }
 
 export const http = axios.create({
+  baseURL: API_BASE,
   withCredentials: true,
   timeout: 15000,
 });
 
 /** 刷新专用实例：不带请求拦截器，避免刷新请求自己又被 401 拦截 */
-const bare = axios.create({ withCredentials: true, timeout: 15000 });
+const bare = axios.create({ baseURL: API_BASE, withCredentials: true, timeout: 15000 });
 
 let refreshing: Promise<string | null> | null = null;
 
@@ -39,7 +47,8 @@ let refreshing: Promise<string | null> | null = null;
 export function refreshAccessToken(): Promise<string | null> {
   if (!refreshing) {
     refreshing = bare
-      .post('/api/auth/refresh')
+      // 显式带空对象，确保 Content-Type 为 application/json（无 body 的 POST 会被部分服务端判 415）
+      .post('/api/auth/refresh', {})
       .then((r) => {
         const token = (r.data?.accessToken as string) || null;
         setAccessToken(token);

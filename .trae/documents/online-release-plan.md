@@ -214,7 +214,7 @@ GET  /api/admin/users
 |---|---|---|
 | 前端 | Vercel free tier，`*.vercel.app` | HTTPS 自动、无需备案 |
 | 后端 | Fastify 独立服务（后期可改 Vercel Function / 国内轻量） | 环境变量托管在平台侧 |
-| 数据库 | Supabase Postgres free tier | 表建好即用 |
+| 数据库 | 开发用 SQLite（`server/data/tv2.sqlite`，已 gitignore）；部署时切 Postgres | 用户暂无 Supabase，部署阶段可选 Neon 免费实例或国内轻量服务器自建 |
 | 风险 | Vercel 无亚洲节点，国内晚间可能超时 | 反馈不佳时切方案 B（国内轻量服务器 + 域名备案） |
 
 ---
@@ -227,3 +227,51 @@ GET  /api/admin/users
 - 已登录：可评论、点赞、提交建议；刷新页面登录态保持
 - admin：可见 `InstancesPage`，可查看待审建议
 - 分层自检两条 grep 为空（见 `dev-standards.md` §1）
+
+---
+
+## 10. Phase 1 实现状态（已完成）
+
+```
+server/
+├─ package.json          # 独立 Node 包（不污染前端依赖）
+└─ src/
+   ├─ index.mjs           # Fastify 入口：cookie / cors / 路由挂载 / 健康检查
+   ├─ config.mjs          # 读 server/.env 与项目根 .env.local
+   ├─ auth.mjs            # bcryptjs 哈希 + HS256 JWT + RefreshToken 会话
+   ├─ captcha.mjs         # verifyCaptcha：simple / turnstile 双分支
+   ├─ migrate.mjs         # 手动建表（启动时也会自动建）
+   ├─ db/
+   │  ├─ index.mjs        # 按 DB_DRIVER 选适配层
+   │  ├─ sqlite.mjs       # better-sqlite3 适配层（**所有 SQL 只在这里**）
+   │  └─ schema.sql       # 5 张业务表 + challenges
+   └─ routes/
+      ├─ auth.mjs         # 注册/登录/刷新/登出/me/挑战
+      ├─ content.mjs      # 评论/点赞/建议
+      └─ admin.mjs        # 建议审批/用户列表
+```
+
+### 运行方式
+
+```bash
+# 终端 1：真后端（默认 3001）
+cd server && npm run dev
+
+# 终端 2：前端（Vite 5173，/api 代理到 3001）
+npm run dev
+```
+
+`.env.local` 开关：`USE_MOCK_API=false` 走真后端；`true` 回到 Phase 0 内置 Mock。
+`API_PROXY_TARGET` 指定后端地址；`VITE_API_BASE_URL` 留空表示同源（走 Vite 代理）。
+
+### 切 Postgres 的改动面
+
+只改 `server/src/db/`：新增 `postgres.mjs` 实现与 `sqlite.mjs` 相同的方法集合，
+在 `db/index.mjs` 里按 `DB_DRIVER` 分发。路由、鉴权、验证码、前端均零改动。
+
+### 已验证
+
+- 注册（`ADMIN_EMAIL` 自动 admin）/ 登录 / `/me`
+- RefreshToken 轮转；旧 token 二次使用 → 401
+- 评论 / 点赞 / 建议提交 / 管理员审批 / 用户列表
+- 经 Vite 代理（5173）写入的评论可从 SQLite 读回，`npm run build` + 114 例测试全绿

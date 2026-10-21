@@ -114,14 +114,17 @@ function saveDataPlugin(): any {
 export default defineConfig(({ mode }) => {
   // 读取 .env* 里的自定义变量（ADMIN_EMAIL / JWT_SECRET 等），供 mock 后端使用
   const env = loadEnv(mode, process.cwd(), '');
+  // USE_MOCK_API=false → 关闭 mock 中间件，把 /api 代理到 Phase 1 真后端
+  const useMockApi = String(env.USE_MOCK_API ?? 'true') !== 'false';
+  const apiTarget = env.API_PROXY_TARGET || 'http://127.0.0.1:3001';
 
   return {
     plugins: [
       vue(),
       tailwindcss(),
       saveDataPlugin(),
-      // Phase 0 Mock 后端：与真后端接口契约一致，切 Fastify 时仅改 baseURL
-      mockApiPlugin({ adminEmail: env.ADMIN_EMAIL, jwtSecret: env.JWT_SECRET }),
+      // Phase 0 Mock 后端：与真后端接口契约一致，切 Fastify 时仅改 USE_MOCK_API
+      ...(useMockApi ? [mockApiPlugin({ adminEmail: env.ADMIN_EMAIL, jwtSecret: env.JWT_SECRET })] : []),
     ],
     resolve: {
       alias: {
@@ -135,6 +138,8 @@ export default defineConfig(({ mode }) => {
       watch: {
         ignored: [path.resolve(__dirname, 'src/data/tv2.json'), path.resolve(__dirname, 'src/data/backups')],
       },
+      // 真后端模式：/api 转发给 Fastify（tv2.json 的 load/save 仍由上面的中间件先处理）
+      proxy: useMockApi ? undefined : { '/api': { target: apiTarget } },
     },
   };
 });
