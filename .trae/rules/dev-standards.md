@@ -105,6 +105,11 @@ grep -rn "<中文名\|英文标识\|近义命名>" src
 4. **不许动 `src/data/tv2.json`**：dev server 运行期间浏览器侧持续回写该文件；非用户明确要求不提交它。
 5. **提交前自检**：死代码残留、裸字面量残留、权威表之外新增的定义，三项都要 grep 复核过。
 6. **不主动 commit**：用户明确说提交才提交。
+7. **提交必须双推（强制）**：每次 commit 后必须同时推送到 **Gitee（国内主仓）** 与 **GitHub（镜像/部署源）**，缺一不可。
+   - `origin` 已配置双 pushurl，直接 `git push origin <branch>` 即同时推送两个远端
+   - 也可单独补推：`git push github <branch>`
+   - 推送后必须核对两边 HEAD 一致：`git ls-remote origin <branch>` 与 `git ls-remote github <branch>` 应返回同一 commit
+   - 理由：Gitee 面向国内访问与备份，GitHub 供 WorkBuddy / Vercel 等平台拉取部署，落一边都会导致线上版本落后
 
 ---
 
@@ -116,3 +121,11 @@ npm run build    # vue-tsc 类型检查 + vite 构建，构建失败不得交付
 ```
 
 改动涉及 `domain/` 或 `engine/` 的纯逻辑时，**应同步补/改对应 `*.test.ts`**（`domain/`、`engine/`、`composables/` 三层已有回归网）。
+
+提交后固定双推并核对：
+
+```bash
+git push origin main                          # 同时推 Gitee + GitHub
+git ls-remote origin main                     # 与下一行返回值必须相同
+git ls-remote github main
+```
