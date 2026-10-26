@@ -5,6 +5,7 @@ import { useGameStore } from '@/stores/game';
 import { useAuthStore } from '@/stores/auth';
 import { USER_FEATURES_ENABLED } from '@/constants';
 import AppIcon from '@/components/AppIcon.vue';
+import DonateDialog from '@/components/DonateDialog.vue';
 
 /** 顶部导航：管理员专属项按角色显隐 */
 const NAV = [
@@ -19,6 +20,8 @@ const store = useGameStore();
 const auth = useAuthStore();
 const router = useRouter();
 const msg = ref('');
+/** 赞赏码弹窗开关（纯前端、自愿赞赏，不影响任何功能） */
+const donateOpen = ref(false);
 
 const navItems = computed(() =>
   NAV.filter((n) => !n.adminOnly || (USER_FEATURES_ENABLED && auth.isAdmin)),
@@ -144,5 +147,16 @@ async function handleLogout() {
     <div class="flex-1 min-h-0">
       <RouterView />
     </div>
+
+    <!-- 页脚：版权免责 + 支持作者（自愿赞赏，不设对价） -->
+    <footer class="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t border-ink-600/60 py-1.5 text-[11px] text-fog-500">
+      <span>非官方粉丝攻略站 · 与游戏开发 / 发行方无关 · 游戏名称与素材版权归原权利人所有</span>
+      <span class="flex-1" />
+      <button class="cursor-pointer text-fog-400 transition-colors hover:text-amber-brand" @click="donateOpen = true">
+        ☕ 支持作者
+      </button>
+    </footer>
+
+    <DonateDialog :open="donateOpen" @close="donateOpen = false" />
   </div>
 </template>
