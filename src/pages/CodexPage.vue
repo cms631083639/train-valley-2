@@ -5,6 +5,7 @@ import { useGameStore } from '@/stores/game';
 import { OBTAIN_LABEL } from '@/utils/format';
 import AppIcon from '@/components/AppIcon.vue';
 import CommentSection from '@/components/CommentSection.vue';
+import { USER_FEATURES_ENABLED } from '@/constants';
 
 const store = useGameStore();
 const kw = ref('');
@@ -86,7 +87,7 @@ function consumersOf(name: string): string {
       </p>
     </div>
 
-    <!-- 上线站用户功能：图鉴讨论（未登录只读） -->
-    <CommentSection target-type="instance" target-id="all-instances" />
+    <!-- 上线站用户功能：图鉴讨论（纯攻略模式整体隐藏） -->
+    <CommentSection v-if="USER_FEATURES_ENABLED" target-type="instance" target-id="all-instances" />
   </div>
 </template>

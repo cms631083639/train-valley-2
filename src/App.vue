@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGameStore } from '@/stores/game';
 import { useAuthStore } from '@/stores/auth';
+import { USER_FEATURES_ENABLED } from '@/constants';
 import AppIcon from '@/components/AppIcon.vue';
 
 /** 顶部导航：管理员专属项按角色显隐 */
@@ -19,7 +20,12 @@ const auth = useAuthStore();
 const router = useRouter();
 const msg = ref('');
 
-const navItems = computed(() => NAV.filter((n) => !n.adminOnly || auth.isAdmin));
+const navItems = computed(() =>
+  NAV.filter((n) => !n.adminOnly || (USER_FEATURES_ENABLED && auth.isAdmin)),
+);
+
+/** 构建时间：用于确认线上部署是否为最新版本 */
+const buildTimeText = new Date(__BUILD_TIME__).toLocaleString('zh-CN', { hour12: false });
 
 onMounted(async () => {
   await store.hydrate();
@@ -87,18 +93,21 @@ async function handleLogout() {
       <span class="text-xs text-fog-400">关卡条件速查 · 最终物资拆解 · 生产链推演</span>
       <span class="flex-1" />
       <span class="text-xs text-fog-500">{{ counts }}</span>
+      <span class="text-[10px] text-fog-500">构建 {{ buildTimeText }}</span>
 
-      <!-- 账号区 -->
-      <template v-if="auth.isLoggedIn">
-        <span class="flex items-center gap-1 text-xs text-fog-100">
-          {{ auth.user?.nickname || auth.user?.email }}
-          <span v-if="auth.isAdmin" class="rounded border border-amber-brand/50 bg-amber-brand/10 px-1 text-[10px] text-amber-brand">管理员</span>
-        </span>
-        <button class="btn" @click="handleLogout">退出</button>
-      </template>
-      <template v-else>
-        <RouterLink to="/login" class="btn">登录</RouterLink>
-        <RouterLink to="/register" class="btn btn-primary">注册</RouterLink>
+      <!-- 账号区：纯攻略模式下整体隐藏 -->
+      <template v-if="USER_FEATURES_ENABLED">
+        <template v-if="auth.isLoggedIn">
+          <span class="flex items-center gap-1 text-xs text-fog-100">
+            {{ auth.user?.nickname || auth.user?.email }}
+            <span v-if="auth.isAdmin" class="rounded border border-amber-brand/50 bg-amber-brand/10 px-1 text-[10px] text-amber-brand">管理员</span>
+          </span>
+          <button class="btn" @click="handleLogout">退出</button>
+        </template>
+        <template v-else>
+          <RouterLink to="/login" class="btn">登录</RouterLink>
+          <RouterLink to="/register" class="btn btn-primary">注册</RouterLink>
+        </template>
       </template>
     </header>
 

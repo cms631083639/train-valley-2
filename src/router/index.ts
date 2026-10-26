@@ -7,6 +7,7 @@ import LoginPage from '@/pages/LoginPage.vue';
 import RegisterPage from '@/pages/RegisterPage.vue';
 import AdminSuggestionsPage from '@/pages/AdminSuggestionsPage.vue';
 import { useAuthStore } from '@/stores/auth';
+import { USER_FEATURES_ENABLED } from '@/constants';
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -41,6 +42,9 @@ export const router = createRouter({
 });
 
 router.beforeEach((to) => {
+  // 纯攻略模式：所有用户功能相关页面直接回首页
+  if (!USER_FEATURES_ENABLED && (to.meta.requiresAdmin || to.meta.guestOnly)) return { path: '/' };
+
   const auth = useAuthStore();
   if (to.meta.requiresAdmin) {
     if (!auth.isLoggedIn) return { path: '/login', query: { redirect: to.fullPath } };

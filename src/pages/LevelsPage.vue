@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** 关卡速查 / 物资拆解（本体 50 关优先，可切换查看全部） */
-import { OBTAIN, STATION_KIND, FILTER_ALL, STRATEGY_CARD } from '@/constants';
+import { OBTAIN, STATION_KIND, FILTER_ALL, STRATEGY_CARD, USER_FEATURES_ENABLED } from '@/constants';
 import { computed, onMounted, ref, reactive, watch, watchEffect, nextTick } from 'vue';
 import { RECIPE_CHOICE, BREAKDOWN_STRATEGY } from '@/engine/breakdown';
 import type { RecipeChoice, BreakdownStrategy } from '@/engine/breakdown';
@@ -1406,9 +1406,11 @@ function getUsedInstanceIds(typeName: string): string[] {
         </template>
       </div>
 
-      <!-- 上线站用户功能：讨论 + 修改建议（未登录只读） -->
-      <CommentSection target-type="level" :target-id="level.id" />
-      <SuggestionPanel category="level" :target-id="level.id" />
+      <!-- 上线站用户功能：讨论 + 修改建议（纯攻略模式整体隐藏） -->
+      <template v-if="USER_FEATURES_ENABLED">
+        <CommentSection target-type="level" :target-id="level.id" />
+        <SuggestionPanel category="level" :target-id="level.id" />
+      </template>
     </div>
   </div>
 </template>

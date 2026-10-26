@@ -6,6 +6,7 @@ import router from './router';
 import { registerSprite } from './icons/registry';
 import './styles/tailwind.css';
 import { useAuthStore } from './stores/auth';
+import { USER_FEATURES_ENABLED } from './constants';
 
 // 注入矢量图标雪橇（若改用 iconfont.cn 的 CDN symbol，删掉这一行并在 index.html 引入脚本）
 registerSprite();
@@ -18,6 +19,7 @@ app.use(pinia);
 app.use(router);
 
 // 启动时用 HttpOnly Cookie 里的 RefreshToken 静默恢复登录态（失败则视为未登录）
-useAuthStore().bootstrap();
+// 纯攻略模式没有后端，跳过恢复以免产生无意义的 401
+if (USER_FEATURES_ENABLED) useAuthStore().bootstrap();
 
 app.mount('#app');

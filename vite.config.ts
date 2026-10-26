@@ -119,6 +119,10 @@ export default defineConfig(({ mode }) => {
   const apiTarget = env.API_PROXY_TARGET || 'http://127.0.0.1:3001';
 
   return {
+    // 构建时间戳：页脚展示，便于确认线上是否为最新版本
+    define: {
+      __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+    },
     plugins: [
       vue(),
       tailwindcss(),

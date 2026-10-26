@@ -32,8 +32,8 @@
 | 阶段 | 内容 | 产出 |
 |---|---|---|
 | **Phase 0** | Mock 后端 + Vue Router + Auth Store + 登录注册 + 评论区 + 建议提交 UI | 本地可完整走通全流程 |
-| **Phase 1** | 真后端 Fastify + PostgreSQL + 真 JWT/RefreshToken 轮转 + 真验证码 | 前后端联调通过 |
-| **Phase 2** | 部署上线（Vercel + Supabase）、admin 初始化、导流 | 可对外访问 |
+| **Phase 1** | 真后端 Fastify + SQLite（部署时可选 Postgres）+ JWT/RefreshToken 轮转 | 前后端联调通过 |
+| **Phase 2** | 部署到**国内轻量服务器**（Nginx + systemd）、ICP 备案、商业验证码、导流 | 可对外访问 |
 | **Phase 3** | 迭代：建议审批落地、通关记录、数据上云、多管理员 | 按需 |
 
 ---
@@ -43,8 +43,8 @@
 ### 3.1 为什么分两阶段
 
 - **Phase 0 不需要真实验证码能力**：Mock 阶段没有真实注册风险，只需挡住脚本级暴力提交、验证前后端契约完整即可。
-- **正式上线必须有真实反 bot 能力**：自研 canvas 图形码只能防脚本，防不了 OCR / 打码平台，**Phase 1 必须切到 Cloudflare Turnstile**。
-- 选 Turnstile 而非 hCaptcha：免费、无感（多数用户看不到验证环节）、本身就是 Cloudflare 反 bot 体系；hCaptcha 为点图挑战，体验差一档，仅作备选。
+- **正式上线必须有真实反 bot 能力**：自研 canvas 图形码只能防脚本，防不了 OCR / 打码平台，**上线前必须切到商业验证码**。
+- **部署改为国内服务器后，Cloudflare Turnstile 不再适用**：`challenges.cloudflare.com` 在国内加载不稳定（经常超时），玩家会卡在验证环节。改用**腾讯云验证码**（若服务器选腾讯云，同生态、有免费额度）或**极验 GeeTest**（不绑定云厂商）。
 
 ### 3.2 统一契约（前端 ⇄ 后端）
 
@@ -53,10 +53,10 @@
 ```ts
 // 前端提交形态（字段名固定，provider 只决定填哪些字段）
 interface CaptchaPayload {
-  provider: 'simple' | 'turnstile'   // 当前生效的验证码类型
+  provider: 'simple' | 'tencent' | 'geetest' // 当前生效的验证码类型
   challengeId?: string               // simple 专用：服务端下发的挑战 id
   answer?: string                    // simple 专用：用户输入的 6 位字符
-  token?: string                     // turnstile 专用：widget 回调拿到的 token
+  token?: string                     // tencent / geetest 专用：前端 SDK 回调拿到的票据
 }
 ```
 
@@ -65,8 +65,9 @@ interface CaptchaPayload {
 ```ts
 // 后端：统一校验入口（所有需要验证码的接口都调它）
 async function verifyCaptcha(payload: CaptchaPayload, ip: string): Promise<boolean>
-//   provider === 'simple'    → 查 challenge 存储（单次有效 + 过期 + 失败次数限制）
-//   provider === 'turnstile' → POST https://challenges.cloudflare.com/turnstile/v0/siteverify
+//   provider === 'simple'  → 查 challenge 存储（单次有效 + 过期 + 失败次数限制）
+//   provider === 'tencent' → 调腾讯云验证码票据校验接口（CaptchaAppId + AppSecretKey）
+//   provider === 'geetest' → 调极验二次校验接口（captchaId + privateKey）
 ```
 
 ### 3.3 前端抽象层
@@ -79,21 +80,22 @@ async function verifyCaptcha(payload: CaptchaPayload, ip: string): Promise<boole
 ```
 
 - `provider === 'simple'`：canvas 绘制 6 位字符 + 干扰线，点击刷新，本地不上报明文；提交时带上 `challengeId + answer`
-- `provider === 'turnstile'`：动态加载 Cloudflare 脚本，渲染隐形/显式 widget，回调写入 `token`
+- `provider === 'tencent'`：动态加载腾讯云验证码 SDK，回调写入 `token`（票据）
+- `provider === 'geetest'`：动态加载极验 SDK，回调写入 `token`
 - provider 来源：`import.meta.env.VITE_CAPTCHA_PROVIDER`，**不在业务组件里出现任何 provider 判断**
 
 ### 3.4 环境变量
 
 | 变量 | 阶段 | 说明 |
 |---|---|---|
-| `VITE_CAPTCHA_PROVIDER` | Phase 0/1 | 前端：`simple` \| `turnstile` |
-| `CAPTCHA_PROVIDER` | Phase 0/1 | 后端：`simple` \| `turnstile` |
+| `VITE_CAPTCHA_PROVIDER` | Phase 0/1 | 前端：`simple` \| `tencent` \| `geetest` |
+| `CAPTCHA_PROVIDER` | Phase 0/1 | 后端：`simple` \| `tencent` \| `geetest` |
 | `CAPTCHA_CHALLENGE_TTL` | Phase 0 | simple 挑战有效期（秒，默认 120） |
-| `VITE_TURNSTILE_SITE_KEY` | Phase 1 | Turnstile 站点公钥 |
-| `TURNSTILE_SECRET_KEY` | Phase 1 | Turnstile 服务端私钥（**只进服务端 env，禁止进前端 / 仓库**） |
+| `VITE_TENCENT_CAPTCHA_APP_ID` / `TENCENT_CAPTCHA_APP_SECRET` | 上线前 | 腾讯云验证码：前端 AppId + 服务端密钥 |
+| `VITE_GEETEST_CAPTCHA_ID` / `GEETEST_PRIVATE_KEY` | 上线前 | 极验：前端 CaptchaId + 服务端私钥 |
 | `ADMIN_EMAIL` | Phase 1 | 该邮箱注册后自动获得 admin 角色 |
 | `JWT_SECRET` | Phase 1 | AccessToken 签名密钥 |
-| `REFRESH_TOKEN_SECRET` / `DATABASE_URL` | Phase 1 | 会话签名 / 数据库连接 |
+| `DATABASE_URL` | 切 Postgres 时 | 数据库连接串（当前 SQLite 不需要） |
 
 > `.env` 不进仓库；仓库只留 `.env.example`，且**只写变量名与占位符**，禁止出现可直接复用的弱默认口令。
 
@@ -101,17 +103,17 @@ async function verifyCaptcha(payload: CaptchaPayload, ip: string): Promise<boole
 
 切换验证码只需动 **3 处**，业务页面零改动：
 
-1. **环境变量**：`VITE_CAPTCHA_PROVIDER=simple → turnstile`，`CAPTCHA_PROVIDER=simple → turnstile`，补两个 Turnstile key
-2. **前端**：`CaptchaBox.vue` 启用 `turnstile` 分支（Phase 0 就已写好该分支骨架，切时只补脚本加载与回调）
-3. **后端**：`verifyCaptcha` 启用 turnstile 分支（调 siteverify），simple 分支保留但置为不可用
+1. **环境变量**：`VITE_CAPTCHA_PROVIDER=simple → tencent`（或 `geetest`），`CAPTCHA_PROVIDER` 同步，补对应密钥
+2. **前端**：`CaptchaBox.vue` 启用商业验证码分支（SDK 加载 + 回调写入 token）
+3. **后端**：`verifyCaptcha` 增加对应票据校验分支，simple 分支保留但仅限非生产环境
 
-回归验证：注册 + 登录各走一遍；关闭 JS / 伪造 token 应被拒绝；同一 token 重复使用应被拒绝。
+回归验证：注册 + 登录各走一遍；伪造 / 重复使用的票据应被拒绝；国内网络下 SDK 能正常加载。
 
 ### 3.6 Phase 0 自研码的安全边界（必须写死）
 
 - 只允许用于 **Mock / 本地 / 内部预览**，不得作为正式上线方案
 - 挑战 id 单次有效、有 TTL、有失败次数上限，避免被无限重试
-- Phase 2 上线前必须确认 `CAPTCHA_PROVIDER=turnstile`，否则视为未达上线标准
+- 上线前必须确认 `CAPTCHA_PROVIDER=tencent`（或 `geetest`），否则视为未达上线标准
 
 ---
 
@@ -208,14 +210,29 @@ GET  /api/admin/users
 
 ---
 
-## 8. 部署（方案 A）
+## 8. 部署（国内单机方案）
+
+面向 B站 / 小黑盒的中文玩家，选择国内服务器，前后端同机部署。
 
 | 部分 | 方案 | 备注 |
 |---|---|---|
-| 前端 | Vercel free tier，`*.vercel.app` | HTTPS 自动、无需备案 |
-| 后端 | Fastify 独立服务（后期可改 Vercel Function / 国内轻量） | 环境变量托管在平台侧 |
-| 数据库 | 开发用 SQLite（`server/data/tv2.sqlite`，已 gitignore）；部署时切 Postgres | 用户暂无 Supabase，部署阶段可选 Neon 免费实例或国内轻量服务器自建 |
-| 风险 | Vercel 无亚洲节点，国内晚间可能超时 | 反馈不佳时切方案 B（国内轻量服务器 + 域名备案） |
+| 服务器 | 国内轻量应用服务器 2C2G（腾讯云 / 阿里云，约 ¥50-80/月） | 系统建议 Ubuntu 22.04 LTS |
+| 前端 | Nginx 托管 `dist/` 静态文件 | 构建产物，无需 Node 运行 |
+| 后端 | Fastify 由 systemd 守护，仅监听 `127.0.0.1:3001` | 不直接暴露公网端口 |
+| 反向代理 | Nginx `/api` → `127.0.0.1:3001`；其余走 `index.html` | 同源，无跨域问题，Cookie 直接生效 |
+| HTTPS | 备案通过后 certbot 申请 Let's Encrypt 证书 | 国内服务器 80/443 需域名已备案 |
+| 数据库 | 初期继续 SQLite（WAL，单机足够）；需要多进程/多实例时再切 Postgres | SQLite 备份 = 定时复制 `server/data/` |
+| 备案 | **关键路径**：域名实名 + ICP 备案（约 7-20 天） | 备案期间可先用 `http://IP:端口` 内测 |
+
+### 上线步骤（备案通过后）
+
+1. 服务器装 Node 24、Nginx、git，拉取仓库
+2. `npm ci && npm run build`（前端）；`cd server && npm ci`（后端）
+3. 配置 `/etc/tv2/server.env`（`JWT_SECRET`、`ADMIN_EMAIL`、`CORS_ORIGIN`、`COOKIE_SECURE=true`）
+4. systemd 启动后端，Nginx 配置静态 + `/api` 反代
+5. certbot 签证书，开启 HTTP→HTTPS 跳转
+6. 验证：注册 / 登录 / RefreshToken 轮转 / 评论 / 审批 / 移动端访问
+7. 数据备份：cron 每日复制 `server/data/tv2.sqlite*` 到备份目录，保留 30 份
 
 ---
 
@@ -275,3 +292,62 @@ npm run dev
 - RefreshToken 轮转；旧 token 二次使用 → 401
 - 评论 / 点赞 / 建议提交 / 管理员审批 / 用户列表
 - 经 Vite 代理（5173）写入的评论可从 SQLite 读回，`npm run build` + 114 例测试全绿
+
+---
+
+## 11. 零成本先上线（纯攻略模式）
+
+### 11.1 现实约束（先说清楚）
+
+- **没有「免费 + 国内稳定 + 免备案」三者兼得**的方案：
+  - Vercel / Cloudflare Pages 免费，但国内部分运营商网络不可达（Vercel 社区已记录中国移动 AS9808 无法路由的案例）
+  - 腾讯云 CloudBase 默认域名仅限调试（10KB/s 限速、有效期限制），生产要绑已备案域名
+- 因此本阶段定位为**临时导流**：先让能打开网络的玩家查攻略，不等备案、不花钱。
+
+### 11.2 纯攻略模式
+
+构建开关：`VITE_ENABLE_USER_FEATURES=false`
+
+```bash
+# PowerShell
+$env:VITE_ENABLE_USER_FEATURES="false"; npm run build; Remove-Item Env:VITE_ENABLE_USER_FEATURES
+```
+
+开启后：
+- 隐藏登录 / 注册 / 退出 / 物资实例管理 / 建议审批
+- 隐藏关卡页与图鉴页的讨论、点赞、修改建议面板
+- 直接访问 `#/login`、`#/register`、`#/instances` 会被重定向回首页
+- 启动时不再请求 `/api/auth/refresh`，控制台无 401 噪音
+- 页头显示构建时间，便于确认线上版本
+
+### 11.3 发布链路（0 元）
+
+```
+本地/Gitee 主仓 → 镜像到 GitHub → Vercel Git 集成 → 自动构建 dist/ → vercel.app
+```
+
+1. 推送仓库到 Gitee（主仓）
+2. Gitee 仓库设置 → 镜像管理 → 添加 GitHub 镜像（需 GitHub Token），push 自动同步
+3. Vercel 用 GitHub 登录 → Import 仓库
+4. Framework 选 Vite，Build Command `npm run build`，Output `dist`
+5. 环境变量（Production）：`VITE_ENABLE_USER_FEATURES=false`
+6. Deploy 后得到 `https://<project>.vercel.app`
+
+> 若不想接 Gitee 镜像：本地 `npm run build` 后把 `dist/` 拖到 Vercel 网页端，同样 0 元，只是每次手动。
+
+### 11.4 数据更新流程（纯静态）
+
+| 场景 | 操作 |
+|---|---|
+| 本地改数据（推荐） | `npm run dev` → 编辑 → 自动写回 `src/data/tv2.json` → commit → push → Vercel 自动部署 |
+| 线上临时改 | 线上编辑只写浏览器 localStorage → 导出 JSON → 覆盖本地 `src/data/tv2.json` → commit → push |
+| 飞书批量同步 | 跑 `scripts/` 脚本写 `tv2.json` → commit → push |
+
+每次 dev 保存会在 `src/data/backups/` 留 30 份时间戳备份。
+
+### 11.5 升级到完整模式
+
+拿到任意 Linux 机器（Oracle 永久免费实例 / 国内轻量 / 香港轻量）后：
+1. 部署后端与 Nginx（见 §8）
+2. 构建时去掉 `VITE_ENABLE_USER_FEATURES=false`（或设为 `true`）
+3. 前后端同域，登录 / 评论 / 建议 / 审批全部自动恢复，前端代码无需修改

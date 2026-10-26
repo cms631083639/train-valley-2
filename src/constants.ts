@@ -64,3 +64,12 @@ export type StrategyCardKey = (typeof STRATEGY_CARD)[keyof typeof STRATEGY_CARD]
 
 // ———————————————— 筛选器 "全部" 哨兵值 ————————————————
 export const FILTER_ALL = 'all' as const;
+
+// ———————————————— 上线站用户功能总开关 ————————————————
+/**
+ * 用户功能总开关：登录 / 注册 / 评论 / 点赞 / 建议 / 管理后台。
+ * - true （默认）：完整模式，需要后端可用
+ * - false：纯攻略模式，隐藏全部入口，相关路由重定向回首页（静态托管无后端时使用）
+ * 构建时通过 `VITE_ENABLE_USER_FEATURES=false` 控制。
+ */
+export const USER_FEATURES_ENABLED = String(import.meta.env.VITE_ENABLE_USER_FEATURES ?? 'true') !== 'false';
