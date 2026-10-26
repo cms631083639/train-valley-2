@@ -36,12 +36,12 @@ watch(
         tabindex="-1"
         role="dialog"
         aria-modal="true"
-        aria-label="支持作者"
+        aria-label="请奶爸喝快乐水"
         class="w-full max-w-[340px] rounded-lg border border-ink-600 bg-ink-800 p-4 shadow-xl outline-none"
         @keydown.esc="emit('close')"
       >
         <div class="flex items-center gap-2">
-          <h3 class="text-sm font-semibold text-amber-brand">☕ 支持作者</h3>
+          <h3 class="text-sm font-semibold text-amber-brand">🥤 请奶爸喝瓶快乐水</h3>
           <span class="flex-1" />
           <button
             class="flex h-6 w-6 items-center justify-center rounded text-fog-400 transition-colors hover:bg-ink-700 hover:text-fog-100"
@@ -53,7 +53,10 @@ watch(
         </div>
 
         <p class="mt-2 text-[13px] leading-relaxed text-fog-100">
-          如果这个攻略帮到了你，可以请我喝杯咖啡。
+          白天上班，晚上带娃，等娃睡了才有空折腾这个攻略站。
+        </p>
+        <p class="mt-1 text-[13px] leading-relaxed text-fog-100">
+          要是它帮你少走了几步弯路，欢迎请我喝瓶快乐水——冰镇的，谢啦。
         </p>
         <p class="mt-1 text-[11px] text-fog-400">
           完全自愿，不影响任何功能 · 微信扫码 · 金额随意

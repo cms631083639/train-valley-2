@@ -148,12 +148,12 @@ async function handleLogout() {
       <RouterView />
     </div>
 
-    <!-- 页脚：版权免责 + 支持作者（自愿赞赏，不设对价） -->
+    <!-- 页脚：版权免责 + 请奶爸喝快乐水（自愿赞赏，不设对价） -->
     <footer class="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t border-ink-600/60 py-1.5 text-[11px] text-fog-500">
       <span>非官方粉丝攻略站 · 与游戏开发 / 发行方无关 · 游戏名称与素材版权归原权利人所有</span>
       <span class="flex-1" />
       <button class="cursor-pointer text-fog-400 transition-colors hover:text-amber-brand" @click="donateOpen = true">
-        ☕ 支持作者
+        🥤 请奶爸喝快乐水
       </button>
     </footer>
 
