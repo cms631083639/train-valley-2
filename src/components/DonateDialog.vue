@@ -53,7 +53,7 @@ watch(
         </div>
 
         <p class="mt-2 text-[13px] leading-relaxed text-fog-100">
-          白天上班，晚上带娃，等娃睡了才有空折腾这个攻略站。
+          希望这个小工具能帮到您游玩火车山谷2。
         </p>
         <p class="mt-1 text-[13px] leading-relaxed text-fog-100">
           要是它帮你少走了几步弯路，欢迎请我喝瓶快乐水——冰镇的，谢啦。
